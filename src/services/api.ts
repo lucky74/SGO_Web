@@ -26,7 +26,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
     const response = await axios.get(BASE_URL, {
       params: {
         engine: 'google_hotels',
-        q: \Hotels in \\, // Corrected interpolation
+        q: `Hotels in ${city}`,
         api_key: SGO_KEY,
         gl: 'id',
         hl: 'id',
