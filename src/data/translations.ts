@@ -28,7 +28,7 @@ export const TRANS: Record<string, Record<string, string>> = {
     'login_btn': {
         'ID': 'AUTHENTICATE SYSTEM', 'EN': 'AUTHENTICATE SYSTEM', 'FR': 'AUTHENTIFIER', 
         'DE': 'AUTHENTIFIZIEREN', 'ES': 'AUTENTICAR', 'AR': 'توثيق النظام', 
-        'KO': '시스템 인증', 'JA': '認証システム', 'ZH': '验证系统', 'RU': 'АВТОРИЗАЦИЯ'
+        'KO': '시스템 인증', 'JA': '認証 시스템', 'ZH': '验证系统', 'RU': 'АВТОРИЗАЦИЯ'
     },
     'access_denied': {
         'ID': ' Akses Ditolak. Kunci lisensi tidak valid.', 'EN': ' Access Denied. Invalid license key.', 
@@ -74,7 +74,7 @@ export const TRANS: Record<string, Record<string, string>> = {
     'm1_desc': {
         'ID': 'Analisa real-time tingkat hunian, harga kompetitor, dan sentimen pasar.', 
         'EN': 'Real-time analysis of occupancy, competitor prices, and market sentiment.',
-        'FR': 'Analyse en temps réel de l''occupation, des prix et du sentiment.',
+        'FR': "Analyse en temps réel de l'occupation, des prix et du sentiment.",
         'DE': 'Echtzeitanalyse von Belegung, Wettbewerbspreisen und Marktstimmung.',
         'ES': 'Análisis en tiempo real de ocupación, precios y sentimiento.',
         'AR': 'تحليل في الوقت الحقيقي للإشغال وأسعار المنافسين ومشاعر السوق.',
@@ -84,7 +84,7 @@ export const TRANS: Record<string, Record<string, string>> = {
         'RU': 'Анализ заполняемости, цен конкурентов и настроений рынка в реальном времени.'
     },
     'm1_input_label': {
-        'ID': 'Target Analisa Wilayah:', 'EN': 'Target Analysis Area:', 'FR': 'Zone d''Analyse Cible:', 
+        'ID': 'Target Analisa Wilayah:', 'EN': 'Target Analysis Area:', 'FR': "Zone d'Analyse Cible:", 
         'DE': 'Zielanalysegebiet:', 'ES': 'Área de Análisis Objetivo:', 'AR': 'منطقة التحليل المستهدفة:', 
         'KO': '타겟 분석 지역:', 'JA': '分析対象エリア:', 'ZH': '目标分析区域:', 'RU': 'Целевая область:'
     },
@@ -102,7 +102,7 @@ export const TRANS: Record<string, Record<string, string>> = {
     'm1_metric_2': {'ID': 'Rata-rata Harga', 'EN': 'Avg. Price', 'FR': 'Prix Moyen', 'DE': 'Durchschn. Preis', 'ES': 'Precio Promedio', 'AR': 'متوسط السعر', 'KO': '평균 가격', 'JA': '平均価格', 'ZH': '平均价格', 'RU': 'Средняя цена'},
     'm1_metric_3': {'ID': 'Total Ulasan', 'EN': 'Total Reviews', 'FR': 'Avis Total', 'DE': 'Gesamtbewertungen', 'ES': 'Reseñas Totales', 'AR': 'إجمالي المراجعات', 'KO': '총 리뷰', 'JA': '総レビュー', 'ZH': '总评论', 'RU': 'Всего отзывов'},
     'm1_viz_title': {
-        'ID': ' Visualisasi Ekosistem Pasar', 'EN': ' Market Ecosystem Visualization', 'FR': ' Visualisation de l''Écosystème', 
+        'ID': ' Visualisasi Ekosistem Pasar', 'EN': ' Market Ecosystem Visualization', 'FR': " Visualisation de l'Écosystème", 
         'DE': ' Marktökosystem-Visualisierung', 'ES': ' Visualización del Ecosistema', 'AR': ' تصور نظام السوق', 
         'KO': ' 시장 생태계 시각화', 'JA': ' 市場エコシステムの可視化', 'ZH': ' 市场生态系统可视化', 'RU': ' Визуализация рынка'
     },
@@ -117,7 +117,7 @@ export const TRANS: Record<string, Record<string, string>> = {
         'KO': ' 트렌드 분석 및 AI 추천', 'JA': ' トレンド分析とAI推奨', 'ZH': ' 趋势分析与AI建议', 'RU': ' Анализ трендов и AI'
     },
     'm2_col1': {'ID': ' Pemimpin Pasar', 'EN': ' Market Leaders', 'FR': ' Leaders du Marché', 'DE': ' Marktführer', 'ES': ' Líderes del Mercado', 'AR': ' قادة السوق', 'KO': ' 시장 리더', 'JA': ' マーケットリーダー', 'ZH': ' 市场领导者', 'RU': ' Лидеры рынка'},
-    'm2_col2': {'ID': ' Nilai Terbaik', 'EN': ' Best Value', 'FR': ' Meilleure Valeur', 'DE': ' Bester Wert', 'ES': ' Mejor Valor', 'AR': ' أفضل قيمة', 'KO': ' 최고의 가치', 'JA': ' ベストバリュー', 'ZH': ' 最佳价值', 'RU': ' Лучшая цена'},
+    'm2_col2': {'ID': ' Nilai Terbaik', 'EN': ' Best Value', 'FR': ' Meilleure Valeur', 'DE': ' Bester Wert', 'ES': ' Mejor Valor', 'AR': ' أفضل قيمة', 'KO': ' 최고의 가치', 'JA': ' 베ストバリュー', 'ZH': ' 最佳价值', 'RU': ' Лучшая цена'},
     'm3_title': {'ID': ' Akses Premium SGO', 'EN': ' SGO Premium Access', 'FR': ' Accès Premium SGO', 'DE': ' SGO Premium Zugang', 'ES': ' Acceso Premium SGO', 'AR': ' وصول SGO المميز', 'KO': ' SGO 프리미엄 액세스', 'JA': ' SGO プレミアムアクセス', 'ZH': ' SGO 高级访问', 'RU': ' SGO Премиум'},
     'm4_title': {'ID': ' Manajemen Lisensi', 'EN': ' License Management', 'FR': ' Gestion de Licence', 'DE': ' Lizenzmanagement', 'ES': ' Gestión de Licencias', 'AR': ' إدارة الترخيص', 'KO': ' 라이선스 관리', 'JA': ' ライセンス管理', 'ZH': ' 许可证管理', 'RU': ' Управление лицензией'},
     'm4_status_active': {'ID': ' STATUS: AKTIF', 'EN': ' STATUS: ACTIVE', 'FR': ' STATUT: ACTIF', 'DE': ' STATUS: AKTIV', 'ES': ' ESTADO: ACTIVO', 'AR': ' الحالة: نشط', 'KO': ' 상태: 활성', 'JA': ' ステータス: アクティブ', 'ZH': ' 状态：活动', 'RU': ' СТАТУС: АКТИВЕН'},

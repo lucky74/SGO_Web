@@ -40,7 +40,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
             <button
               key={menu.id}
               onClick={() => setActiveMenu(menu.id)}
-              className={\w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all \\}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                activeMenu === menu.id 
+                  ? 'bg-blue-600/30 text-blue-400 border border-blue-500/30' 
+                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+              }`}
             >
               <menu.icon size={20} />
               <span className='font-medium text-sm'>{menu.label}</span>
