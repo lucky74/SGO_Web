@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { fetchHotels, Hotel } from '../services/api';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Star, MessageSquare, DollarSign } from 'lucide-react';
+import { Search, MapPin, Star } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const MarketIntelligence: React.FC = () => {
