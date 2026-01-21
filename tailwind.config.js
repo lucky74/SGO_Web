@@ -1,0 +1,1 @@
+export default { content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'], theme: { extend: { colors: { 'sgo-dark': '#050a14', 'sgo-panel': '#0b1426', 'sgo-card': 'rgba(15, 23, 42, 0.6)', 'sgo-border': 'rgba(51, 65, 85, 0.5)', 'sgo-blue': '#2563eb', 'sgo-blue-dark': '#1e40af' }, fontFamily: { sans: ['Inter', 'sans-serif'] } } }, plugins: [] }

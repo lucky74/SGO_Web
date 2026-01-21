@@ -1,0 +1,85 @@
+import React, { ReactNode } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LogOut, LayoutDashboard, TrendingUp, CreditCard, User, Globe } from 'lucide-react';
+import { LANGUAGES, Language } from '../data/translations';
+
+interface LayoutProps {
+  children: ReactNode;
+  activeMenu: string;
+  setActiveMenu: (menu: string) => void;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) => {
+  const { logout } = useAuth();
+  const { t, language, setLanguage } = useLanguage();
+
+  const menus = [
+    { id: 'menu_1', icon: LayoutDashboard, label: t('menu_1') },
+    { id: 'menu_2', icon: TrendingUp, label: t('menu_2') },
+    { id: 'menu_3', icon: CreditCard, label: t('menu_3') },
+    { id: 'menu_4', icon: User, label: t('menu_4') },
+  ];
+
+  return (
+    <div className='flex min-h-screen bg-slate-900 text-white'>
+      {/* Sidebar */}
+      <div className='w-64 glass-card m-4 rounded-2xl flex flex-col p-4 fixed h-[calc(100vh-2rem)]'>
+        <div className='mb-8 p-2'>
+          <h1 className='text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500'>
+            SGO Web
+          </h1>
+          <div className='text-xs text-green-400 mt-1 flex items-center gap-1'>
+            <span className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></span>
+            {t('status_online')}
+          </div>
+        </div>
+
+        <nav className='flex-1 space-y-2'>
+          {menus.map((menu) => (
+            <button
+              key={menu.id}
+              onClick={() => setActiveMenu(menu.id)}
+              className={\w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all \\}
+            >
+              <menu.icon size={20} />
+              <span className='font-medium text-sm'>{menu.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className='mt-auto pt-4 border-t border-slate-700/50 space-y-4'>
+          <div className='px-2'>
+            <label className='text-xs text-slate-500 mb-1 block flex items-center gap-1'>
+              <Globe size={12} /> Language
+            </label>
+            <select 
+              value={language} 
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              className='w-full bg-slate-800 text-slate-300 border border-slate-600 rounded px-2 py-1 text-xs outline-none focus:border-blue-500'
+            >
+              {Object.entries(LANGUAGES).map(([code, name]) => (
+                <option key={code} value={code}>{name}</option>
+              ))}
+            </select>
+          </div>
+          
+          <button 
+            onClick={logout}
+            className='w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:bg-red-900/20 rounded-lg transition-colors text-sm'
+          >
+            <LogOut size={16} />
+            {t('m4_logout')}
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className='flex-1 ml-72 p-8'>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default Layout;
