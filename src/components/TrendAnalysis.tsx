@@ -230,8 +230,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
                         </div>
                         <div>
                             <div className='flex items-center gap-1 text-yellow-400 text-xs mb-2 bg-slate-900/50 self-start px-2 py-1 rounded-full w-fit'>
-                                {[...Array(hotel.stars || 5)].map((_, i) => <StarIcon key={i} size={10} />)}
-                                <span className='ml-1 text-slate-400'>Bintang {hotel.stars || 5}</span>
+                                <span className='text-slate-400 font-medium'>{hotel.hotelClass}</span>
                             </div>
                             <div className='font-bold text-white mb-1 line-clamp-2 text-lg'>{hotel.name}</div>
                         </div>

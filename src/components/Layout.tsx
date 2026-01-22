@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
       {/* Mobile Header */}
       <div className='lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-700/50 p-4 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-            <img src='/logo.jpg' alt='SGO Logo' className='w-8 h-8 rounded-full' />
+            <img src='/logo.jpg' alt='SGO Logo' className='w-10 h-10 rounded-full object-cover' />
             <h1 className='text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500'>
             SGO Web
             </h1>
