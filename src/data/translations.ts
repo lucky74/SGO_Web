@@ -1,54 +1,34 @@
-export type Language = 'ID' | 'EN' | 'FR' | 'DE' | 'ES' | 'AR' | 'KO' | 'JA' | 'ZH' | 'RU';
+export type Language = 'ID' | 'EN';
 
 export const LANGUAGES: { code: Language; label: string; flag: string }[] = [
     { code: 'ID', label: 'Indonesia', flag: '🇮🇩' },
-    { code: 'EN', label: 'English', flag: '🇬🇧' },
-    { code: 'FR', label: 'Français', flag: '🇫🇷' },
-    { code: 'DE', label: 'Deutsch', flag: '🇩🇪' },
-    { code: 'ES', label: 'Español', flag: '🇪🇸' },
-    { code: 'AR', label: 'العربية', flag: '🇸🇦' },
-    { code: 'KO', label: '한국어', flag: '🇰🇷' },
-    { code: 'JA', label: '日本語', flag: '🇯🇵' },
-    { code: 'ZH', label: '中文', flag: '🇨🇳' },
-    { code: 'RU', label: 'Русский', flag: '🇷🇺' }
+    { code: 'EN', label: 'English', flag: '🇬🇧' }
 ];
 
 export const TRANS: { [key: string]: { [key: string]: string } } = {
-    'nav_dashboard': {'ID': 'Dasbor Utama', 'EN': 'Main Dashboard', 'FR': 'Tableau de Bord', 'DE': 'Haupt-Dashboard', 'ES': 'Panel Principal', 'AR': 'لوحة القيادة', 'KO': '대시보드', 'JA': 'ダッシュボード', 'ZH': '仪表板', 'RU': 'Приборная панель'},
-    'nav_market': {'ID': 'Intelijen Pasar', 'EN': 'Market Intelligence', 'FR': 'Intelligence Marché', 'DE': 'Marktintelligenz', 'ES': 'Inteligencia de Mercado', 'AR': 'ذكاء السوق', 'KO': '시장 인텔리전스', 'JA': '市場インテリジェンス', 'ZH': '市场情报', 'RU': 'Анализ рынка'},
-    'nav_trend': {'ID': 'Analisa Tren', 'EN': 'Trend Analysis', 'FR': 'Analyse des Tendances', 'DE': 'Trendanalyse', 'ES': 'Análisis de Tendencias', 'AR': 'تحليل الاتجاهات', 'KO': '트렌드 분석', 'JA': 'トレンド分析', 'ZH': '趋势分析', 'RU': 'Анализ трендов'},
-    'nav_subscription': {'ID': 'Paket Langganan', 'EN': 'Subscription Plan', 'FR': 'Abonnement', 'DE': 'Abonnement', 'ES': 'Suscripción', 'AR': 'اشتراك', 'KO': '구독', 'JA': 'サブスクリプション', 'ZH': '订阅', 'RU': 'Подписка'},
-    'nav_account': {'ID': 'Kontrol Akun', 'EN': 'Account Control', 'FR': 'Contrôle de Compte', 'DE': 'Kontokontrolle', 'ES': 'Control de Cuenta', 'AR': 'التحكم في الحساب', 'KO': '계정 제어', 'JA': 'アカウント制御', 'ZH': '账户控制', 'RU': 'Управление счетом'},
-    'header_title': {'ID': 'SGO - Optimasi Grup Sahid', 'EN': 'SGO - Sahid Group Optimization', 'FR': 'Optimisation du Groupe Sahid', 'DE': 'Sahid Gruppenoptimierung', 'ES': 'Optimización del Grupo Sahid', 'AR': 'تحسين مجموعة ساهيد', 'KO': 'Sahid 그룹 최적화', 'JA': 'Sahidグループの最適化', 'ZH': 'Sahid集团优化', 'RU': 'Оптимизация Sahid Group'},
+    'nav_dashboard': {'ID': 'Dasbor Utama', 'EN': 'Main Dashboard'},
+    'nav_market': {'ID': 'Intelijen Pasar', 'EN': 'Market Intelligence'},
+    'nav_trend': {'ID': 'Analisa Tren', 'EN': 'Trend Analysis'},
+    'nav_subscription': {'ID': 'Paket Langganan', 'EN': 'Subscription Plan'},
+    'nav_account': {'ID': 'Kontrol Akun', 'EN': 'Account Control'},
+    'header_title': {'ID': 'SGO - Optimasi Grup Sahid', 'EN': 'SGO - Sahid Group Optimization'},
     'm1_title': {
-        'ID': ' Intelijen Pasar Real-time', 'EN': ' Real-time Market Intelligence', 'FR': ' Intelligence Marché Temps Réel', 
-        'DE': ' Echtzeit-Marktintelligenz', 'ES': ' Inteligencia de Mercado en Tiempo Real', 'AR': ' ذكاء السوق في الوقت الحقيقي', 
-        'KO': ' 실시간 시장 인텔리전스', 'JA': ' リアルタイム市場インテリジェンス', 'ZH': ' 实时市场情报', 'RU': ' Анализ рынка в реальном времени'
-    },
-    'm1_metric_1': {'ID': 'Properti', 'EN': 'Properties', 'FR': 'Propriétés', 'DE': 'Eigenschaften', 'ES': 'Propiedades', 'AR': 'الخصائص', 'KO': '부동산', 'JA': '物件', 'ZH': '属性', 'RU': 'Объекты'},
-    'm1_metric_2': {'ID': 'Rata-rata Harga', 'EN': 'Avg. Price', 'FR': 'Prix Moyen', 'DE': 'Durchschn. Preis', 'ES': 'Precio Promedio', 'AR': 'متوسط السعر', 'KO': '평균 가격', 'JA': '平均価格', 'ZH': '平均价格', 'RU': 'Средняя цена'},
-    'm1_metric_3': {'ID': 'Total Ulasan', 'EN': 'Total Reviews', 'FR': 'Avis Total', 'DE': 'Gesamtbewertungen', 'ES': 'Reseñas Totales', 'AR': 'إجمالي المراجعات', 'KO': '총 리뷰', 'JA': '総レビュー', 'ZH': '总评论', 'RU': 'Всего отзывов'},
+        'ID': ' Intelijen Pasar Real-time', 'EN': ' Real-time Market Intelligence'},
+    'm1_metric_1': {'ID': 'Properti', 'EN': 'Properties'},
+    'm1_metric_2': {'ID': 'Rata-rata Harga', 'EN': 'Avg. Price'},
+    'm1_metric_3': {'ID': 'Total Ulasan', 'EN': 'Total Reviews'},
     'm1_viz_title': {
-        'ID': ' Visualisasi Ekosistem Pasar', 'EN': ' Market Ecosystem Visualization', 'FR': " Visualisation de l'Écosystème", 
-        'DE': ' Marktökosystem-Visualisierung', 'ES': ' Visualización del Ecosistema', 'AR': ' تصور نظام السوق', 
-        'KO': ' 시장 생태계 시각화', 'JA': ' 市場エコシステムの可視化', 'ZH': ' 市场生态系统可视化', 'RU': ' Визуализация рынка'
-    },
+        'ID': ' Visualisasi Ekosistem Pasar', 'EN': ' Market Ecosystem Visualization'},
     'm1_table_title': {
-        'ID': ' Laporan Detail Properti', 'EN': ' Property Detail Report', 'FR': ' Rapport Détaillé', 
-        'DE': ' Detaillierter Bericht', 'ES': ' Reporte Detallado', 'AR': ' تقرير تفصيلي', 
-        'KO': ' 상세 보고서', 'JA': ' 詳細レポート', 'ZH': ' 详细报告', 'RU': ' Подробный отчет'
-    },
+        'ID': ' Laporan Detail Properti', 'EN': ' Property Detail Report'},
     'm2_title': {
-        'ID': ' Analisa Tren & Rekomendasi AI', 'EN': ' Trend Analysis & AI Recommendations', 'FR': ' Analyse Tendances & IA', 
-        'DE': ' Trendanalyse & KI', 'ES': ' Análisis de Tendencias e IA', 'AR': ' تحليل الاتجاهات وتوصيات الذكاء الاصطناعي', 
-        'KO': ' 트렌드 분석 및 AI 추천', 'JA': ' トレンド分析とAI推奨', 'ZH': ' 趋势分析与AI建议', 'RU': ' Анализ трендов и AI'
-    },
-    'm2_col1': {'ID': ' Pemimpin Pasar', 'EN': ' Market Leaders', 'FR': ' Leaders du Marché', 'DE': ' Marktführer', 'ES': ' Líderes del Mercado', 'AR': ' قادة السوق', 'KO': ' 시장 리더', 'JA': ' マーケットリーダー', 'ZH': ' 市场领导者', 'RU': ' Лидеры рынка'},
-    'm2_col2': {'ID': ' Nilai Terbaik', 'EN': ' Best Value', 'FR': ' Meilleure Valeur', 'DE': ' Bester Wert', 'ES': ' Mejor Valor', 'AR': ' أفضل قيمة', 'KO': ' 최고의 가치', 'JA': ' 베ストバリュー', 'ZH': ' 最佳价值', 'RU': ' Лучшая цена'},
-    'm3_title': {'ID': ' Akses Premium SGO', 'EN': ' SGO Premium Access', 'FR': ' Accès Premium SGO', 'DE': ' SGO Premium Zugang', 'ES': ' Acceso Premium SGO', 'AR': ' وصول SGO المميز', 'KO': ' SGO 프리미엄 액세스', 'JA': ' SGO プレミアムアクセス', 'ZH': ' SGO 高级访问', 'RU': ' SGO Премиум'},
-    'm4_title': {'ID': ' Manajemen Lisensi', 'EN': ' License Management', 'FR': ' Gestion de Licence', 'DE': ' Lizenzmanagement', 'ES': ' Gestión de Licencias', 'AR': ' إدارة الترخيص', 'KO': ' 라이선스 관리', 'JA': ' ライセンス 관리', 'ZH': ' 许可证管理', 'RU': ' Управление лицензией'},
-    'm4_status_active': {'ID': ' STATUS: AKTIF', 'EN': ' STATUS: ACTIVE', 'FR': ' STATUT: ACTIF', 'DE': ' STATUS: AKTIV', 'ES': ' ESTADO: ACTIVO', 'AR': ' الحالة: نشط', 'KO': ' 상태: 활성', 'JA': ' ステータス: アクティブ', 'ZH': ' 状态：活动', 'RU': ' СТАТУС: АКТИВЕН'},
-    'm4_logout': {'ID': 'Keluar Sistem', 'EN': 'Log Out System', 'FR': 'Déconnexion', 'DE': 'Abmelden', 'ES': 'Cerrar Sesión', 'AR': 'تسجيل الخروج', 'KO': '로그아웃', 'JA': 'ログアウト', 'ZH': '退出系统', 'RU': 'Выйти'},
+        'ID': ' Analisa Tren & Rekomendasi AI', 'EN': ' Trend Analysis & AI Recommendations'},
+    'm2_col1': {'ID': ' Pemimpin Pasar', 'EN': ' Market Leaders'},
+    'm2_col2': {'ID': ' Nilai Terbaik', 'EN': ' Best Value'},
+    'm3_title': {'ID': ' Akses Premium SGO', 'EN': ' SGO Premium Access'},
+    'm4_title': {'ID': ' Manajemen Lisensi', 'EN': ' License Management'},
+    'm4_status_active': {'ID': ' STATUS: AKTIF', 'EN': ' STATUS: ACTIVE'},
+    'm4_logout': {'ID': 'Keluar Sistem', 'EN': 'Log Out System'},
     
     // Updated Subscription Translations (Paid Model)
     'm3_subtitle': {'ID': 'Pilih paket sesuai jangkauan kompetitor yang ingin Anda pantau.', 'EN': 'Choose a plan based on the competitor coverage you need.'},
@@ -137,5 +117,4 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'm1_search_hint': {"ID":"Coba cari kota lain seperti \"Jakarta\" atau \"Bali\"","EN":"Try searching for other cities like \"Jakarta\" or \"Bali\""},
     'm4_plan': {"ID":"Paket","EN":"Plan"},
     'm4_contact_admin': {"ID":"*Hubungi administrator untuk mengubah data profil utama.","EN":"*Contact administrator to change main profile data."},
-    'm4_password_hint': {"ID":"Update berkala untuk keamanan","EN":"Update periodically for security"},
-};
+    'm4_password_hint': {"ID":"Update berkala untuk keamanan","EN":"Update periodically for security"}};
