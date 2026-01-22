@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-const SGO_KEY = 'd58fcad894baf2a956b0f68ce6073fcf588e2a3b899498051d5a553524f38e7a';
-const BASE_URL = 'https://serpapi.com/search.json';
-
 export interface Hotel {
   name: string;
   price: string;
@@ -16,24 +13,9 @@ export interface Hotel {
 
 export const fetchHotels = async (city: string): Promise<Hotel[]> => {
   try {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const nextDay = new Date();
-    nextDay.setDate(nextDay.getDate() + 2);
-
-    const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
-    const response = await axios.get(BASE_URL, {
-      params: {
-        engine: 'google_hotels',
-        q: `Hotels in ${city}`,
-        api_key: SGO_KEY,
-        gl: 'id',
-        hl: 'id',
-        currency: 'IDR',
-        check_in_date: formatDate(tomorrow),
-        check_out_date: formatDate(nextDay),
-      }
+    // Call Vercel Serverless Function to avoid CORS and hide API Key
+    const response = await axios.get('/api/hotels', {
+      params: { city }
     });
 
     if (response.data.properties) {
