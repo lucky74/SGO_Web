@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
@@ -98,7 +98,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   }, {} as Record<number, number>);
 
   const pieData = Object.keys(starCounts).map(star => ({
-    name: star === '0' ? 'Non-Bintang' : Bintang ,
+    name: star === '0' ? 'Non-Bintang' : `Bintang ${star}`,
     value: starCounts[parseInt(star)]
   }));
 
@@ -194,13 +194,13 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
                         return (
                             <tr key={group.star} className='border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors'>
                                 <td className='p-3 font-bold text-yellow-400'>
-                                    {group.star === 0 ? 'Non-Bintang' : Bintang }
+                                    {group.star === 0 ? 'Non-Bintang' : `Bintang ${group.star}`}
                                 </td>
                                 <td className='p-3 font-semibold text-white'>
                                     {group.leader.name}
                                 </td>
                                 <td className='p-3'>
-                                    <span className={px-2 py-1 rounded text-xs font-bold border }>
+                                    <span className={`px-2 py-1 rounded text-xs font-bold border ${getOccupancyColor(status)}`}>
                                         {status}
                                     </span>
                                 </td>
@@ -236,7 +236,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
                             dataKey="value"
                         >
                             {pieData.map((_, index) => (
-                                <Cell key={cell-} fill={COLORS[index % COLORS.length]} />
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
                         <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#fff' }} />

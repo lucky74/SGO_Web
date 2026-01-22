@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 
 export interface Hotel {
   name: string;
@@ -38,7 +38,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
         link: item.link || '#',
         deal: item.deal_description || undefined,
         location: item.location || undefined
-      }}));
+      }});
     }
     return [];
   } catch (error) {
