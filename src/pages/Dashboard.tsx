@@ -4,13 +4,11 @@ import MarketIntelligence from '../components/MarketIntelligence';
 import TrendAnalysis from '../components/TrendAnalysis';
 import Subscription from '../components/Subscription';
 import AccountControl from '../components/AccountControl';
-import { useLanguage } from '../contexts/LanguageContext';
 import { fetchHotels, Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 
 const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState('menu_1');
-  const { t } = useLanguage();
   
   // Lifted state
   const [city, setCity] = useState('');
