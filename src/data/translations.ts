@@ -106,6 +106,7 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'm1_limit_warning': {"ID":"Anda hanya melihat","EN":"You are viewing only"},
     'm1_limit_warning_2': {"ID":"hotel teratas dari","EN":"top hotels from"},
     'm1_limit_warning_3': {"ID":"hasil yang ditemukan.","EN":"results found."},
+    'm1_col_no': {"ID":"No","EN":"No"},
     'm1_upgrade_link': {"ID":"Upgrade ke Pro/Enterprise","EN":"Upgrade to Pro/Enterprise"},
     'm1_upgrade_text': {"ID":"untuk melihat semua data.","EN":"to see all data."},
     'm1_col_hotel': {"ID":"Nama Hotel","EN":"Hotel Name"},
@@ -149,3 +150,4 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'status_popular': {'ID': 'Popular', 'EN': 'Popular'},
     'status_standard': {'ID': 'Standard', 'EN': 'Standard'}
 };
+

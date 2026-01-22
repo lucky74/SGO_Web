@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
@@ -142,6 +142,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                   <table className='w-full'>
                     <thead className='bg-slate-800/50'>
                       <tr>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_no')}</th>
                         <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_hotel')}</th>
                         <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_price')}</th>
                         <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_rating')}</th>
@@ -151,6 +152,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                     <tbody className='divide-y divide-slate-700'>
                       {displayedHotels.map((hotel, index) => (
                         <tr key={index} className='hover:bg-slate-800/30 transition-colors'>
+                          <td className='px-6 py-4 text-slate-400 font-medium'>{index + 1}</td>
                           <td className='px-6 py-4'>
                             <div className='font-medium text-white'>{hotel.name}</div>
                             <div className='text-xs text-slate-500 flex items-center gap-1 mt-1'>
@@ -162,7 +164,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                             <div className='flex items-center gap-1'>
                               <Star size={14} className='text-yellow-400 fill-yellow-400' />
                               <span>{hotel.rating}</span>
-                              <span className='text-slate-500 text-xs'>• {hotel.reviews} {t('m1_reviews')}</span>
+                              <span className='text-slate-500 text-xs'>â€¢ {hotel.reviews} {t('m1_reviews')}</span>
                             </div>
                           </td>
                           <td className='px-6 py-4'>
@@ -190,3 +192,5 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
 };
 
 export default MarketIntelligence;
+
+
