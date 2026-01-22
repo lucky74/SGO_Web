@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { fetchHotels, Hotel } from '../services/api';
+import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Star } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const MarketIntelligence: React.FC = () => {
-  const { t } = useLanguage();
-  const [city, setCity] = useState('');
-  const [hotels, setHotels] = useState<Hotel[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
+interface MarketIntelligenceProps {
+  city: string;
+  setCity: (city: string) => void;
+  hotels: Hotel[];
+  loading: boolean;
+  searched: boolean;
+  handleSearch: () => void;
+}
 
-  const handleSearch = async () => {
-    if (!city) return;
-    setLoading(true);
-    setSearched(true);
-    const data = await fetchHotels(city);
-    setHotels(data);
-    setLoading(false);
-  };
+const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({ 
+  city, setCity, hotels, loading, searched, handleSearch 
+}) => {
+  const { t } = useLanguage();
 
   // Prepare chart data
   const chartData = hotels.map(h => ({
@@ -84,7 +82,7 @@ const MarketIntelligence: React.FC = () => {
                 <div className='glass-card p-6 rounded-xl border-l-4 border-green-500'>
                   <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_2')}</h3>
                   <p className='text-3xl font-bold'>
-                    IDR {(hotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / hotels.length).toLocaleString('id-ID')}
+                    IDR {(hotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / hotels.length).toLocaleString('id-ID', { maximumFractionDigits: 0 })}
                   </p>
                 </div>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-purple-500'>
