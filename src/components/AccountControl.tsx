@@ -1,10 +1,8 @@
 import React from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { User, Mail, Shield, Bell, Lock, LogOut } from 'lucide-react';
 
 const AccountControl: React.FC = () => {
-  const { t } = useLanguage();
 
   return (
     <div className='max-w-4xl mx-auto space-y-8'>
@@ -51,67 +49,62 @@ const AccountControl: React.FC = () => {
                 <div>
                     <label className='block text-sm text-slate-400 mb-1'>Email Address</label>
                     <div className='relative'>
-                        <Mail className='absolute left-3 top-3 text-slate-500' size={18} />
-                        <input type='email' defaultValue='lucky@example.com' className='w-full bg-slate-800 border border-slate-600 rounded-lg py-3 pl-10 pr-3 text-white focus:border-blue-500 outline-none' />
+                        <Mail className='absolute left-3 top-3.5 text-slate-500' size={18} />
+                        <input type='email' defaultValue='lucky@example.com' className='w-full bg-slate-800 border border-slate-600 rounded-lg p-3 pl-10 text-white focus:border-blue-500 outline-none' />
                     </div>
                 </div>
-                <button type='button' className='w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-bold mt-2'>
+                <button type='button' className='w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition-colors mt-2'>
                     Save Changes
                 </button>
             </form>
         </motion.div>
 
-        {/* Security & Notifications */}
-        <div className='space-y-6'>
-            <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className='glass-card p-6 rounded-xl'
-            >
-                <h3 className='text-xl font-bold mb-4 flex items-center gap-2'>
-                    <Shield size={20} className='text-green-400' /> Security
-                </h3>
-                <div className='space-y-3'>
-                    <button className='w-full flex items-center justify-between p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors text-left'>
-                        <div className='flex items-center gap-3'>
-                            <Lock size={18} className='text-slate-400' />
-                            <span>Change Password</span>
-                        </div>
-                        <span className='text-slate-500 text-sm'>Last changed 30d ago</span>
-                    </button>
-                    <div className='flex items-center justify-between p-3 bg-slate-800/50 rounded-lg'>
-                        <div className='flex items-center gap-3'>
-                            <Shield size={18} className='text-slate-400' />
-                            <span>Two-Factor Authentication</span>
-                        </div>
-                        <div className='w-10 h-6 bg-blue-600 rounded-full relative cursor-pointer'>
-                            <div className='absolute right-1 top-1 w-4 h-4 bg-white rounded-full'></div>
+        {/* Security Settings */}
+        <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className='glass-card p-6 rounded-xl'
+        >
+            <h3 className='text-xl font-bold mb-6 flex items-center gap-2'>
+                <Shield size={20} className='text-green-400' /> Security
+            </h3>
+            <div className='space-y-4'>
+                <div className='p-4 bg-slate-800/50 rounded-lg border border-slate-700 flex items-center justify-between'>
+                    <div className='flex items-center gap-3'>
+                        <Lock className='text-slate-400' size={20} />
+                        <div>
+                            <div className='font-bold text-sm'>Password</div>
+                            <div className='text-xs text-slate-500'>Last changed 3 months ago</div>
                         </div>
                     </div>
+                    <button className='text-blue-400 text-sm font-bold hover:underline'>Change</button>
                 </div>
-            </motion.div>
-
-            <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className='glass-card p-6 rounded-xl'
-            >
-                <h3 className='text-xl font-bold mb-4 flex items-center gap-2'>
-                    <Bell size={20} className='text-yellow-400' /> Notifications
-                </h3>
-                <div className='space-y-3'>
-                    <label className='flex items-center justify-between cursor-pointer'>
-                        <span className='text-slate-300'>Email Alerts</span>
-                        <input type='checkbox' defaultChecked className='w-5 h-5 accent-blue-500' />
-                    </label>
-                    <label className='flex items-center justify-between cursor-pointer'>
-                        <span className='text-slate-300'>Market Updates</span>
-                        <input type='checkbox' defaultChecked className='w-5 h-5 accent-blue-500' />
-                    </label>
+                <div className='p-4 bg-slate-800/50 rounded-lg border border-slate-700 flex items-center justify-between'>
+                    <div className='flex items-center gap-3'>
+                        <Bell className='text-slate-400' size={20} />
+                        <div>
+                            <div className='font-bold text-sm'>Notifications</div>
+                            <div className='text-xs text-slate-500'>Email alerts enabled</div>
+                        </div>
+                    </div>
+                    <div className='relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in'>
+                        <input type="checkbox" name="toggle" id="toggle" className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                        <label htmlFor="toggle" className="toggle-label block overflow-hidden h-5 rounded-full bg-blue-500 cursor-pointer"></label>
+                    </div>
                 </div>
-            </motion.div>
-        </div>
+            </div>
+            
+            <div className='mt-6 pt-6 border-t border-slate-700'>
+                <h4 className='font-bold text-sm mb-4 text-slate-300'>Active Sessions</h4>
+                <div className='flex justify-between items-center text-sm'>
+                    <div className='flex items-center gap-2'>
+                        <div className='w-2 h-2 bg-green-500 rounded-full'></div>
+                        <span className='text-slate-400'>Windows PC • Chrome</span>
+                    </div>
+                    <span className='text-slate-500 text-xs'>Current</span>
+                </div>
+            </div>
+        </motion.div>
       </div>
     </div>
   );

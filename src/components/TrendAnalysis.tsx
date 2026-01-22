@@ -3,12 +3,19 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, Award, DollarSign, Lightbulb, Trophy, Users } from 'lucide-react';
+import { TrendingUp, Lightbulb, Trophy, Users } from 'lucide-react';
 
 interface TrendAnalysisProps {
   hotels: Hotel[];
   searched: boolean;
   loading: boolean;
+}
+
+interface StarGroup {
+  star: number;
+  count: number;
+  avgPrice: number;
+  leader: Hotel;
 }
 
 const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading }) => {
@@ -75,11 +82,10 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
   // 2. Competitor Matrix (Group by Stars) - Explicitly 5 to 1
-  const starGroups = [5, 4, 3, 2, 1].map(star => {
+  const starGroups = ([5, 4, 3, 2, 1].map(star => {
     const groupHotels = hotels.filter(h => h.stars === star);
     
-    // If no hotels in this class, return a placeholder or null
-    // We prefer returning it to show "0 Competitors" if valuable, but usually we skip empty
+    // If no hotels in this class, return null
     if (groupHotels.length === 0) return null;
 
     const avgPrice = groupHotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / groupHotels.length;
@@ -91,10 +97,10 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
       avgPrice,
       leader
     };
-  }).filter(Boolean); // Remove empty groups
+  }) as (StarGroup | null)[]).filter((group): group is StarGroup => group !== null);
 
   // Calculate global stats
-  const avgPrice = priceTrendData.reduce((acc, curr) => acc + curr.price, 0) / priceTrendData.length;
+  // Removed unused avgPrice
   
   const bestValue = hotels.reduce((prev, curr) => {
     const prevPrice = parseInt(prev.price.replace(/[^0-9]/g, '')) || 0;
@@ -200,7 +206,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
                             paddingAngle={5}
                             dataKey="value"
                         >
-                            {pieData.map((entry, index) => (
+                            {pieData.map((_, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
