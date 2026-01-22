@@ -121,6 +121,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                     <thead className='bg-slate-800/50 text-slate-400'>
                       <tr>
                         <th className='p-4'>Property Name</th>
+                        <th className='p-4'>Kelas Hotel</th>
                         <th className='p-4'>Price</th>
                         <th className='p-4'>Rating</th>
                         <th className='p-4'>Reviews</th>
@@ -135,6 +136,11 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                               <div className='text-white'>{hotel.name}</div>
                               {hotel.deal && <div className='text-xs text-green-400'>{hotel.deal}</div>}
                             </div>
+                          </td>
+                          <td className='p-4'>
+                            <span className='bg-slate-700 px-3 py-1 rounded-full text-xs font-bold text-white border border-slate-600'>
+                                Bintang {hotel.stars || '?'}
+                            </span>
                           </td>
                           <td className='p-4 text-blue-300 font-bold'>{hotel.price}</td>
                           <td className='p-4 flex items-center gap-1'>
