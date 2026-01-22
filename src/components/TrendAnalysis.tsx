@@ -22,17 +22,17 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   const { t } = useLanguage();
 
   const getOccupancyStatus = (hotel: Hotel) => {
-    if (hotel.rating >= 4.5 && hotel.reviews > 1000) return 'Top Tier';
-    if (hotel.rating >= 4.0) return 'High Demand';
-    if (hotel.reviews > 500) return 'Popular';
-    return 'Standard';
+    if (hotel.rating >= 4.5 && hotel.reviews > 1000) return 'status_top_tier';
+    if (hotel.rating >= 4.0) return 'status_high_demand';
+    if (hotel.reviews > 500) return 'status_popular';
+    return 'status_standard';
   };
 
-  const getOccupancyColor = (status: string) => {
-    switch (status) {
-      case 'Top Tier': return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-      case 'High Demand': return 'text-green-400 bg-green-400/10 border-green-400/20';
-      case 'Popular': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+  const getOccupancyColor = (statusKey: string) => {
+    switch (statusKey) {
+      case 'status_top_tier': return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+      case 'status_high_demand': return 'text-green-400 bg-green-400/10 border-green-400/20';
+      case 'status_popular': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
       default: return 'text-slate-400 bg-slate-400/10 border-slate-400/20';
     }
   };
@@ -53,7 +53,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
             {t('menu_2')}
         </h2>
         <p className='text-slate-500 mt-2'>
-            Silakan lakukan pencarian di menu Intelijen Hunian terlebih dahulu.
+            {t('m2_empty_state')}
         </p>
       </div>
     );
@@ -98,7 +98,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   }, {} as Record<number, number>);
 
   const pieData = Object.keys(starCounts).map(star => ({
-    name: star === '0' ? 'Non-Bintang' : `Bintang ${star}`,
+    name: star === '0' ? t('m2_non_star') : `${t('m2_star')} ${star}`,
     value: starCounts[parseInt(star)]
   }));
 
@@ -143,7 +143,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
           {t('menu_2')}
         </h2>
         <p className='text-slate-400'>
-          Analisa mendalam mengenai tren pasar, strategi harga, dan peta persaingan per kelas bintang.
+          {t('m2_desc')}
         </p>
       </div>
 
@@ -154,19 +154,19 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
         className='glass-card p-6 rounded-xl border-t-4 border-blue-500 bg-gradient-to-br from-slate-800 to-slate-900'
       >
         <h3 className='text-blue-400 font-bold mb-3 flex items-center gap-2'>
-            <Lightbulb size={20} /> SGO Smart Insight
+            <Lightbulb size={20} /> {t('m2_insight_title')}
         </h3>
         <div className='space-y-3 text-slate-300'>
             <p>
-                <strong>Ringkasan Pasar:</strong> Didominasi oleh <strong>{dominantClass}</strong>. 
-                Persaingan paling ketat berada di segmen ini.
+                <strong>{t('m2_insight_summary')}</strong> {t('m2_insight_dominated')} <strong>{dominantClass}</strong>. 
+                {t('m2_insight_competition')}
             </p>
             <ul className='list-disc list-inside space-y-1 text-sm text-slate-400 ml-2'>
                 <li>
-                    <span className='text-slate-200 font-semibold'>Price Range:</span> IDR {minPrice.toLocaleString()} - IDR {maxPrice.toLocaleString()}
+                    <span className='text-slate-200 font-semibold'>{t('m2_insight_price_range')}</span> IDR {minPrice.toLocaleString()} - IDR {maxPrice.toLocaleString()}
                 </li>
                 <li>
-                    <span className='text-slate-200 font-semibold'>Suggested Pricing:</span> IDR {medianPrice.toLocaleString()} (Median)
+                    <span className='text-slate-200 font-semibold'>{t('m2_insight_suggested')}</span> IDR {medianPrice.toLocaleString()} (Median)
                 </li>
             </ul>
         </div>
@@ -175,33 +175,33 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
       {/* Competitor Analysis Matrix */}
       <div className='glass-card p-6 rounded-xl'>
         <h3 className='text-xl font-bold mb-6 flex items-center gap-2'>
-            <Users className='text-purple-400' size={20} /> Pemimpin Pasar (Market Leader)
+            <Users className='text-purple-400' size={20} /> {t('m2_leader_title')}
         </h3>
         <div className='overflow-x-auto'>
             <table className='w-full text-left border-collapse'>
                 <thead>
                     <tr className='text-slate-400 border-b border-slate-700'>
-                        <th className='p-3'>Kelas Hotel</th>
-                        <th className='p-3'>Pemimpin Pasar</th>
-                        <th className='p-3'>Status Hunian</th>
-                        <th className='p-3'>Harga Rata-rata</th>
-                        <th className='p-3'>Rating</th>
+                        <th className='p-3'>{t('m2_col_class')}</th>
+                        <th className='p-3'>{t('m2_col_leader')}</th>
+                        <th className='p-3'>{t('m2_col_occupancy')}</th>
+                        <th className='p-3'>{t('m2_col_avg_price')}</th>
+                        <th className='p-3'>{t('m2_col_rating')}</th>
                     </tr>
                 </thead>
                 <tbody className='text-slate-300'>
                     {starGroups.map((group) => {
-                        const status = getOccupancyStatus(group.leader);
+                        const statusKey = getOccupancyStatus(group.leader);
                         return (
                             <tr key={group.star} className='border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors'>
                                 <td className='p-3 font-bold text-yellow-400'>
-                                    {group.star === 0 ? 'Non-Bintang' : `Bintang ${group.star}`}
+                                    {group.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${group.star}`}
                                 </td>
                                 <td className='p-3 font-semibold text-white'>
                                     {group.leader.name}
                                 </td>
                                 <td className='p-3'>
-                                    <span className={`px-2 py-1 rounded text-xs font-bold border ${getOccupancyColor(status)}`}>
-                                        {status}
+                                    <span className={`px-2 py-1 rounded text-xs font-bold border ${getOccupancyColor(statusKey)}`}>
+                                        {t(statusKey)}
                                     </span>
                                 </td>
                                 <td className='p-3'>
@@ -221,7 +221,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           {/* Star Distribution Pie Chart */}
           <div className='glass-card p-6 rounded-xl lg:col-span-1'>
-            <h3 className='text-lg font-bold mb-4 text-slate-200'>Komposisi Pasar</h3>
+            <h3 className='text-lg font-bold mb-4 text-slate-200'>{t('m2_chart_pie')}</h3>
             <div className='h-64 w-full'>
                 <ResponsiveContainer width='100%' height='100%'>
                     <PieChart>
@@ -249,15 +249,15 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
           {/* Nilai Terbaik Table */}
           <div className='glass-card p-6 rounded-xl lg:col-span-2'>
             <h3 className='text-lg font-bold mb-4 flex items-center gap-2'>
-                <Diamond className='text-blue-400' size={20} /> Nilai Terbaik (Best Value)
+                <Diamond className='text-blue-400' size={20} /> {t('m2_best_value_title')}
             </h3>
             <div className='overflow-x-auto'>
                 <table className='w-full text-left'>
                     <thead>
                         <tr className='text-slate-400 border-b border-slate-700'>
-                            <th className='p-3'>Properti</th>
-                            <th className='p-3'>Harga</th>
-                            <th className='p-3'>Rating</th>
+                            <th className='p-3'>{t('m2_col_property')}</th>
+                            <th className='p-3'>{t('m1_col_price')}</th>
+                            <th className='p-3'>{t('m2_col_rating')}</th>
                         </tr>
                     </thead>
                     <tbody className='text-slate-300'>
@@ -279,7 +279,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
       {/* Top 3 List */}
       <div className='glass-card p-6 rounded-xl'>
          <h3 className='text-lg font-bold mb-4 flex items-center gap-2'>
-            <Trophy className='text-yellow-500' size={20} /> Top 3 Hotel Terbaik (Overall)
+            <Trophy className='text-yellow-500' size={20} /> {t('m2_top3_title')}
         </h3>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
             {topRated.map((hotel, index) => (
@@ -298,7 +298,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
                             {hotel.rating} <StarIcon />
                         </div>
                         <div className='text-xs text-slate-400'>
-                            {hotel.reviews} ulasan
+                            {hotel.reviews} {t('m1_reviews')}
                         </div>
                     </div>
                 </div>
@@ -310,7 +310,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         {/* Price Trend Line Chart */}
         <div className='glass-card p-6 rounded-xl'>
-          <h3 className='text-xl font-bold mb-6 text-slate-200'>Lanskap Harga Kompetitif</h3>
+          <h3 className='text-xl font-bold mb-6 text-slate-200'>{t('m2_chart_price')}</h3>
           <div className='h-80 w-full'>
             <ResponsiveContainer width='100%' height='100%'>
               <LineChart data={priceTrendData}>
@@ -329,7 +329,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
         {/* Rating vs Price Scatter */}
         <div className='glass-card p-6 rounded-xl'>
-          <h3 className='text-xl font-bold mb-6 text-slate-200'>Korelasi Harga vs Kualitas</h3>
+          <h3 className='text-xl font-bold mb-6 text-slate-200'>{t('m2_chart_scatter')}</h3>
           <div className='h-80 w-full'>
             <ResponsiveContainer width='100%' height='100%'>
               <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>

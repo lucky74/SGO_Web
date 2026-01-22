@@ -1,8 +1,8 @@
-export type Language = 'ID' | 'EN';
+﻿export type Language = 'ID' | 'EN';
 
 export const LANGUAGES: { code: Language; label: string; flag: string }[] = [
-    { code: 'ID', label: 'Indonesia', flag: '🇮🇩' },
-    { code: 'EN', label: 'English', flag: '🇬🇧' }
+    { code: 'ID', label: 'Indonesia', flag: 'ðŸ‡®ðŸ‡©' },
+    { code: 'EN', label: 'English', flag: 'ðŸ‡¬ðŸ‡§' }
 ];
 
 export const TRANS: { [key: string]: { [key: string]: string } } = {
@@ -117,4 +117,35 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'm1_search_hint': {"ID":"Coba cari kota lain seperti \"Jakarta\" atau \"Bali\"","EN":"Try searching for other cities like \"Jakarta\" or \"Bali\""},
     'm4_plan': {"ID":"Paket","EN":"Plan"},
     'm4_contact_admin': {"ID":"*Hubungi administrator untuk mengubah data profil utama.","EN":"*Contact administrator to change main profile data."},
-    'm4_password_hint': {"ID":"Update berkala untuk keamanan","EN":"Update periodically for security"}};
+    'm4_password_hint': {"ID":"Update berkala untuk keamanan","EN":"Update periodically for security"},
+
+    // Market Intelligence (TrendAnalysis.tsx)
+    'm2_desc': {'ID': 'Analisa mendalam mengenai tren pasar, strategi harga, dan peta persaingan per kelas bintang.', 'EN': 'In-depth analysis of market trends, pricing strategies, and competition maps per star class.'},
+    'm2_insight_title': {'ID': 'SGO Smart Insight', 'EN': 'SGO Smart Insight'},
+    'm2_insight_summary': {'ID': 'Ringkasan Pasar:', 'EN': 'Market Summary:'},
+    'm2_insight_dominated': {'ID': 'Didominasi oleh', 'EN': 'Dominated by'},
+    'm2_insight_competition': {'ID': 'Persaingan paling ketat berada di segmen ini.', 'EN': 'The tightest competition is in this segment.'},
+    'm2_insight_price_range': {'ID': 'Rentang Harga:', 'EN': 'Price Range:'},
+    'm2_insight_suggested': {'ID': 'Saran Harga:', 'EN': 'Suggested Pricing:'},
+    'm2_leader_title': {'ID': 'Pemimpin Pasar (Market Leader)', 'EN': 'Market Leader'},
+    'm2_col_class': {'ID': 'Kelas Hotel', 'EN': 'Hotel Class'},
+    'm2_col_leader': {'ID': 'Pemimpin Pasar', 'EN': 'Market Leader'},
+    'm2_col_occupancy': {'ID': 'Status Hunian', 'EN': 'Occupancy Status'},
+    'm2_col_avg_price': {'ID': 'Harga Rata-rata', 'EN': 'Avg. Price'},
+    'm2_col_rating': {'ID': 'Rating', 'EN': 'Rating'},
+    'm2_chart_pie': {'ID': 'Komposisi Pasar', 'EN': 'Market Composition'},
+    'm2_best_value_title': {'ID': 'Nilai Terbaik (Best Value)', 'EN': 'Best Value'},
+    'm2_col_property': {'ID': 'Properti', 'EN': 'Property'},
+    'm2_top3_title': {'ID': 'Top 3 Hotel Terbaik (Overall)', 'EN': 'Top 3 Best Hotels (Overall)'},
+    'm2_chart_price': {'ID': 'Lanskap Harga Kompetitif', 'EN': 'Competitive Price Landscape'},
+    'm2_chart_scatter': {'ID': 'Korelasi Harga vs Kualitas', 'EN': 'Price vs Quality Correlation'},
+    'm2_empty_state': {'ID': 'Silakan lakukan pencarian di menu Intelijen Hunian terlebih dahulu.', 'EN': 'Please perform a search in the Market Intelligence menu first.'},
+    'm2_star': {'ID': 'Bintang', 'EN': 'Star'},
+    'm2_non_star': {'ID': 'Non-Bintang', 'EN': 'Non-Star'},
+    
+    // Dynamic Status
+    'status_top_tier': {'ID': 'Top Tier', 'EN': 'Top Tier'},
+    'status_high_demand': {'ID': 'High Demand', 'EN': 'High Demand'},
+    'status_popular': {'ID': 'Popular', 'EN': 'Popular'},
+    'status_standard': {'ID': 'Standard', 'EN': 'Standard'}
+};
