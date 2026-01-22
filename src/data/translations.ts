@@ -1,8 +1,8 @@
 ﻿export type Language = 'ID' | 'EN';
 
 export const LANGUAGES: { code: Language; label: string; flag: string }[] = [
-    { code: 'ID', label: 'Indonesia', flag: 'ðŸ‡®ðŸ‡©' },
-    { code: 'EN', label: 'English', flag: 'ðŸ‡¬ðŸ‡§' }
+    { code: 'ID', label: 'Indonesia', flag: '\uD83C\uDDEE\uD83C\uDDE9' },
+    { code: 'EN', label: 'English', flag: '\uD83C\uDDEC\uD83C\uDDE7' }
 ];
 
 export const TRANS: { [key: string]: { [key: string]: string } } = {
