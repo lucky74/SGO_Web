@@ -6,6 +6,7 @@ export interface Hotel {
   rating: number;
   reviews: number;
   stars: number;
+  hotelClass: string;
   description: string;
   image: string;
   link: string;
@@ -26,6 +27,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
         rating: item.overall_rating || 0,
         reviews: item.reviews || 0,
         stars: (item.hotel_class ? parseInt(String(item.hotel_class)) : 0) || Math.round(item.overall_rating || 0) || 3,
+        hotelClass: String(item.hotel_class || Math.round(item.overall_rating || 0) || 'N/A'),
         description: item.description || '',
         image: (item.images && item.images[0] && item.images[0].original_image) || '',
         link: item.link || '#',

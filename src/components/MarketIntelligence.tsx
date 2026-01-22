@@ -138,15 +138,9 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                             </div>
                           </td>
                           <td className='p-4'>
-                            <div className='flex gap-0.5'>
-                              {hotel.stars > 0 ? (
-                                Array.from({ length: hotel.stars }).map((_, i) => (
-                                  <Star key={i} size={16} className='text-yellow-400 fill-yellow-400' />
-                                ))
-                              ) : (
-                                <span className='text-slate-500'>-</span>
-                              )}
-                            </div>
+                            <span className='text-xs text-slate-300 font-medium'>
+                                {hotel.hotelClass}
+                            </span>
                           </td>
                           <td className='p-4 text-blue-300 font-bold'>{hotel.price}</td>
                           <td className='p-4 flex items-center gap-1'>
