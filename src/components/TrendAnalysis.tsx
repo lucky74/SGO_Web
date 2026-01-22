@@ -31,7 +31,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
   if (!searched || hotels.length === 0) {
     return (
-      <div className='glass-card p-8 rounded-2xl text-center min-h-[400px] flex flex-col justify-center items-center'>
+      <div className='glass-card p-4 md:p-8 rounded-2xl text-center min-h-[400px] flex flex-col justify-center items-center'>
         <TrendingUp size={48} className='text-slate-600 mb-4' />
         <h2 className='text-xl font-bold text-slate-400'>
             {t('menu_2')}
@@ -116,8 +116,8 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   return (
     <div className='space-y-8'>
       {/* Header */}
-      <div className='glass-card p-8 rounded-2xl'>
-        <h2 className='text-3xl font-bold mb-2 flex items-center gap-3'>
+      <div className='glass-card p-4 md:p-8 rounded-2xl'>
+        <h2 className='text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3'>
           <TrendingUp className='text-blue-400' />
           {t('menu_2')}
         </h2>

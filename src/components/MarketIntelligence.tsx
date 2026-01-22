@@ -28,13 +28,13 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   return (
     <div className='space-y-8'>
       {/* Header Section */}
-      <div className='glass-card p-8 rounded-2xl relative overflow-hidden'>
+      <div className='glass-card p-4 md:p-8 rounded-2xl relative overflow-hidden'>
         <div className='relative z-10'>
-          <h2 className='text-3xl font-bold mb-2'>{t('m1_title')}</h2>
+          <h2 className='text-2xl md:text-3xl font-bold mb-2'>{t('m1_title')}</h2>
           <p className='text-slate-400 mb-6 max-w-2xl'>{t('m1_desc')}</p>
           
-          <div className='flex gap-4 items-end'>
-            <div className='flex-1 max-w-md'>
+          <div className='flex flex-col md:flex-row gap-4 items-stretch md:items-end'>
+            <div className='flex-1 w-full md:max-w-md'>
               <label className='block text-sm text-slate-400 mb-2'>{t('m1_input_label')}</label>
               <div className='relative'>
                 <MapPin className='absolute left-3 top-3 text-slate-500' size={20} />
