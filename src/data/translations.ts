@@ -1,4 +1,19 @@
-export const translations: { [key: string]: { [key: string]: string } } = {
+export type Language = 'ID' | 'EN' | 'FR' | 'DE' | 'ES' | 'AR' | 'KO' | 'JA' | 'ZH' | 'RU';
+
+export const LANGUAGES: { code: Language; label: string; flag: string }[] = [
+    { code: 'ID', label: 'Indonesia', flag: '🇮🇩' },
+    { code: 'EN', label: 'English', flag: '🇬🇧' },
+    { code: 'FR', label: 'Français', flag: '🇫🇷' },
+    { code: 'DE', label: 'Deutsch', flag: '🇩🇪' },
+    { code: 'ES', label: 'Español', flag: '🇪🇸' },
+    { code: 'AR', label: 'العربية', flag: '🇸🇦' },
+    { code: 'KO', label: '한국어', flag: '🇰🇷' },
+    { code: 'JA', label: '日本語', flag: '🇯🇵' },
+    { code: 'ZH', label: '中文', flag: '🇨🇳' },
+    { code: 'RU', label: 'Русский', flag: '🇷🇺' }
+];
+
+export const TRANS: { [key: string]: { [key: string]: string } } = {
     'nav_dashboard': {'ID': 'Dasbor Utama', 'EN': 'Main Dashboard', 'FR': 'Tableau de Bord', 'DE': 'Haupt-Dashboard', 'ES': 'Panel Principal', 'AR': 'لوحة القيادة', 'KO': '대시보드', 'JA': 'ダッシュボード', 'ZH': '仪表板', 'RU': 'Приборная панель'},
     'nav_market': {'ID': 'Intelijen Pasar', 'EN': 'Market Intelligence', 'FR': 'Intelligence Marché', 'DE': 'Marktintelligenz', 'ES': 'Inteligencia de Mercado', 'AR': 'ذكاء السوق', 'KO': '시장 인텔리전스', 'JA': '市場インテリジェンス', 'ZH': '市场情报', 'RU': 'Анализ рынка'},
     'nav_trend': {'ID': 'Analisa Tren', 'EN': 'Trend Analysis', 'FR': 'Analyse des Tendances', 'DE': 'Trendanalyse', 'ES': 'Análisis de Tendencias', 'AR': 'تحليل الاتجاهات', 'KO': '트렌드 분석', 'JA': 'トレンド分析', 'ZH': '趋势分析', 'RU': 'Анализ трендов'},

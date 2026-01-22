@@ -171,7 +171,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                                     <Star 
                                         key={i} 
                                         size={12} 
-                                        className={i < (parseInt(hotel.stars) || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-600'} 
+                                        className={i < (hotel.stars || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-600'} 
                                     />
                                 ))}
                             </div>

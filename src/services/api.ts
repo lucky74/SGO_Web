@@ -11,6 +11,7 @@ export interface Hotel {
   image: string;
   link: string;
   deal?: string;
+  location?: string;
 }
 
 export const fetchHotels = async (city: string): Promise<Hotel[]> => {
@@ -31,7 +32,8 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
         description: item.description || '',
         image: (item.images && item.images[0] && item.images[0].original_image) || '',
         link: item.link || '#',
-        deal: item.deal_description || undefined
+        deal: item.deal_description || undefined,
+        location: item.location || undefined
       }));
     }
     return [];

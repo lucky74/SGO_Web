@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Check, Star, Zap, Crown, Building2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
