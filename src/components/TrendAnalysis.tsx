@@ -3,7 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Activity } from 'lucide-react';
+import { TrendingUp, Lightbulb, Trophy, Users, Diamond } from 'lucide-react';
 
 interface TrendAnalysisProps {
   hotels: Hotel[];
