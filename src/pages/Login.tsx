@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LANGUAGES, Language } from '../data/translations';
@@ -47,6 +47,9 @@ const Login: React.FC = () => {
         </div>
 
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <img src="/logo.jpg" alt="SGO Logo" className="w-24 h-24 rounded-full shadow-lg object-cover border-2 border-slate-600" />
+          </div>
           <h1 className='text-3xl font-bold text-white mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400'>
             {t('login_title')}
           </h1>
