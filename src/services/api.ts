@@ -22,19 +22,23 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
     });
 
     if (response.data.properties) {
-      return response.data.properties.slice(0, 20).map((item: any) => ({
+      return response.data.properties.slice(0, 60).map((item: any) => {
+        const starMatch = String(item.hotel_class).match(/(\d+)/);
+        const stars = starMatch ? parseInt(starMatch[0]) : 0;
+        
+        return {
         name: item.name,
         price: (item.rate_per_night && item.rate_per_night.lowest) || 'N/A',
         rating: item.overall_rating || 0,
         reviews: item.reviews || 0,
-        stars: (item.hotel_class ? parseInt(String(item.hotel_class)) : 0),
+        stars: stars,
         hotelClass: item.hotel_class ? (String(item.hotel_class).includes('Star') || String(item.hotel_class).includes('Bintang') ? String(item.hotel_class) : `Bintang ${item.hotel_class}`) : 'Tidak Ada Data',
         description: item.description || '',
         image: (item.images && item.images[0] && item.images[0].original_image) || '',
         link: item.link || '#',
         deal: item.deal_description || undefined,
         location: item.location || undefined
-      }));
+      }}));
     }
     return [];
   } catch (error) {

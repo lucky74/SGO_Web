@@ -3,7 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, Lightbulb, Trophy, Users } from 'lucide-react';
+import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Activity } from 'lucide-react';
 
 interface TrendAnalysisProps {
   hotels: Hotel[];
@@ -20,6 +20,22 @@ interface StarGroup {
 
 const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading }) => {
   const { t } = useLanguage();
+
+  const getOccupancyStatus = (hotel: Hotel) => {
+    if (hotel.rating >= 4.5 && hotel.reviews > 1000) return 'Top Tier';
+    if (hotel.rating >= 4.0) return 'High Demand';
+    if (hotel.reviews > 500) return 'Popular';
+    return 'Standard';
+  };
+
+  const getOccupancyColor = (status: string) => {
+    switch (status) {
+      case 'Top Tier': return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
+      case 'High Demand': return 'text-green-400 bg-green-400/10 border-green-400/20';
+      case 'Popular': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+      default: return 'text-slate-400 bg-slate-400/10 border-slate-400/20';
+    }
+  };
 
   if (loading) {
     return (
@@ -50,6 +66,11 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
     return priceA - priceB;
   });
 
+  const prices = sortedByPrice.map(h => parseInt(h.price.replace(/[^0-9]/g, '')) || 0).filter(p => p > 0);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const medianPrice = prices[Math.floor(prices.length / 2)];
+
   const priceTrendData = sortedByPrice.map(h => ({
     name: h.name.substring(0, 10) + '...',
     full_name: h.name,
@@ -70,20 +91,22 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   // 1. Star Distribution
   const starCounts = hotels.reduce((acc, hotel) => {
     const stars = hotel.stars || 0;
-    acc[stars] = (acc[stars] || 0) + 1;
+    // Group 0 stars as 'Non-Bintang' or keep as 0
+    const key = stars === 0 ? 0 : stars;
+    acc[key] = (acc[key] || 0) + 1;
     return acc;
   }, {} as Record<number, number>);
 
   const pieData = Object.keys(starCounts).map(star => ({
-    name: `Bintang ${star}`,
+    name: star === '0' ? 'Non-Bintang' : Bintang ,
     value: starCounts[parseInt(star)]
   }));
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+  const COLORS = ['#94a3b8', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#0088FE'];
 
-  // 2. Competitor Matrix (Group by Stars) - Explicitly 5 to 1
-  const starGroups = ([5, 4, 3, 2, 1].map(star => {
-    const groupHotels = hotels.filter(h => h.stars === star);
+  // 2. Competitor Matrix (Group by Stars) - Explicitly 5 to 0
+  const starGroups = ([5, 4, 3, 2, 1, 0].map(star => {
+    const groupHotels = hotels.filter(h => (h.stars || 0) === star);
     
     // If no hotels in this class, return null
     if (groupHotels.length === 0) return null;
@@ -99,16 +122,14 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
     };
   }) as (StarGroup | null)[]).filter((group): group is StarGroup => group !== null);
 
-  // Calculate global stats
-  // Removed unused avgPrice
-  
-  const bestValue = hotels.reduce((prev, curr) => {
-    const prevPrice = parseInt(prev.price.replace(/[^0-9]/g, '')) || 0;
-    const currPrice = parseInt(curr.price.replace(/[^0-9]/g, '')) || 0;
-    const prevScore = prev.rating / (prevPrice || 1);
-    const currScore = curr.rating / (currPrice || 1);
-    return currScore > prevScore ? curr : prev;
-  });
+
+  const bestValueList = [...hotels].sort((a, b) => {
+    const priceA = parseInt(a.price.replace(/[^0-9]/g, '')) || 1;
+    const priceB = parseInt(b.price.replace(/[^0-9]/g, '')) || 1;
+    const scoreA = a.rating / priceA;
+    const scoreB = b.rating / priceB;
+    return scoreB - scoreA;
+  }).slice(0, 5);
 
   const topRated = [...hotels].sort((a, b) => b.rating - a.rating).slice(0, 3);
   const dominantClass = pieData.sort((a,b) => b.value - a.value)[0]?.name || 'Unknown';
@@ -126,73 +147,81 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
         </p>
       </div>
 
-      {/* AI Smart Insight (Indonesian) */}
+      {/* AI Smart Insight */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className='glass-card p-6 rounded-xl border-t-4 border-blue-500 bg-gradient-to-br from-slate-800 to-slate-900'
       >
         <h3 className='text-blue-400 font-bold mb-3 flex items-center gap-2'>
-            <Lightbulb size={20} /> Insight Strategis AI
+            <Lightbulb size={20} /> SGO Smart Insight
         </h3>
-        <p className='text-slate-300 leading-relaxed'>
-            <strong>Ringkasan Pasar:</strong> Pasar saat ini didominasi oleh hotel <strong>{dominantClass}</strong>. 
-            <strong> {bestValue.name}</strong> teridentifikasi sebagai pilihan "Best Value". 
-            Bagi pemilik hotel, persaingan paling ketat berada di segmen <strong>{dominantClass}</strong>, 
-            dimana strategi harga menjadi kunci utama untuk memenangkan tamu.
-        </p>
+        <div className='space-y-3 text-slate-300'>
+            <p>
+                <strong>Ringkasan Pasar:</strong> Didominasi oleh <strong>{dominantClass}</strong>. 
+                Persaingan paling ketat berada di segmen ini.
+            </p>
+            <ul className='list-disc list-inside space-y-1 text-sm text-slate-400 ml-2'>
+                <li>
+                    <span className='text-slate-200 font-semibold'>Price Range:</span> IDR {minPrice.toLocaleString()} - IDR {maxPrice.toLocaleString()}
+                </li>
+                <li>
+                    <span className='text-slate-200 font-semibold'>Suggested Pricing:</span> IDR {medianPrice.toLocaleString()} (Median)
+                </li>
+            </ul>
+        </div>
       </motion.div>
 
-      {/* Competitor Analysis Matrix (The "Owner Decision" Table) */}
+      {/* Competitor Analysis Matrix */}
       <div className='glass-card p-6 rounded-xl'>
         <h3 className='text-xl font-bold mb-6 flex items-center gap-2'>
-            <Users className='text-purple-400' size={20} /> Peta Persaingan Berdasarkan Kelas Bintang
+            <Users className='text-purple-400' size={20} /> Pemimpin Pasar (Market Leader)
         </h3>
         <div className='overflow-x-auto'>
             <table className='w-full text-left border-collapse'>
                 <thead>
                     <tr className='text-slate-400 border-b border-slate-700'>
                         <th className='p-3'>Kelas Hotel</th>
-                        <th className='p-3'>Jumlah Kompetitor</th>
+                        <th className='p-3'>Pemimpin Pasar</th>
+                        <th className='p-3'>Status Hunian</th>
                         <th className='p-3'>Harga Rata-rata</th>
-                        <th className='p-3'>Pemimpin Pasar (Market Leader)</th>
-                        <th className='p-3'>Rating Pemimpin</th>
+                        <th className='p-3'>Rating</th>
                     </tr>
                 </thead>
                 <tbody className='text-slate-300'>
-                    {starGroups.map((group) => (
-                        <tr key={group.star} className='border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors'>
-                            <td className='p-3 font-bold text-yellow-400 flex items-center gap-2'>
-                                <span className='bg-yellow-500/10 px-2 py-1 rounded border border-yellow-500/20'>
-                                    Bintang {group.star}
-                                </span>
-                            </td>
-                            <td className='p-3'>
-                                <span className='bg-slate-700 px-3 py-1 rounded-full text-white font-bold'>{group.count} Hotel</span>
-                            </td>
-                            <td className='p-3'>
-                                IDR {group.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
-                            </td>
-                            <td className='p-3 font-semibold text-white'>
-                                {group.leader.name}
-                            </td>
-                            <td className='p-3 text-yellow-400 font-bold flex items-center gap-1'>
-                                {group.leader.rating} <StarIcon />
-                            </td>
-                        </tr>
-                    ))}
+                    {starGroups.map((group) => {
+                        const status = getOccupancyStatus(group.leader);
+                        return (
+                            <tr key={group.star} className='border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors'>
+                                <td className='p-3 font-bold text-yellow-400'>
+                                    {group.star === 0 ? 'Non-Bintang' : Bintang }
+                                </td>
+                                <td className='p-3 font-semibold text-white'>
+                                    {group.leader.name}
+                                </td>
+                                <td className='p-3'>
+                                    <span className={px-2 py-1 rounded text-xs font-bold border }>
+                                        {status}
+                                    </span>
+                                </td>
+                                <td className='p-3'>
+                                    IDR {group.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                                </td>
+                                <td className='p-3 text-yellow-400 font-bold flex items-center gap-1'>
+                                    {group.leader.rating} <StarIcon />
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>
-        <p className='text-slate-500 text-sm mt-4 italic'>
-            * Data ini membantu pemilik hotel mengetahui posisi mereka dibandingkan kompetitor di kelas yang sama.
-        </p>
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
           {/* Star Distribution Pie Chart */}
           <div className='glass-card p-6 rounded-xl lg:col-span-1'>
-            <h3 className='text-lg font-bold mb-4 text-slate-200'>Komposisi Pasar (Market Share)</h3>
+            <h3 className='text-lg font-bold mb-4 text-slate-200'>Komposisi Pasar</h3>
             <div className='h-64 w-full'>
                 <ResponsiveContainer width='100%' height='100%'>
                     <PieChart>
@@ -207,7 +236,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
                             dataKey="value"
                         >
                             {pieData.map((_, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                <Cell key={cell-} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
                         <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#fff' }} />
@@ -217,35 +246,64 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
             </div>
           </div>
 
-          {/* Market Leaders */}
+          {/* Nilai Terbaik Table */}
           <div className='glass-card p-6 rounded-xl lg:col-span-2'>
             <h3 className='text-lg font-bold mb-4 flex items-center gap-2'>
-                <Trophy className='text-yellow-500' size={20} /> Top 3 Hotel Terbaik (Overall)
+                <Diamond className='text-blue-400' size={20} /> Nilai Terbaik (Best Value)
             </h3>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-                {topRated.map((hotel, index) => (
-                    <div key={index} className='bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex flex-col justify-between h-full relative overflow-hidden'>
-                        <div className='absolute top-0 right-0 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-bl-lg'>
-                            #{index + 1}
-                        </div>
-                        <div>
-                            <div className='flex items-center gap-1 text-yellow-400 text-xs mb-2 bg-slate-900/50 self-start px-2 py-1 rounded-full w-fit'>
-                                <span className='text-slate-400 font-medium'>{hotel.hotelClass}</span>
-                            </div>
-                            <div className='font-bold text-white mb-1 line-clamp-2 text-lg'>{hotel.name}</div>
-                        </div>
-                        <div className='mt-3 pt-3 border-t border-slate-700/50 flex justify-between items-center'>
-                            <div className='text-sm text-yellow-400 font-bold flex items-center gap-1'>
-                                {hotel.rating} <StarIcon />
-                            </div>
-                            <div className='text-xs text-slate-400'>
-                                {hotel.reviews} ulasan
-                            </div>
-                        </div>
-                    </div>
-                ))}
+            <div className='overflow-x-auto'>
+                <table className='w-full text-left'>
+                    <thead>
+                        <tr className='text-slate-400 border-b border-slate-700'>
+                            <th className='p-3'>Properti</th>
+                            <th className='p-3'>Harga</th>
+                            <th className='p-3'>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody className='text-slate-300'>
+                        {bestValueList.map((hotel, idx) => (
+                            <tr key={idx} className='border-b border-slate-700/50 hover:bg-slate-800/50'>
+                                <td className='p-3 font-medium text-white'>{hotel.name}</td>
+                                <td className='p-3 text-emerald-400 font-bold'>{hotel.price}</td>
+                                <td className='p-3 flex items-center gap-1 text-yellow-400'>
+                                    {hotel.rating} <StarIcon />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
           </div>
+      </div>
+
+      {/* Top 3 List */}
+      <div className='glass-card p-6 rounded-xl'>
+         <h3 className='text-lg font-bold mb-4 flex items-center gap-2'>
+            <Trophy className='text-yellow-500' size={20} /> Top 3 Hotel Terbaik (Overall)
+        </h3>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+            {topRated.map((hotel, index) => (
+                <div key={index} className='bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex flex-col justify-between h-full relative overflow-hidden'>
+                    <div className='absolute top-0 right-0 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-bl-lg'>
+                        #{index + 1}
+                    </div>
+                    <div>
+                        <div className='flex items-center gap-1 text-yellow-400 text-xs mb-2 bg-slate-900/50 self-start px-2 py-1 rounded-full w-fit'>
+                            <span className='text-slate-400 font-medium'>{hotel.hotelClass}</span>
+                        </div>
+                        <div className='font-bold text-white mb-1 line-clamp-2 text-lg'>{hotel.name}</div>
+                    </div>
+                    <div className='mt-3 pt-3 border-t border-slate-700/50 flex justify-between items-center'>
+                        <div className='text-sm text-yellow-400 font-bold flex items-center gap-1'>
+                            {hotel.rating} <StarIcon />
+                        </div>
+                        <div className='text-xs text-slate-400'>
+                            {hotel.reviews} ulasan
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
       </div>
 
       {/* Charts */}
