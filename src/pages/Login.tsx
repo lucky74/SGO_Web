@@ -97,12 +97,9 @@ const Login: React.FC = () => {
           </button>
         </div>
 
-        <div className='mt-8 text-center'>
-            <p className="text-xs text-slate-500 mb-2">Demo Access:</p>
-            <div className="flex justify-center gap-4 text-xs text-slate-400">
-                <span>admin@sgo.com</span>
-                <span>basic@hotel.com</span>
-            </div>
+        <div className='mt-8 text-center text-xs text-slate-500'>
+            <p className="mb-1">Powered by Sentra Guest Os (SGO) @2026</p>
+            <p className="text-blue-400">sentraguest.os@gmail.com</p>
         </div>
       </motion.div>
     </div>
