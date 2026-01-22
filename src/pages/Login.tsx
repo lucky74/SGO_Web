@@ -40,9 +40,9 @@ const Login: React.FC = () => {
             onChange={(e) => setLanguage(e.target.value as Language)}
             className='bg-slate-800 text-slate-300 border border-slate-600 rounded px-2 py-1 text-sm outline-none focus:border-blue-500'
           >
-            {Object.entries(LANGUAGES).map(([code, name]) => (
-              <option key={code} value={code}>{name}</option>
-            ))}
+            {LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>{lang.flag} {lang.label}</option>
+              ))}
           </select>
         </div>
 
