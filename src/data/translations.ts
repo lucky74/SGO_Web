@@ -109,4 +109,16 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'login_btn': {"ID":"Masuk Sekarang","EN":"Login Now"},
     'm4_notif_desc': {"ID":"Aktifkan notifikasi email harian untuk menerima laporan ringkasan pergerakan harga kompetitor dan tren pasar terbaru langsung ke inbox Anda.","EN":"Enable daily email notifications to receive summary reports of competitor price movements and latest market trends directly to your inbox."},
     'm4_label_notif': {"ID":"Notifikasi Email Harian","EN":"Daily Email Notifications"},
+
+    'menu_1': {"ID":"Dasbor Utama","EN":"Main Dashboard"},
+    'menu_2': {"ID":"Intelijen Pasar","EN":"Market Intelligence"},
+    'menu_3': {"ID":"Paket Langganan","EN":"Subscription Plan"},
+    'menu_4': {"ID":"Kontrol Akun","EN":"Account Control"},
+    'status_online': {"ID":"ONLINE","EN":"ONLINE"},
+    'm1_desc': {"ID":"Pantau pergerakan harga dan okupansi kompetitor di sekitar properti Anda secara real-time.","EN":"Monitor competitor price and occupancy movements around your property in real-time."},
+    'm1_input_label': {"ID":"Lokasi / Kota","EN":"Location / City"},
+    'm1_btn': {"ID":"Cari Data","EN":"Search Data"},
+    'm4_settings_profile': {"ID":"Pengaturan Profil","EN":"Profile Settings"},
+    'm4_label_name': {"ID":"Nama Lengkap","EN":"Full Name"},
+    'm4_label_email': {"ID":"Email","EN":"Email"},
 };
