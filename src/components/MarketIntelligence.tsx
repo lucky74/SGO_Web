@@ -130,8 +130,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                     <tbody className='divide-y divide-slate-700/50'>
                       {hotels.map((hotel, idx) => (
                         <tr key={idx} className='hover:bg-slate-800/30 transition-colors'>
-                          <td className='p-4 font-medium flex items-center gap-3'>
-                            <img src={hotel.image} alt='' className='w-10 h-10 rounded-lg object-cover bg-slate-700' />
+                          <td className='p-4 font-medium'>
                             <div>
                               <div className='text-white'>{hotel.name}</div>
                               {hotel.deal && <div className='text-xs text-green-400'>{hotel.deal}</div>}
