@@ -26,7 +26,7 @@ const AccountControl: React.FC = () => {
           <p className='text-slate-400'>{user.hotelName}</p>
           <div className='flex flex-wrap gap-3 mt-4 justify-center md:justify-start'>
             <span className='bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs font-bold border border-blue-500/20 uppercase'>
-              {user.role} Plan
+              {user.role} {t('m4_plan')}
             </span>
             <span className='bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold border border-green-500/20'>
               {t('m4_status_active')}
@@ -62,7 +62,7 @@ const AccountControl: React.FC = () => {
                 </div>
                 <div className='mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg'>
                     <p className='text-xs text-blue-300'>
-                        *Hubungi administrator untuk mengubah data profil utama.
+                        {t('m4_contact_admin')}
                     </p>
                 </div>
             </form>
@@ -84,7 +84,7 @@ const AccountControl: React.FC = () => {
                         <Lock className='text-slate-400' size={20} />
                         <div>
                             <div className='font-bold text-sm'>{t('m4_label_password')}</div>
-                            <div className='text-xs text-slate-500'>Update berkala untuk keamanan</div>
+                            <div className='text-xs text-slate-500'>{t('m4_password_hint')}</div>
                         </div>
                     </div>
                     <button className='text-blue-400 text-sm font-bold hover:underline'>{t('m4_btn_change')}</button>

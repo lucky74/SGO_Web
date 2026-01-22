@@ -85,10 +85,10 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                     <div className="bg-yellow-500/10 border border-yellow-500/50 p-4 rounded-xl flex items-center gap-3">
                         <Lock className="text-yellow-500" size={24} />
                         <div>
-                            <p className="text-yellow-200 font-bold text-sm">Akses Terbatas: Paket {user?.role.toUpperCase()}</p>
+                            <p className="text-yellow-200 font-bold text-sm">{t('m1_access_limited')} {user?.role.toUpperCase()}</p>
                             <p className="text-yellow-200/70 text-xs">
-                                Anda hanya melihat {maxItems} hotel teratas dari {hotels.length} hasil yang ditemukan. 
-                                <span className="underline cursor-pointer ml-1 hover:text-white">Upgrade ke Pro/Enterprise</span> untuk melihat semua data.
+                                {t('m1_limit_warning')} {maxItems} {t('m1_limit_warning_2')} {hotels.length} {t('m1_limit_warning_3')} 
+                                <span className="underline cursor-pointer ml-1 hover:text-white">{t('m1_upgrade_link')}</span> {t('m1_upgrade_text')}
                             </p>
                         </div>
                     </div>
@@ -142,10 +142,10 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                   <table className='w-full'>
                     <thead className='bg-slate-800/50'>
                       <tr>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Nama Hotel</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Harga</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Rating</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Kelas</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_hotel')}</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_price')}</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_rating')}</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_class')}</th>
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-slate-700'>
@@ -162,7 +162,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                             <div className='flex items-center gap-1'>
                               <Star size={14} className='text-yellow-400 fill-yellow-400' />
                               <span>{hotel.rating}</span>
-                              <span className='text-slate-500 text-xs'>• {hotel.reviews} Ulasan</span>
+                              <span className='text-slate-500 text-xs'>• {hotel.reviews} {t('m1_reviews')}</span>
                             </div>
                           </td>
                           <td className='px-6 py-4'>
@@ -179,8 +179,8 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
             </>
           ) : (
             <div className='text-center py-20 text-slate-400'>
-              <p className='text-lg'>Tidak ada data ditemukan untuk kota ini.</p>
-              <p className='text-sm mt-2'>Coba cari kota lain seperti "Jakarta" atau "Bali"</p>
+              <p className='text-lg'>{t('m1_no_data')}</p>
+              <p className='text-sm mt-2'>{t('m1_search_hint')}</p>
             </div>
           )}
         </motion.div>
