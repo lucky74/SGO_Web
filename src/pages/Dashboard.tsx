@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import MarketIntelligence from '../components/MarketIntelligence';
 import TrendAnalysis from '../components/TrendAnalysis';
+import Subscription from '../components/Subscription';
+import AccountControl from '../components/AccountControl';
 import { useLanguage } from '../contexts/LanguageContext';
 import { fetchHotels, Hotel } from '../services/api';
 import { motion } from 'framer-motion';
@@ -51,22 +53,9 @@ const Dashboard: React.FC = () => {
           />
         );
       case 'menu_3':
-        return (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className='glass-card p-8 rounded-2xl'>
-            <h2 className='text-2xl font-bold mb-4'>{t('m3_title')}</h2>
-            <p className='text-slate-400'>Manage your subscription plans and payment methods here.</p>
-          </motion.div>
-        );
+        return <Subscription />;
       case 'menu_4':
-        return (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className='glass-card p-8 rounded-2xl'>
-            <h2 className='text-2xl font-bold mb-4'>{t('m4_title')}</h2>
-            <div className='bg-green-900/20 text-green-400 p-4 rounded-xl border border-green-500/20 inline-block mb-4'>
-              {t('m4_status_active')}
-            </div>
-            <p className='text-slate-400'>Manage your account settings and profile.</p>
-          </motion.div>
-        );
+        return <AccountControl />;
       default:
         return null;
     }

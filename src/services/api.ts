@@ -5,6 +5,7 @@ export interface Hotel {
   price: string;
   rating: number;
   reviews: number;
+  stars: number; // Added star rating
   description: string;
   image: string;
   link: string;
@@ -24,6 +25,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
         price: item.rate_per_night?.lowest || 'N/A',
         rating: item.overall_rating || 0,
         reviews: item.reviews || 0,
+        stars: item.hotel_class || Math.round(item.overall_rating) || 3, // Infer stars if missing
         description: item.description || '',
         image: item.images?.[0]?.original_image || '',
         link: item.link || '#',

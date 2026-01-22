@@ -2,8 +2,8 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from 'recharts';
-import { TrendingUp, Award, DollarSign } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
+import { TrendingUp, Award, DollarSign, Lightbulb, Trophy, Users } from 'lucide-react';
 
 interface TrendAnalysisProps {
   hotels: Hotel[];
@@ -30,7 +30,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
             {t('menu_2')}
         </h2>
         <p className='text-slate-500 mt-2'>
-            Please perform a search in the Market Intelligence tab first to analyze trends.
+            Silakan lakukan pencarian di menu Intelijen Hunian terlebih dahulu.
         </p>
       </div>
     );
@@ -54,19 +54,58 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
     x: parseInt(h.price.replace(/[^0-9]/g, '')) || 0,
     y: h.rating,
     z: h.reviews,
-    name: h.name
+    name: h.name,
+    stars: h.stars
   }));
 
-  // Calculate stats
+  // --- Logic Kelas Bintang (Star Class) ---
+
+  // 1. Star Distribution
+  const starCounts = hotels.reduce((acc, hotel) => {
+    const stars = hotel.stars || 0;
+    acc[stars] = (acc[stars] || 0) + 1;
+    return acc;
+  }, {} as Record<number, number>);
+
+  const pieData = Object.keys(starCounts).map(star => ({
+    name: `Bintang ${star}`,
+    value: starCounts[parseInt(star)]
+  }));
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+
+  // 2. Competitor Matrix (Group by Stars) - Explicitly 5 to 1
+  const starGroups = [5, 4, 3, 2, 1].map(star => {
+    const groupHotels = hotels.filter(h => h.stars === star);
+    
+    // If no hotels in this class, return a placeholder or null
+    // We prefer returning it to show "0 Competitors" if valuable, but usually we skip empty
+    if (groupHotels.length === 0) return null;
+
+    const avgPrice = groupHotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / groupHotels.length;
+    const leader = groupHotels.reduce((prev, curr) => (curr.rating > prev.rating ? curr : prev), groupHotels[0]);
+
+    return {
+      star,
+      count: groupHotels.length,
+      avgPrice,
+      leader
+    };
+  }).filter(Boolean); // Remove empty groups
+
+  // Calculate global stats
   const avgPrice = priceTrendData.reduce((acc, curr) => acc + curr.price, 0) / priceTrendData.length;
+  
   const bestValue = hotels.reduce((prev, curr) => {
     const prevPrice = parseInt(prev.price.replace(/[^0-9]/g, '')) || 0;
     const currPrice = parseInt(curr.price.replace(/[^0-9]/g, '')) || 0;
-    // Simple logic: High rating, low price
     const prevScore = prev.rating / (prevPrice || 1);
     const currScore = curr.rating / (currPrice || 1);
     return currScore > prevScore ? curr : prev;
   });
+
+  const topRated = [...hotels].sort((a, b) => b.rating - a.rating).slice(0, 3);
+  const dominantClass = pieData.sort((a,b) => b.value - a.value)[0]?.name || 'Unknown';
 
   return (
     <div className='space-y-8'>
@@ -77,62 +116,138 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
           {t('menu_2')}
         </h2>
         <p className='text-slate-400'>
-          Advanced AI analysis of market trends, pricing strategies, and value opportunities.
+          Analisa mendalam mengenai tren pasar, strategi harga, dan peta persaingan per kelas bintang.
         </p>
       </div>
 
-      {/* AI Recommendations */}
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className='glass-card p-6 rounded-xl border-l-4 border-yellow-500'
-        >
-          <div className='flex items-start justify-between'>
-            <div>
-              <h3 className='text-yellow-400 font-bold mb-1 flex items-center gap-2'>
-                <Award size={18} /> Best Value Pick
-              </h3>
-              <p className='text-2xl font-bold text-white'>{bestValue.name}</p>
-              <p className='text-slate-400 text-sm mt-1'>
-                Highest rating-to-price ratio in the current market.
-              </p>
-            </div>
-            <div className='text-right'>
-              <div className='text-xl font-bold text-blue-300'>{bestValue.price}</div>
-              <div className='flex items-center justify-end gap-1 text-yellow-400'>
-                <span className='font-bold'>{bestValue.rating}</span> <StarIcon />
-              </div>
-            </div>
-          </div>
-        </motion.div>
+      {/* AI Smart Insight (Indonesian) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className='glass-card p-6 rounded-xl border-t-4 border-blue-500 bg-gradient-to-br from-slate-800 to-slate-900'
+      >
+        <h3 className='text-blue-400 font-bold mb-3 flex items-center gap-2'>
+            <Lightbulb size={20} /> Insight Strategis AI
+        </h3>
+        <p className='text-slate-300 leading-relaxed'>
+            <strong>Ringkasan Pasar:</strong> Pasar saat ini didominasi oleh hotel <strong>{dominantClass}</strong>. 
+            <strong> {bestValue.name}</strong> teridentifikasi sebagai pilihan "Best Value". 
+            Bagi pemilik hotel, persaingan paling ketat berada di segmen <strong>{dominantClass}</strong>, 
+            dimana strategi harga menjadi kunci utama untuk memenangkan tamu.
+        </p>
+      </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className='glass-card p-6 rounded-xl border-l-4 border-green-500'
-        >
-          <div className='flex items-start justify-between'>
-            <div>
-              <h3 className='text-green-400 font-bold mb-1 flex items-center gap-2'>
-                <DollarSign size={18} /> Market Average
-              </h3>
-              <p className='text-3xl font-bold text-white'>
-                IDR {avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
-              </p>
-              <p className='text-slate-400 text-sm mt-1'>
-                Average nightly rate across top {hotels.length} hotels.
-              </p>
+      {/* Competitor Analysis Matrix (The "Owner Decision" Table) */}
+      <div className='glass-card p-6 rounded-xl'>
+        <h3 className='text-xl font-bold mb-6 flex items-center gap-2'>
+            <Users className='text-purple-400' size={20} /> Peta Persaingan Berdasarkan Kelas Bintang
+        </h3>
+        <div className='overflow-x-auto'>
+            <table className='w-full text-left border-collapse'>
+                <thead>
+                    <tr className='text-slate-400 border-b border-slate-700'>
+                        <th className='p-3'>Kelas Hotel</th>
+                        <th className='p-3'>Jumlah Kompetitor</th>
+                        <th className='p-3'>Harga Rata-rata</th>
+                        <th className='p-3'>Pemimpin Pasar (Market Leader)</th>
+                        <th className='p-3'>Rating Pemimpin</th>
+                    </tr>
+                </thead>
+                <tbody className='text-slate-300'>
+                    {starGroups.map((group) => (
+                        <tr key={group.star} className='border-b border-slate-700/50 hover:bg-slate-800/50 transition-colors'>
+                            <td className='p-3 font-bold text-yellow-400 flex items-center gap-2'>
+                                <span className='bg-yellow-500/10 px-2 py-1 rounded border border-yellow-500/20'>
+                                    Bintang {group.star}
+                                </span>
+                            </td>
+                            <td className='p-3'>
+                                <span className='bg-slate-700 px-3 py-1 rounded-full text-white font-bold'>{group.count} Hotel</span>
+                            </td>
+                            <td className='p-3'>
+                                IDR {group.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                            </td>
+                            <td className='p-3 font-semibold text-white'>
+                                {group.leader.name}
+                            </td>
+                            <td className='p-3 text-yellow-400 font-bold flex items-center gap-1'>
+                                {group.leader.rating} <StarIcon />
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+        <p className='text-slate-500 text-sm mt-4 italic'>
+            * Data ini membantu pemilik hotel mengetahui posisi mereka dibandingkan kompetitor di kelas yang sama.
+        </p>
+      </div>
+
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+          {/* Star Distribution Pie Chart */}
+          <div className='glass-card p-6 rounded-xl lg:col-span-1'>
+            <h3 className='text-lg font-bold mb-4 text-slate-200'>Komposisi Pasar (Market Share)</h3>
+            <div className='h-64 w-full'>
+                <ResponsiveContainer width='100%' height='100%'>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            paddingAngle={5}
+                            dataKey="value"
+                        >
+                            {pieData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#fff' }} />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
             </div>
           </div>
-        </motion.div>
+
+          {/* Market Leaders */}
+          <div className='glass-card p-6 rounded-xl lg:col-span-2'>
+            <h3 className='text-lg font-bold mb-4 flex items-center gap-2'>
+                <Trophy className='text-yellow-500' size={20} /> Top 3 Hotel Terbaik (Overall)
+            </h3>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+                {topRated.map((hotel, index) => (
+                    <div key={index} className='bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex flex-col justify-between h-full relative overflow-hidden'>
+                        <div className='absolute top-0 right-0 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-bl-lg'>
+                            #{index + 1}
+                        </div>
+                        <div>
+                            <div className='flex items-center gap-1 text-yellow-400 text-xs mb-2 bg-slate-900/50 self-start px-2 py-1 rounded-full w-fit'>
+                                {[...Array(hotel.stars || 5)].map((_, i) => <StarIcon key={i} size={10} />)}
+                                <span className='ml-1 text-slate-400'>Bintang {hotel.stars || 5}</span>
+                            </div>
+                            <div className='font-bold text-white mb-1 line-clamp-2 text-lg'>{hotel.name}</div>
+                        </div>
+                        <div className='mt-3 pt-3 border-t border-slate-700/50 flex justify-between items-center'>
+                            <div className='text-sm text-yellow-400 font-bold flex items-center gap-1'>
+                                {hotel.rating} <StarIcon />
+                            </div>
+                            <div className='text-xs text-slate-400'>
+                                {hotel.reviews} ulasan
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+          </div>
       </div>
 
       {/* Charts */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         {/* Price Trend Line Chart */}
         <div className='glass-card p-6 rounded-xl'>
-          <h3 className='text-xl font-bold mb-6 text-slate-200'>Competitive Price Landscape</h3>
+          <h3 className='text-xl font-bold mb-6 text-slate-200'>Lanskap Harga Kompetitif</h3>
           <div className='h-80 w-full'>
             <ResponsiveContainer width='100%' height='100%'>
               <LineChart data={priceTrendData}>
@@ -151,7 +266,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
         {/* Rating vs Price Scatter */}
         <div className='glass-card p-6 rounded-xl'>
-          <h3 className='text-xl font-bold mb-6 text-slate-200'>Price vs. Quality Correlation</h3>
+          <h3 className='text-xl font-bold mb-6 text-slate-200'>Korelasi Harga vs Kualitas</h3>
           <div className='h-80 w-full'>
             <ResponsiveContainer width='100%' height='100%'>
               <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
@@ -170,11 +285,11 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   );
 };
 
-const StarIcon = () => (
+const StarIcon = ({ size = 14 }: { size?: number }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="14"
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="currentColor"
     stroke="currentColor"
