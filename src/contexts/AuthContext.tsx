@@ -1,33 +1,40 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { User, MOCK_USERS, VALID_PASSWORDS } from '../data/users';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (key: string) => boolean;
+  user: User | null;
+  login: (email: string, key: string) => boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Hardcoded key from original python script
-const VALID_KEY = 'SGO-SUCCESS-2026';
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
 
-  const login = (key: string): boolean => {
-    if (key === VALID_KEY) {
+  const login = (email: string, key: string): boolean => {
+    // 1. Check if user exists
+    const foundUser = MOCK_USERS.find(u => u.email === email);
+    
+    // 2. Check password
+    if (foundUser && VALID_PASSWORDS[email] === key) {
       setIsAuthenticated(true);
+      setUser(foundUser);
       return true;
     }
+    
     return false;
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

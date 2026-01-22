@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Star } from 'lucide-react';
+import { Search, MapPin, Star, Lock } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface MarketIntelligenceProps {
@@ -18,12 +19,18 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   city, setCity, hotels, loading, searched, handleSearch 
 }) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
+
+  // Filter Logic based on User Tier
+  const maxItems = user?.maxRadius || 5;
+  const displayedHotels = hotels.slice(0, maxItems);
+  const isLimited = hotels.length > maxItems;
 
   // Prepare chart data
-  const chartData = hotels.map(h => ({
+  const chartData = displayedHotels.map(h => ({
     name: h.name.substring(0, 15) + '...',
     price: parseInt(h.price.replace(/[^0-9]/g, '')) || 0
-  })).slice(0, 10);
+  }));
 
   return (
     <div className='space-y-8'>
@@ -73,22 +80,36 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
         >
           {hotels.length > 0 ? (
             <>
+                {/* Limitation Warning for Lower Tiers */}
+                {isLimited && (
+                    <div className="bg-yellow-500/10 border border-yellow-500/50 p-4 rounded-xl flex items-center gap-3">
+                        <Lock className="text-yellow-500" size={24} />
+                        <div>
+                            <p className="text-yellow-200 font-bold text-sm">Akses Terbatas: Paket {user?.role.toUpperCase()}</p>
+                            <p className="text-yellow-200/70 text-xs">
+                                Anda hanya melihat {maxItems} hotel teratas dari {hotels.length} hasil yang ditemukan. 
+                                <span className="underline cursor-pointer ml-1 hover:text-white">Upgrade ke Pro/Enterprise</span> untuk melihat semua data.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
               {/* Executive Summary */}
               <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-blue-500'>
                   <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_1')}</h3>
-                  <p className='text-3xl font-bold'>{hotels.length}</p>
+                  <p className='text-3xl font-bold'>{displayedHotels.length}</p>
                 </div>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-green-500'>
                   <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_2')}</h3>
                   <p className='text-3xl font-bold'>
-                    IDR {(hotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / hotels.length).toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                    IDR {(displayedHotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / displayedHotels.length).toLocaleString('id-ID', { maximumFractionDigits: 0 })}
                   </p>
                 </div>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-purple-500'>
                   <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_3')}</h3>
                   <p className='text-3xl font-bold'>
-                    {hotels.reduce((acc, h) => acc + h.reviews, 0).toLocaleString()}
+                    {displayedHotels.reduce((acc, h) => acc + h.reviews, 0).toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -100,10 +121,11 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                   <ResponsiveContainer width='100%' height='100%'>
                     <BarChart data={chartData}>
                       <CartesianGrid strokeDasharray='3 3' stroke='#334155' />
-                      <XAxis dataKey='name' stroke='#94a3b8' tick={{fontSize: 12}} />
-                      <YAxis stroke='#94a3b8' />
+                      <XAxis dataKey='name' stroke='#94a3b8' fontSize={12} />
+                      <YAxis stroke='#94a3b8' fontSize={12} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#fff' }}
+                        contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155' }}
+                        itemStyle={{ color: '#fff' }}
                       />
                       <Bar dataKey='price' fill='#3b82f6' radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -111,42 +133,49 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                 </div>
               </div>
 
-              {/* Table */}
+              {/* Data Table */}
               <div className='glass-card rounded-xl overflow-hidden'>
-                <div className='p-6 border-b border-slate-700/50'>
+                <div className='p-6 border-b border-slate-700'>
                   <h3 className='text-xl font-bold'>{t('m1_table_title')}</h3>
                 </div>
                 <div className='overflow-x-auto'>
-                  <table className='w-full text-left'>
-                    <thead className='bg-slate-800/50 text-slate-400'>
+                  <table className='w-full'>
+                    <thead className='bg-slate-800/50'>
                       <tr>
-                        <th className='p-4'>Property Name</th>
-                        <th className='p-4'>Kelas Hotel</th>
-                        <th className='p-4'>Price</th>
-                        <th className='p-4'>Rating</th>
-                        <th className='p-4'>Reviews</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Nama Hotel</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Harga</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Rating</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>Kelas</th>
                       </tr>
                     </thead>
-                    <tbody className='divide-y divide-slate-700/50'>
-                      {hotels.map((hotel, idx) => (
-                        <tr key={idx} className='hover:bg-slate-800/30 transition-colors'>
-                          <td className='p-4 font-medium'>
-                            <div>
-                              <div className='text-white'>{hotel.name}</div>
-                              {hotel.deal && <div className='text-xs text-green-400'>{hotel.deal}</div>}
+                    <tbody className='divide-y divide-slate-700'>
+                      {displayedHotels.map((hotel, index) => (
+                        <tr key={index} className='hover:bg-slate-800/30 transition-colors'>
+                          <td className='px-6 py-4'>
+                            <div className='font-medium text-white'>{hotel.name}</div>
+                            <div className='text-xs text-slate-500 flex items-center gap-1 mt-1'>
+                                <MapPin size={12} /> {hotel.location || city}
                             </div>
                           </td>
-                          <td className='p-4'>
-                            <span className='text-xs text-slate-300 font-medium'>
-                                {hotel.hotelClass}
-                            </span>
+                          <td className='px-6 py-4 text-emerald-400 font-bold'>{hotel.price}</td>
+                          <td className='px-6 py-4'>
+                            <div className='flex items-center gap-1'>
+                              <Star size={14} className='text-yellow-400 fill-yellow-400' />
+                              <span>{hotel.rating}</span>
+                              <span className='text-slate-500 text-xs'>({hotel.reviews})</span>
+                            </div>
                           </td>
-                          <td className='p-4 text-blue-300 font-bold'>{hotel.price}</td>
-                          <td className='p-4 flex items-center gap-1'>
-                            <Star size={14} className='text-yellow-400 fill-yellow-400' />
-                            {hotel.rating}
+                          <td className='px-6 py-4'>
+                            <div className='flex items-center gap-0.5'>
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star 
+                                        key={i} 
+                                        size={12} 
+                                        className={i < (parseInt(hotel.stars) || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-600'} 
+                                    />
+                                ))}
+                            </div>
                           </td>
-                          <td className='p-4 text-slate-400'>{hotel.reviews}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -155,8 +184,9 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               </div>
             </>
           ) : (
-            <div className='text-center py-20 text-slate-500'>
-              No data found for '{city}'. Try another location.
+            <div className='text-center py-20 text-slate-400'>
+              <p className='text-lg'>Tidak ada data ditemukan untuk kota ini.</p>
+              <p className='text-sm mt-2'>Coba cari kota lain seperti "Jakarta" atau "Bali"</p>
             </div>
           )}
         </motion.div>

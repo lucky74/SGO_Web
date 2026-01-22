@@ -1,102 +1,14 @@
-export type Language = 'ID' | 'EN' | 'FR' | 'DE' | 'ES' | 'AR' | 'KO' | 'JA' | 'ZH' | 'RU';
-
-export const LANGUAGES: Record<Language, string> = {
-    'ID': ' Indonesia',
-    'EN': ' English',
-    'FR': ' Français',
-    'DE': ' Deutsch',
-    'ES': ' Español',
-    'AR': ' العربية',
-    'KO': ' 한국어',
-    'JA': ' 日本語',
-    'ZH': ' 中文',
-    'RU': ' Русский'
-};
-
-export const TRANS: Record<string, Record<string, string>> = {
-    'login_title': {
-        'ID': 'Akses Intelijen Aman', 'EN': 'Secure Intelligence Access', 'FR': 'Accès Intelligence Sécurisé', 
-        'DE': 'Sicherer Intelligenzzugang', 'ES': 'Acceso Seguro a Inteligencia', 'AR': 'وصول استخبارati آمن', 
-        'KO': '보안 인텔리전스 액세스', 'JA': 'セキュアインテリジェンスアクセス', 'ZH': '安全情报访问', 'RU': 'Безопасный доступ к данным'
-    },
-    'login_subtitle': {
-        'ID': 'Silakan masukkan kunci lisensi perusahaan Anda.', 'EN': 'Please enter your company license key.', 
-        'FR': 'Veuillez entrer votre clé de licence.', 'DE': 'Bitte geben Sie Ihren Lizenzschlüssel ein.', 
-        'ES': 'Ingrese su clave de licencia.', 'AR': 'الرجاء إدخال مفتاح الترخيص.', 
-        'KO': '라이선스 키를 입력하십시오.', 'JA': 'ライセンスキーを入力してください.', 'ZH': '请输入许可证密钥.', 'RU': 'Введите лицензионный ключ.'
-    },
-    'login_btn': {
-        'ID': 'AUTHENTICATE SYSTEM', 'EN': 'AUTHENTICATE SYSTEM', 'FR': 'AUTHENTIFIER', 
-        'DE': 'AUTHENTIFIZIEREN', 'ES': 'AUTENTICAR', 'AR': 'توثيق النظام', 
-        'KO': '시스템 인증', 'JA': '認証 시스템', 'ZH': '验证系统', 'RU': 'АВТОРИЗАЦИЯ'
-    },
-    'access_denied': {
-        'ID': ' Akses Ditolak. Kunci lisensi tidak valid.', 'EN': ' Access Denied. Invalid license key.', 
-        'FR': ' Accès refusé. Clé invalide.', 'DE': ' Zugriff verweigert. Ungültiger Schlüssel.', 
-        'ES': ' Acceso denegado. Clave inválida.', 'AR': ' تم رفض الوصول. مفتاح غير صالح.', 
-        'KO': ' 액세스가 거부되었습니다. 잘못된 키입니다.', 'JA': ' アクセス拒否。無効なキー。', 'ZH': ' 访问被拒绝。无效密钥。', 'RU': ' Доступ запрещен. Неверный ключ.'
-    },
-    'nav_header': {
-        'ID': 'Navigasi SGO', 'EN': 'SGO Navigation', 'FR': 'Navigation SGO', 
-        'DE': 'SGO Navigation', 'ES': 'Navegación SGO', 'AR': 'تصفح SGO', 
-        'KO': 'SGO 탐색', 'JA': 'SGO ナビゲーション', 'ZH': 'SGO 导航', 'RU': 'Навигация SGO'
-    },
-    'menu_1': {
-        'ID': ' Intelijen Hunian', 'EN': ' Market Intelligence', 'FR': ' Intelligence Marché', 
-        'DE': ' Marktintelligenz', 'ES': ' Inteligencia de Mercado', 'AR': ' ذكاء السوق', 
-        'KO': ' 시장 인텔리전스', 'JA': ' 市場インテリジェンス', 'ZH': ' 市场情报', 'RU': ' Разведка рынка'
-    },
-    'menu_2': {
-        'ID': ' Analisa Tren Pasar', 'EN': ' Market Trend Analysis', 'FR': ' Analyse Tendances', 
-        'DE': ' Markttrendanalyse', 'ES': ' Análisis de Tendencias', 'AR': ' تحليل الاتجاهات', 
-        'KO': ' 시장 트렌드 분석', 'JA': ' トレンド分析', 'ZH': ' 趋势分析', 'RU': ' Анализ трендов'
-    },
-    'menu_3': {
-        'ID': ' Paket Langganan', 'EN': ' Subscription Plans', 'FR': ' Abonnements', 
-        'DE': ' Abonnements', 'ES': ' Suscripciones', 'AR': ' الاشتراكات', 
-        'KO': ' 구독 플랜', 'JA': ' サブスクリプション', 'ZH': ' 订阅计划', 'RU': ' Подписка'
-    },
-    'menu_4': {
-        'ID': ' Kontrol Akun', 'EN': ' Account Control', 'FR': ' Compte', 
-        'DE': ' Konto', 'ES': ' Cuenta', 'AR': ' الحساب', 
-        'KO': ' 계정 관리', 'JA': ' アカウント', 'ZH': ' 账户', 'RU': ' Аккаунт'
-    },
-    'status_online': {
-        'ID': ' Sistem Online', 'EN': ' System Online', 'FR': ' Système En Ligne', 
-        'DE': ' System Online', 'ES': ' Sistema En Línea', 'AR': ' النظام متصل', 
-        'KO': ' 시스템 온라인', 'JA': ' システムオンライン', 'ZH': ' 系统在线', 'RU': ' Система онлайн'
-    },
+export const translations: { [key: string]: { [key: string]: string } } = {
+    'nav_dashboard': {'ID': 'Dasbor Utama', 'EN': 'Main Dashboard', 'FR': 'Tableau de Bord', 'DE': 'Haupt-Dashboard', 'ES': 'Panel Principal', 'AR': 'لوحة القيادة', 'KO': '대시보드', 'JA': 'ダッシュボード', 'ZH': '仪表板', 'RU': 'Приборная панель'},
+    'nav_market': {'ID': 'Intelijen Pasar', 'EN': 'Market Intelligence', 'FR': 'Intelligence Marché', 'DE': 'Marktintelligenz', 'ES': 'Inteligencia de Mercado', 'AR': 'ذكاء السوق', 'KO': '시장 인텔리전스', 'JA': '市場インテリジェンス', 'ZH': '市场情报', 'RU': 'Анализ рынка'},
+    'nav_trend': {'ID': 'Analisa Tren', 'EN': 'Trend Analysis', 'FR': 'Analyse des Tendances', 'DE': 'Trendanalyse', 'ES': 'Análisis de Tendencias', 'AR': 'تحليل الاتجاهات', 'KO': '트렌드 분석', 'JA': 'トレンド分析', 'ZH': '趋势分析', 'RU': 'Анализ трендов'},
+    'nav_subscription': {'ID': 'Paket Langganan', 'EN': 'Subscription Plan', 'FR': 'Abonnement', 'DE': 'Abonnement', 'ES': 'Suscripción', 'AR': 'اشتراك', 'KO': '구독', 'JA': 'サブスクリプション', 'ZH': '订阅', 'RU': 'Подписка'},
+    'nav_account': {'ID': 'Kontrol Akun', 'EN': 'Account Control', 'FR': 'Contrôle de Compte', 'DE': 'Kontokontrolle', 'ES': 'Control de Cuenta', 'AR': 'التحكم في الحساب', 'KO': '계정 제어', 'JA': 'アカウント制御', 'ZH': '账户控制', 'RU': 'Управление счетом'},
+    'header_title': {'ID': 'SGO - Optimasi Grup Sahid', 'EN': 'SGO - Sahid Group Optimization', 'FR': 'Optimisation du Groupe Sahid', 'DE': 'Sahid Gruppenoptimierung', 'ES': 'Optimización del Grupo Sahid', 'AR': 'تحسين مجموعة ساهيد', 'KO': 'Sahid 그룹 최적화', 'JA': 'Sahidグループの最適化', 'ZH': 'Sahid集团优化', 'RU': 'Оптимизация Sahid Group'},
     'm1_title': {
-        'ID': ' Dashboard Intelijen Pasar', 'EN': ' Market Intelligence Dashboard', 'FR': ' Tableau de Bord Intelligence', 
-        'DE': ' Marktintelligenz-Dashboard', 'ES': ' Panel de Inteligencia', 'AR': ' لوحة معلومات ذكاء السوق', 
-        'KO': ' 시장 인텔리전스 대시보드', 'JA': ' 市場インテリジェンスダッシュボード', 'ZH': ' 市场情报仪表板', 'RU': ' Панель разведки рынка'
-    },
-    'm1_desc': {
-        'ID': 'Analisa real-time tingkat hunian, harga kompetitor, dan sentimen pasar.', 
-        'EN': 'Real-time analysis of occupancy, competitor prices, and market sentiment.',
-        'FR': "Analyse en temps réel de l'occupation, des prix et du sentiment.",
-        'DE': 'Echtzeitanalyse von Belegung, Wettbewerbspreisen und Marktstimmung.',
-        'ES': 'Análisis en tiempo real de ocupación, precios y sentimiento.',
-        'AR': 'تحليل في الوقت الحقيقي للإشغال وأسعار المنافسين ومشاعر السوق.',
-        'KO': '점유율, 경쟁사 가격 및 시장 정서에 대한 실시간 분석.',
-        'JA': '占有率、競合他社の価格、市場心理のリアルタイム分析。',
-        'ZH': '实时分析入住率、竞争对手价格和市场情绪。',
-        'RU': 'Анализ заполняемости, цен конкурентов и настроений рынка в реальном времени.'
-    },
-    'm1_input_label': {
-        'ID': 'Target Analisa Wilayah:', 'EN': 'Target Analysis Area:', 'FR': "Zone d'Analyse Cible:", 
-        'DE': 'Zielanalysegebiet:', 'ES': 'Área de Análisis Objetivo:', 'AR': 'منطقة التحليل المستهدفة:', 
-        'KO': '타겟 분석 지역:', 'JA': '分析対象エリア:', 'ZH': '目标分析区域:', 'RU': 'Целевая область:'
-    },
-    'm1_btn': {
-        'ID': ' EKSEKUSI SCAN', 'EN': ' EXECUTE SCAN', 'FR': ' EXÉCUTER LE SCAN', 
-        'DE': ' SCAN AUSFÜHREN', 'ES': ' EJECUTAR ESCANEO', 'AR': ' تنفيذ المسح', 
-        'KO': ' 스캔 실행', 'JA': ' スキャン実行', 'ZH': ' 执行扫描', 'RU': ' ЗАПУСТИТЬ СКАН'
-    },
-    'm1_summary_title': {
-        'ID': ' Executive Summary', 'EN': ' Executive Summary', 'FR': ' Résumé Exécutif', 
-        'DE': ' Zusammenfassung', 'ES': ' Resumen Ejecutivo', 'AR': ' ملخص تنفيذي', 
-        'KO': ' 경영 요약', 'JA': ' エグゼクティブサマリー', 'ZH': ' 执行摘要', 'RU': ' Резюме'
+        'ID': ' Intelijen Pasar Real-time', 'EN': ' Real-time Market Intelligence', 'FR': ' Intelligence Marché Temps Réel', 
+        'DE': ' Echtzeit-Marktintelligenz', 'ES': ' Inteligencia de Mercado en Tiempo Real', 'AR': ' ذكاء السوق في الوقت الحقيقي', 
+        'KO': ' 실시간 시장 인텔리전스', 'JA': ' リアルタイム市場インテリジェンス', 'ZH': ' 实时市场情报', 'RU': ' Анализ рынка в реальном времени'
     },
     'm1_metric_1': {'ID': 'Properti', 'EN': 'Properties', 'FR': 'Propriétés', 'DE': 'Eigenschaften', 'ES': 'Propiedades', 'AR': 'الخصائص', 'KO': '부동산', 'JA': '物件', 'ZH': '属性', 'RU': 'Объекты'},
     'm1_metric_2': {'ID': 'Rata-rata Harga', 'EN': 'Avg. Price', 'FR': 'Prix Moyen', 'DE': 'Durchschn. Preis', 'ES': 'Precio Promedio', 'AR': 'متوسط السعر', 'KO': '평균 가격', 'JA': '平均価格', 'ZH': '平均价格', 'RU': 'Средняя цена'},
@@ -119,7 +31,67 @@ export const TRANS: Record<string, Record<string, string>> = {
     'm2_col1': {'ID': ' Pemimpin Pasar', 'EN': ' Market Leaders', 'FR': ' Leaders du Marché', 'DE': ' Marktführer', 'ES': ' Líderes del Mercado', 'AR': ' قادة السوق', 'KO': ' 시장 리더', 'JA': ' マーケットリーダー', 'ZH': ' 市场领导者', 'RU': ' Лидеры рынка'},
     'm2_col2': {'ID': ' Nilai Terbaik', 'EN': ' Best Value', 'FR': ' Meilleure Valeur', 'DE': ' Bester Wert', 'ES': ' Mejor Valor', 'AR': ' أفضل قيمة', 'KO': ' 최고의 가치', 'JA': ' 베ストバリュー', 'ZH': ' 最佳价值', 'RU': ' Лучшая цена'},
     'm3_title': {'ID': ' Akses Premium SGO', 'EN': ' SGO Premium Access', 'FR': ' Accès Premium SGO', 'DE': ' SGO Premium Zugang', 'ES': ' Acceso Premium SGO', 'AR': ' وصول SGO المميز', 'KO': ' SGO 프리미엄 액세스', 'JA': ' SGO プレミアムアクセス', 'ZH': ' SGO 高级访问', 'RU': ' SGO Премиум'},
-    'm4_title': {'ID': ' Manajemen Lisensi', 'EN': ' License Management', 'FR': ' Gestion de Licence', 'DE': ' Lizenzmanagement', 'ES': ' Gestión de Licencias', 'AR': ' إدارة الترخيص', 'KO': ' 라이선스 관리', 'JA': ' ライセンス管理', 'ZH': ' 许可证管理', 'RU': ' Управление лицензией'},
+    'm4_title': {'ID': ' Manajemen Lisensi', 'EN': ' License Management', 'FR': ' Gestion de Licence', 'DE': ' Lizenzmanagement', 'ES': ' Gestión de Licencias', 'AR': ' إدارة الترخيص', 'KO': ' 라이선스 관리', 'JA': ' ライセンス 관리', 'ZH': ' 许可证管理', 'RU': ' Управление лицензией'},
     'm4_status_active': {'ID': ' STATUS: AKTIF', 'EN': ' STATUS: ACTIVE', 'FR': ' STATUT: ACTIF', 'DE': ' STATUS: AKTIV', 'ES': ' ESTADO: ACTIVO', 'AR': ' الحالة: نشط', 'KO': ' 상태: 활성', 'JA': ' ステータス: アクティブ', 'ZH': ' 状态：活动', 'RU': ' СТАТУС: АКТИВЕН'},
-    'm4_logout': {'ID': 'Keluar Sistem', 'EN': 'Log Out System', 'FR': 'Déconnexion', 'DE': 'Abmelden', 'ES': 'Cerrar Sesión', 'AR': 'تسجيل الخروج', 'KO': '로그아웃', 'JA': 'ログアウト', 'ZH': '退出系统', 'RU': 'Выйти'}
+    'm4_logout': {'ID': 'Keluar Sistem', 'EN': 'Log Out System', 'FR': 'Déconnexion', 'DE': 'Abmelden', 'ES': 'Cerrar Sesión', 'AR': 'تسجيل الخروج', 'KO': '로그아웃', 'JA': 'ログアウト', 'ZH': '退出系统', 'RU': 'Выйти'},
+    
+    // Updated Subscription Translations (Paid Model)
+    'm3_subtitle': {'ID': 'Pilih paket sesuai jangkauan kompetitor yang ingin Anda pantau.', 'EN': 'Choose a plan based on the competitor coverage you need.'},
+    
+    // Tier 1
+    'm3_plan_basic': {'ID': 'Basic', 'EN': 'Basic'},
+    'm3_price_basic': {'ID': 'Rp 500rb', 'EN': 'IDR 500K'},
+    'm3_desc_basic': {'ID': 'Pantau 5 Hotel Terdekat', 'EN': 'Monitor 5 Nearest Hotels'},
+    
+    // Tier 2
+    'm3_plan_pro': {'ID': 'Pro', 'EN': 'Pro'},
+    'm3_price_pro': {'ID': 'Rp 1 Juta', 'EN': 'IDR 1 Million'},
+    'm3_desc_pro': {'ID': 'Pantau 10 Hotel Terdekat', 'EN': 'Monitor 10 Nearest Hotels'},
+
+    // Tier 3
+    'm3_plan_adv': {'ID': 'Advanced', 'EN': 'Advanced'},
+    'm3_price_adv': {'ID': 'Rp 2 Juta', 'EN': 'IDR 2 Million'},
+    'm3_desc_adv': {'ID': 'Pantau 20 Hotel Terdekat', 'EN': 'Monitor 20 Nearest Hotels'},
+
+    // Tier 4 (Enterprise)
+    'm3_plan_enterprise': {'ID': 'Enterprise', 'EN': 'Enterprise'},
+    'm3_price_custom': {'ID': 'Khusus', 'EN': 'Custom'},
+    'm3_desc_ent': {'ID': 'Akses Seluruh Indonesia', 'EN': 'All Indonesia Access'},
+
+    'm3_period_month': {'ID': '/bulan', 'EN': '/month'},
+    'm3_popular': {'ID': 'PALING LARIS', 'EN': 'BEST SELLER'},
+    'm3_btn_choose': {'ID': 'Pilih Paket', 'EN': 'Choose Plan'},
+    'm3_btn_contact': {'ID': 'Hubungi Kami', 'EN': 'Contact Us'},
+    
+    // Features
+    'feat_radius_5': {'ID': 'Radius: 5 Kompetitor', 'EN': 'Radius: 5 Competitors'},
+    'feat_radius_10': {'ID': 'Radius: 10 Kompetitor', 'EN': 'Radius: 10 Competitors'},
+    'feat_radius_20': {'ID': 'Radius: 20 Kompetitor', 'EN': 'Radius: 20 Competitors'},
+    'feat_radius_all': {'ID': 'Radius: Tanpa Batas', 'EN': 'Radius: Unlimited'},
+    
+    'feat_basic_analysis': {'ID': 'Analisa Harga Dasar', 'EN': 'Basic Price Analysis'},
+    'feat_adv_analysis': {'ID': 'Analisa Tren Lanjutan', 'EN': 'Advanced Trend Analysis'},
+    'feat_daily': {'ID': 'Update Harian', 'EN': 'Daily Updates'},
+    'feat_realtime': {'ID': 'Data Real-time', 'EN': 'Real-time Data'},
+    'feat_export': {'ID': 'Ekspor Laporan', 'EN': 'Report Export'},
+    'feat_api': {'ID': 'Akses API Penuh', 'EN': 'Full API Access'},
+    'feat_support': {'ID': 'Dukungan Email', 'EN': 'Email Support'},
+    'feat_priority': {'ID': 'Dukungan Prioritas WA', 'EN': 'Priority WA Support'},
+    
+    // Account Control
+    'm4_profile': {'ID': 'Profil Pengguna', 'EN': 'User Profile'},
+    'm4_name': {'ID': 'Nama Lengkap', 'EN': 'Full Name'},
+    'm4_email': {'ID': 'Alamat Email', 'EN': 'Email Address'},
+    'm4_role': {'ID': 'Peran', 'EN': 'Role'},
+    'm4_settings_security': {'ID': 'Pengaturan Keamanan', 'EN': 'Security Settings'},
+    'm4_label_password': {'ID': 'Kata Sandi', 'EN': 'Password'},
+    'm4_btn_change': {'ID': 'Ubah', 'EN': 'Change'},
+    'm4_active_sessions': {'ID': 'Sesi Aktif', 'EN': 'Active Sessions'},
+    'm4_device_current': {'ID': 'Perangkat Ini (Web)', 'EN': 'This Device (Web)'},
+    'access_denied': {"ID":"Email atau Password Salah","EN":"Invalid Email or Password"},
+    'login_title': {"ID":"Masuk Sistem SGO","EN":"SGO System Login"},
+    'login_subtitle': {"ID":"Masukkan kredensial Anda untuk melanjutkan","EN":"Enter your credentials to continue"},
+    'login_btn': {"ID":"Masuk Sekarang","EN":"Login Now"},
+    'm4_notif_desc': {"ID":"Aktifkan notifikasi email harian untuk menerima laporan ringkasan pergerakan harga kompetitor dan tren pasar terbaru langsung ke inbox Anda.","EN":"Enable daily email notifications to receive summary reports of competitor price movements and latest market trends directly to your inbox."},
+    'm4_label_notif': {"ID":"Notifikasi Email Harian","EN":"Daily Email Notifications"},
 };
