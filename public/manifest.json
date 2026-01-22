@@ -7,9 +7,14 @@
   "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "/sgo-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
     }
   ]
 }
