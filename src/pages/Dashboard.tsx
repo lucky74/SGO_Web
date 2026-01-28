@@ -4,6 +4,7 @@ import MarketIntelligence from '../components/MarketIntelligence';
 import TrendAnalysis from '../components/TrendAnalysis';
 import Subscription from '../components/Subscription';
 import AccountControl from '../components/AccountControl';
+import AdminPanel from '../components/AdminPanel';
 import { fetchHotels, Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 
@@ -54,6 +55,8 @@ const Dashboard: React.FC = () => {
         return <Subscription />;
       case 'menu_4':
         return <AccountControl />;
+      case 'menu_admin':
+        return <AdminPanel />;
       default:
         return null;
     }

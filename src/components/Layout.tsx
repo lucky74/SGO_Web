@@ -11,7 +11,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { t, language, setLanguage } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -21,6 +21,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
     { id: 'menu_3', icon: CreditCard, label: t('menu_3') },
     { id: 'menu_4', icon: User, label: t('menu_4') },
   ];
+
+  // Add Admin Menu if user is enterprise
+  if (user?.role === 'enterprise') {
+    menus.push({ id: 'menu_admin', icon: Lock, label: 'Admin Panel' });
+  }
 
   return (
     <div className='flex min-h-screen bg-slate-900 text-white'>
