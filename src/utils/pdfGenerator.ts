@@ -18,93 +18,129 @@ export const generatePDF = async (elementId: string, title: string) => {
       allowTaint: true,
       backgroundColor: '#ffffff', // Force white background
       onclone: (clonedDoc) => {
-        // Inject Print Styles
+        const element = clonedDoc.getElementById(elementId);
+        
+        // --- 1. INJECT KOP SURAT (HEADER) ---
+        if (element) {
+          const headerDiv = clonedDoc.createElement('div');
+          headerDiv.style.textAlign = 'center';
+          headerDiv.style.marginBottom = '30px';
+          headerDiv.style.borderBottom = '3px double #1e293b'; // Garis ganda formal
+          headerDiv.style.paddingBottom = '20px';
+          headerDiv.style.fontFamily = 'Arial, Helvetica, sans-serif';
+          
+          headerDiv.innerHTML = `
+            <h1 style="margin: 0; font-size: 28px; font-weight: 800; color: #1e293b; letter-spacing: 2px;">SGO INTELIJEN</h1>
+            <p style="margin: 8px 0 0; font-size: 14px; color: #64748b; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">Hotel Market Intelligence & Trend Analysis Report</p>
+            <div style="margin-top: 15px; font-size: 12px; color: #94a3b8; display: flex; justify-content: space-between;">
+              <span>Report Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span>Confidential Document</span>
+            </div>
+          `;
+          
+          element.insertBefore(headerDiv, element.firstChild);
+        }
+
+        // --- 2. INJECT PRINT STYLES ---
         const style = clonedDoc.createElement('style');
         style.innerHTML = `
-          /* General Reset */
+          /* Reset & Base Fonts */
           * {
-            color: #1e293b !important; /* Dark Slate Text */
+            color: #0f172a !important; /* Slate 900 */
             text-shadow: none !important;
-            font-family: 'Times New Roman', Times, serif !important; /* Document Font */
-          }
-          
-          /* Container Background */
-          #trend-analysis-report, #market-intelligence-report, .glass-card {
-            background: #ffffff !important;
-            background-color: #ffffff !important;
-            border: none !important;
+            font-family: 'Arial', 'Helvetica', sans-serif !important;
             box-shadow: none !important;
           }
+          
+          /* Container Reset */
+          #trend-analysis-report, #market-intelligence-report {
+            background: #ffffff !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
 
-          /* Sections */
+          /* Cards to Sections */
           .glass-card {
-            border-bottom: 1px solid #cbd5e1 !important;
-            margin-bottom: 2rem !important;
-            padding: 1rem 0 !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important; /* Light gray border */
             border-radius: 0 !important;
+            margin-bottom: 30px !important;
+            padding: 20px !important;
+            break-inside: avoid; /* Usaha mencegah potong halaman di tengah card */
           }
 
-          /* Headers */
+          /* Titles */
           h2, h3 {
-            color: #0f172a !important; /* Very Dark Slate */
-            font-weight: bold !important;
+            color: #0f172a !important;
             text-transform: uppercase;
-            border-left: 5px solid #3b82f6;
-            padding-left: 10px;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px !important;
+            border-left: 4px solid #0f172a;
+            padding-left: 12px;
           }
 
-          /* Tables */
+          /* Metric Cards (Kotak-kotak angka) */
+          .glass-card.border-l-4 {
+            border: 1px solid #cbd5e1 !important;
+            border-left-width: 6px !important;
+            background-color: #f8fafc !important;
+          }
+          .text-3xl.font-bold {
+            color: #0f172a !important;
+          }
+
+          /* Tables - Formal Style */
           table {
             width: 100% !important;
             border-collapse: collapse !important;
-            margin-top: 1rem !important;
+            border: 1px solid #000 !important;
+            font-size: 12px !important;
+            margin-top: 10px !important;
           }
           th {
-            background-color: #f1f5f9 !important;
-            color: #0f172a !important;
+            background-color: #e2e8f0 !important; /* Light gray header */
+            color: #000 !important;
             font-weight: bold !important;
-            border-bottom: 2px solid #334155 !important;
             text-transform: uppercase;
-            font-size: 0.8rem !important;
+            border: 1px solid #000 !important;
+            padding: 10px !important;
+            text-align: left;
           }
           td {
-            border-bottom: 1px solid #e2e8f0 !important;
-            padding: 8px !important;
+            border: 1px solid #cbd5e1 !important;
+            padding: 8px 10px !important;
+            color: #334155 !important;
           }
           tr:nth-child(even) {
-            background-color: #f8fafc !important;
+            background-color: #f1f5f9 !important; /* Zebra striping */
           }
 
-          /* Charts (SVG) Fixes */
+          /* Charts */
+          .recharts-wrapper {
+            margin: 0 auto !important;
+          }
           text {
-            fill: #334155 !important; /* Axis labels */
-            font-family: sans-serif !important;
-            font-size: 12px !important;
+            fill: #475569 !important; /* Darker chart text */
+            font-size: 11px !important;
+            font-weight: 500;
           }
-          .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line {
-            stroke: #e2e8f0 !important; /* Lighter grid lines */
-          }
-          
-          /* Hide Elements */
+          /* Hide UI Elements */
           .hide-on-pdf {
             display: none !important;
           }
         `;
         clonedDoc.head.appendChild(style);
 
-        // Hide elements with 'hide-on-pdf' class
-        const hiddenElements = clonedDoc.getElementsByClassName('hide-on-pdf');
-        Array.from(hiddenElements).forEach((el) => {
-          (el as HTMLElement).style.display = 'none';
-        });
-
-        // Force specific styles for PDF layout
+        // --- 3. LAYOUT ADJUSTMENTS ---
         const clonedElement = clonedDoc.getElementById(elementId);
         if (clonedElement) {
-          clonedElement.style.width = '1400px'; // Wider for Landscape
+          // A4 Landscape width approx 1122px (at 96dpi) or higher depending on scale.
+          // Setting a fixed width ensures consistent layout.
+          clonedElement.style.width = '1200px'; 
           clonedElement.style.padding = '40px';
           clonedElement.style.margin = '0 auto';
-          clonedElement.style.color = '#1e293b';
+          clonedElement.style.backgroundColor = '#ffffff';
         }
       }
     });
