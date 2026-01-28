@@ -57,12 +57,12 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
       {/* Header Section */}
       <div className='glass-card p-4 md:p-8 rounded-2xl relative overflow-hidden'>
         <div className='relative z-10'>
-          <h2 className='text-2xl md:text-3xl font-bold mb-2'>{t('m1_title')}</h2>
-          <p className='text-slate-400 mb-6 max-w-2xl'>{t('m1_desc')}</p>
+          <h2 className='text-2xl md:text-3xl font-bold mb-2'><span>{t('m1_title')}</span></h2>
+          <p className='text-slate-400 mb-6 max-w-2xl'><span>{t('m1_desc')}</span></p>
           
           <div className='flex flex-col md:flex-row gap-4 items-stretch md:items-end'>
             <div className='flex-1 w-full md:max-w-md'>
-              <label className='block text-sm text-slate-400 mb-2'>{t('m1_input_label')}</label>
+              <label className='block text-sm text-slate-400 mb-2'><span>{t('m1_input_label')}</span></label>
               <div className='relative'>
                 <MapPin className='absolute left-3 top-3 text-slate-500' size={20} />
                 <input
@@ -102,7 +102,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               ) : (
                 <Search size={20} />
               )}
-              {t('m1_btn')}
+              <span>{t('m1_btn')}</span>
             </button>
           </div>
         </div>
@@ -136,26 +136,26 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               {/* Executive Summary */}
               <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-blue-500'>
-                  <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_1')}</h3>
-                  <p className='text-3xl font-bold'>{displayedHotels.length}</p>
+                  <h3 className='text-slate-400 text-sm mb-1'><span>{t('m1_metric_1')}</span></h3>
+                  <p className='text-3xl font-bold'><span>{displayedHotels.length}</span></p>
                 </div>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-green-500'>
-                  <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_2')}</h3>
+                  <h3 className='text-slate-400 text-sm mb-1'><span>{t('m1_metric_2')}</span></h3>
                   <p className='text-3xl font-bold'>
-                    IDR {(displayedHotels.reduce((acc, h) => acc + (parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0), 0) / (displayedHotels.length || 1)).toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                    <span>IDR</span> <span>{(displayedHotels.reduce((acc, h) => acc + (parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0), 0) / (displayedHotels.length || 1)).toLocaleString('id-ID', { maximumFractionDigits: 0 })}</span>
                   </p>
                 </div>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-purple-500'>
-                  <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_3')}</h3>
+                  <h3 className='text-slate-400 text-sm mb-1'><span>{t('m1_metric_3')}</span></h3>
                   <p className='text-3xl font-bold'>
-                    {displayedHotels.reduce((acc, h) => acc + h.reviews, 0).toLocaleString()}
+                    <span>{displayedHotels.reduce((acc, h) => acc + h.reviews, 0).toLocaleString()}</span>
                   </p>
                 </div>
               </div>
 
               {/* Chart */}
               <div className='glass-card p-6 rounded-xl'>
-                <h3 className='text-xl font-bold mb-6'>{t('m1_viz_title')}</h3>
+                <h3 className='text-xl font-bold mb-6'><span>{t('m1_viz_title')}</span></h3>
                 <div className='h-80 w-full'>
                   <ResponsiveContainer width='100%' height='100%'>
                     <BarChart data={chartData}>
@@ -175,40 +175,40 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               {/* Data Table */}
               <div className='glass-card rounded-xl overflow-hidden'>
                 <div className='p-6 border-b border-slate-700'>
-                  <h3 className='text-xl font-bold'>{t('m1_table_title')}</h3>
+                  <h3 className='text-xl font-bold'><span>{t('m1_table_title')}</span></h3>
                 </div>
                 <div className='overflow-x-auto'>
                   <table className='w-full'>
                     <thead className='bg-slate-800/50'>
                       <tr>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_no')}</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_hotel')}</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_price')}</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_rating')}</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'>{t('m1_col_class')}</th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'><span>{t('m1_col_no')}</span></th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'><span>{t('m1_col_hotel')}</span></th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'><span>{t('m1_col_price')}</span></th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'><span>{t('m1_col_rating')}</span></th>
+                        <th className='px-6 py-4 text-left text-sm font-semibold text-slate-300'><span>{t('m1_col_class')}</span></th>
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-slate-700'>
                       {displayedHotels.map((hotel, index) => (
                         <tr key={index} className='hover:bg-slate-800/30 transition-colors'>
-                          <td className='px-6 py-4 text-slate-400 font-medium'>{index + 1}</td>
+                          <td className='px-6 py-4 text-slate-400 font-medium'><span>{index + 1}</span></td>
                           <td className='px-6 py-4'>
-                            <div className='font-medium text-white'>{hotel.name}</div>
+                            <div className='font-medium text-white'><span>{hotel.name}</span></div>
                             <div className='text-xs text-slate-500 flex items-center gap-1 mt-1'>
                                 <MapPin size={12} /> <span>{hotel.location || city}</span>
                             </div>
                           </td>
-                          <td className='px-6 py-4 text-emerald-400 font-bold'>{hotel.price}</td>
+                          <td className='px-6 py-4 text-emerald-400 font-bold'><span>{hotel.price}</span></td>
                           <td className='px-6 py-4'>
                             <div className='flex items-center gap-1'>
                               <Star size={14} className='text-yellow-400 fill-yellow-400' />
                               <span>{(hotel.rating || 0).toFixed(1)}</span>
-                              <span className='text-slate-500 text-xs'><span>&bull;</span> <span>{hotel.reviews}</span> <span>{t('m1_reviews')}</span></span>
+                              <span className='text-slate-500 text-xs'><span>&bull;</span> <span>{hotel.reviews.toLocaleString()}</span> <span>{t('m1_reviews')}</span></span>
                             </div>
                           </td>
                           <td className='px-6 py-4'>
                             <div className='bg-slate-700/50 px-3 py-1 rounded-lg text-xs font-medium inline-block border border-slate-600'>
-                              {hotel.hotelClass}
+                              <span>{hotel.hotelClass}</span>
                             </div>
                           </td>
                         </tr>
@@ -220,8 +220,8 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
             </>
           ) : (
             <div className='text-center py-20 text-slate-400'>
-              <p className='text-lg'>{t('m1_no_data')}</p>
-              <p className='text-sm mt-2'>{t('m1_search_hint')}</p>
+              <p className='text-lg'><span>{t('m1_no_data')}</span></p>
+              <p className='text-sm mt-2'><span>{t('m1_search_hint')}</span></p>
             </div>
           )}
         </motion.div>
