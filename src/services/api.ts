@@ -1,4 +1,4 @@
-﻿import axios from 'axios';
+import axios from 'axios';
 
 export interface Hotel {
   name: string;
@@ -28,7 +28,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
         
         return {
         name: item.name,
-        price: (item.rate_per_night && item.rate_per_night.lowest) || 'N/A',
+        price: item.rate_per_night && item.rate_per_night.lowest ? String(item.rate_per_night.lowest) : 'N/A',
         rating: item.overall_rating || 0,
         reviews: item.reviews || 0,
         stars: stars,

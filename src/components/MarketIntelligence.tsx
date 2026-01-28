@@ -49,7 +49,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   // Prepare chart data
   const chartData = displayedHotels.map(h => ({
     name: h.name.substring(0, 15) + '...',
-    price: parseInt(h.price.replace(/[^0-9]/g, '')) || 0
+    price: parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0
   }));
 
   return (
@@ -121,7 +121,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                     <div className="bg-yellow-500/10 border border-yellow-500/50 p-4 rounded-xl flex items-center gap-3">
                         <Lock className="text-yellow-500" size={24} />
                         <div>
-                            <p className="text-yellow-200 font-bold text-sm">{t('m1_access_limited')} {user?.role.toUpperCase()}</p>
+                            <p className="text-yellow-200 font-bold text-sm">{t('m1_access_limited')} {(user?.role || '').toUpperCase()}</p>
                             <p className="text-yellow-200/70 text-xs">
                                 {t('m1_limit_warning')} {maxItems} {t('m1_limit_warning_2')} {hotels.length} {t('m1_limit_warning_3')} 
                                 <span className="underline cursor-pointer ml-1 hover:text-white">{t('m1_upgrade_link')}</span> {t('m1_upgrade_text')}
@@ -139,7 +139,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                 <div className='glass-card p-6 rounded-xl border-l-4 border-green-500'>
                   <h3 className='text-slate-400 text-sm mb-1'>{t('m1_metric_2')}</h3>
                   <p className='text-3xl font-bold'>
-                    IDR {(displayedHotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / displayedHotels.length).toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                    IDR {(displayedHotels.reduce((acc, h) => acc + (parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0), 0) / (displayedHotels.length || 1)).toLocaleString('id-ID', { maximumFractionDigits: 0 })}
                   </p>
                 </div>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-purple-500'>
@@ -199,7 +199,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                           <td className='px-6 py-4'>
                             <div className='flex items-center gap-1'>
                               <Star size={14} className='text-yellow-400 fill-yellow-400' />
-                              <span>{hotel.rating.toFixed(1)}</span>
+                              <span>{(hotel.rating || 0).toFixed(1)}</span>
                               <span className='text-slate-500 text-xs'>&bull; {hotel.reviews} {t('m1_reviews')}</span>
                             </div>
                           </td>
