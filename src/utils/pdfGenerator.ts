@@ -18,129 +18,15 @@ export const generatePDF = async (elementId: string, title: string) => {
       allowTaint: true,
       backgroundColor: '#ffffff', // Force white background
       onclone: (clonedDoc) => {
+        // No longer need complex injection because we are targeting a pre-styled report template.
+        // Just ensure it's visible in the clone.
         const element = clonedDoc.getElementById(elementId);
-        
-        // --- 1. INJECT KOP SURAT (HEADER) ---
         if (element) {
-          const headerDiv = clonedDoc.createElement('div');
-          headerDiv.style.textAlign = 'center';
-          headerDiv.style.marginBottom = '30px';
-          headerDiv.style.borderBottom = '3px double #1e293b'; // Garis ganda formal
-          headerDiv.style.paddingBottom = '20px';
-          headerDiv.style.fontFamily = 'Arial, Helvetica, sans-serif';
-          
-          headerDiv.innerHTML = `
-            <h1 style="margin: 0; font-size: 28px; font-weight: 800; color: #1e293b; letter-spacing: 2px;">SGO INTELIJEN</h1>
-            <p style="margin: 8px 0 0; font-size: 14px; color: #64748b; font-weight: 500; text-transform: uppercase; letter-spacing: 1px;">Hotel Market Intelligence & Trend Analysis Report</p>
-            <div style="margin-top: 15px; font-size: 12px; color: #94a3b8; display: flex; justify-content: space-between;">
-              <span>Report Date: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <span>Confidential Document</span>
-            </div>
-          `;
-          
-          element.insertBefore(headerDiv, element.firstChild);
-        }
-
-        // --- 2. INJECT PRINT STYLES ---
-        const style = clonedDoc.createElement('style');
-        style.innerHTML = `
-          /* Reset & Base Fonts */
-          * {
-            color: #0f172a !important; /* Slate 900 */
-            text-shadow: none !important;
-            font-family: 'Arial', 'Helvetica', sans-serif !important;
-            box-shadow: none !important;
-          }
-          
-          /* Container Reset */
-          #trend-analysis-report, #market-intelligence-report {
-            background: #ffffff !important;
-            padding: 0 !important;
-            margin: 0 !important;
-          }
-
-          /* Cards to Sections */
-          .glass-card {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important; /* Light gray border */
-            border-radius: 0 !important;
-            margin-bottom: 30px !important;
-            padding: 20px !important;
-            break-inside: avoid; /* Usaha mencegah potong halaman di tengah card */
-          }
-
-          /* Titles */
-          h2, h3 {
-            color: #0f172a !important;
-            text-transform: uppercase;
-            font-weight: 700 !important;
-            letter-spacing: 0.5px;
-            margin-bottom: 15px !important;
-            border-left: 4px solid #0f172a;
-            padding-left: 12px;
-          }
-
-          /* Metric Cards (Kotak-kotak angka) */
-          .glass-card.border-l-4 {
-            border: 1px solid #cbd5e1 !important;
-            border-left-width: 6px !important;
-            background-color: #f8fafc !important;
-          }
-          .text-3xl.font-bold {
-            color: #0f172a !important;
-          }
-
-          /* Tables - Formal Style */
-          table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-            border: 1px solid #000 !important;
-            font-size: 12px !important;
-            margin-top: 10px !important;
-          }
-          th {
-            background-color: #e2e8f0 !important; /* Light gray header */
-            color: #000 !important;
-            font-weight: bold !important;
-            text-transform: uppercase;
-            border: 1px solid #000 !important;
-            padding: 10px !important;
-            text-align: left;
-          }
-          td {
-            border: 1px solid #cbd5e1 !important;
-            padding: 8px 10px !important;
-            color: #334155 !important;
-          }
-          tr:nth-child(even) {
-            background-color: #f1f5f9 !important; /* Zebra striping */
-          }
-
-          /* Charts */
-          .recharts-wrapper {
-            margin: 0 auto !important;
-          }
-          text {
-            fill: #475569 !important; /* Darker chart text */
-            font-size: 11px !important;
-            font-weight: 500;
-          }
-          /* Hide UI Elements */
-          .hide-on-pdf {
-            display: none !important;
-          }
-        `;
-        clonedDoc.head.appendChild(style);
-
-        // --- 3. LAYOUT ADJUSTMENTS ---
-        const clonedElement = clonedDoc.getElementById(elementId);
-        if (clonedElement) {
-          // A4 Landscape width approx 1122px (at 96dpi) or higher depending on scale.
-          // Setting a fixed width ensures consistent layout.
-          clonedElement.style.width = '1200px'; 
-          clonedElement.style.padding = '40px';
-          clonedElement.style.margin = '0 auto';
-          clonedElement.style.backgroundColor = '#ffffff';
+           element.style.display = 'block'; // Make sure it's visible
+           element.style.position = 'relative'; // Reset position
+           element.style.left = '0';
+           element.style.top = '0';
+           element.style.margin = '0 auto';
         }
       }
     });
