@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { LogOut, LayoutDashboard, TrendingUp, CreditCard, User, Globe, Menu, X } from 'lucide-react';
+import { LogOut, LayoutDashboard, TrendingUp, CreditCard, User, Globe, Menu, X, Lock } from 'lucide-react';
 import { LANGUAGES, Language } from '../data/translations';
 
 interface LayoutProps {
