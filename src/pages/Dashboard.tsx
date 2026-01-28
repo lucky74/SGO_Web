@@ -32,30 +32,38 @@ const Dashboard: React.FC = () => {
   };
 
   const renderContent = () => {
+    // Helper to keep report components mounted but hidden when not active
+    // This allows the PDF generator to access both views for a combined report
+    const renderReports = () => (
+        <>
+            <div id="mi-wrapper" style={activeMenu === 'menu_1' ? { display: 'block' } : { display: 'none' }}>
+                 <ErrorBoundary>
+                    <MarketIntelligence 
+                      city={city}
+                      setCity={setCity}
+                      hotels={hotels}
+                      loading={loading}
+                      searched={searched}
+                      handleSearch={handleSearch}
+                    />
+                  </ErrorBoundary>
+            </div>
+            <div id="ta-wrapper" style={activeMenu === 'menu_2' ? { display: 'block' } : { display: 'none' }}>
+                 <ErrorBoundary>
+                    <TrendAnalysis 
+                      hotels={hotels}
+                      searched={searched}
+                      loading={loading}
+                    />
+                  </ErrorBoundary>
+            </div>
+        </>
+    );
+
     switch (activeMenu) {
       case 'menu_1':
-        return (
-          <ErrorBoundary>
-            <MarketIntelligence 
-              city={city}
-              setCity={setCity}
-              hotels={hotels}
-              loading={loading}
-              searched={searched}
-              handleSearch={handleSearch}
-            />
-          </ErrorBoundary>
-        );
       case 'menu_2':
-        return (
-          <ErrorBoundary>
-            <TrendAnalysis 
-              hotels={hotels}
-              searched={searched}
-              loading={loading}
-            />
-          </ErrorBoundary>
-        );
+        return renderReports();
       case 'menu_3':
         return <Subscription />;
       case 'menu_4':

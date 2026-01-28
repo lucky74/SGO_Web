@@ -240,7 +240,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
       </motion.div>
 
       {/* Competitor Analysis Matrix */}
-      <div className='glass-card p-6 rounded-xl'>
+      <div id="report-trend-table" className='glass-card p-6 rounded-xl'>
         <h3 className='text-xl font-bold mb-6 flex items-center gap-2'>
             <Users className='text-purple-400' size={20} /> {t('m2_leader_title')}
         </h3>
@@ -438,7 +438,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
         </div>
 
         {/* Rating vs Price Scatter */}
-        <div className='glass-card p-6 rounded-xl'>
+        <div id="report-trend-chart-2" className='glass-card p-6 rounded-xl'>
           <h3 className='text-xl font-bold mb-6 text-slate-200'>{t('m2_chart_scatter')}</h3>
           <div className='h-80 w-full'>
             <ResponsiveContainer width='100%' height='100%'>
