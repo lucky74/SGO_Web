@@ -79,7 +79,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                 <button
                   onClick={handleDownloadPDF}
                   disabled={isGeneratingPdf}
-                  className={`glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold border border-blue-500/30 transition-all ${
+                  className={`hide-on-pdf glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold border border-blue-500/30 transition-all ${
                     isGeneratingPdf 
                       ? 'bg-blue-600/50 cursor-wait opacity-80' 
                       : 'hover:bg-blue-600/20 hover:scale-105 active:scale-95'
@@ -100,7 +100,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
              )}
           </div>
           
-          <div className='flex flex-col md:flex-row gap-4 items-stretch md:items-end'>
+          <div className='flex flex-col md:flex-row gap-4 items-stretch md:items-end hide-on-pdf'>
             <div className='flex-1 w-full md:max-w-md'>
               <label className='block text-sm text-slate-400 mb-2'><span>{t('m1_input_label')}</span></label>
               <div className='relative'>

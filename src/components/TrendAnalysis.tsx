@@ -193,7 +193,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
           <button
             onClick={handleDownloadPDF}
             disabled={isGeneratingPdf}
-            className={`glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold border border-blue-500/30 transition-all ${
+            className={`hide-on-pdf glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold border border-blue-500/30 transition-all ${
               isGeneratingPdf 
                 ? 'bg-blue-600/50 cursor-wait opacity-80' 
                 : 'hover:bg-blue-600/20 hover:scale-105 active:scale-95'

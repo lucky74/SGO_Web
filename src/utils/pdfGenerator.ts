@@ -16,11 +16,38 @@ export const generatePDF = async (elementId: string, title: string) => {
       logging: false,
       useCORS: true, // Handle cross-origin images if any
       allowTaint: true,
-      backgroundColor: '#0f172a' // Ensure background color is captured (slate-900)
+      backgroundColor: '#0f172a', // Ensure background color is captured (slate-900)
+      onclone: (clonedDoc) => {
+        // Hide elements with 'hide-on-pdf' class
+        const hiddenElements = clonedDoc.getElementsByClassName('hide-on-pdf');
+        Array.from(hiddenElements).forEach((el) => {
+          (el as HTMLElement).style.display = 'none';
+        });
+
+        // Force specific styles for PDF layout
+        const clonedElement = clonedDoc.getElementById(elementId);
+        if (clonedElement) {
+          clonedElement.style.width = '1200px'; // Force desktop width for consistent layout
+          clonedElement.style.padding = '40px'; // Add padding
+          clonedElement.style.margin = '0';
+          
+          // Ensure all text is visible and properly colored
+          const allText = clonedElement.querySelectorAll('*');
+          allText.forEach((el) => {
+            if (el instanceof HTMLElement) {
+              // Ensure text color is light for dark background
+               // We don't force it here because Tailwind classes usually handle it, 
+               // but if there are issues, we can uncomment:
+               // el.style.color = '#e2e8f0'; 
+            }
+          });
+        }
+      }
     });
 
     const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
+    // Landscape A4
+    const pdf = new jsPDF('l', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
     const imgWidth = pdfWidth;
@@ -46,7 +73,11 @@ export const generatePDF = async (elementId: string, title: string) => {
     for (let i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
       pdf.setFontSize(10);
-      pdf.setTextColor(100);
+      pdf.setTextColor(150); // Light gray for footer on dark bg? No, PDF footer is on top of image? 
+      // Wait, if image covers the whole page, footer might be covered or invisible.
+      // If we use landscape, the image might fit better.
+      // Let's make footer white/light gray
+      pdf.setTextColor(200, 200, 200); 
       pdf.text(
         'Laporan di buat oleh SGO Intelijen',
         pdfWidth / 2,
