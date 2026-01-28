@@ -5,6 +5,7 @@ import TrendAnalysis from '../components/TrendAnalysis';
 import Subscription from '../components/Subscription';
 import AccountControl from '../components/AccountControl';
 import AdminPanel from '../components/AdminPanel';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { fetchHotels, Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 
@@ -34,22 +35,26 @@ const Dashboard: React.FC = () => {
     switch (activeMenu) {
       case 'menu_1':
         return (
-          <MarketIntelligence 
-            city={city}
-            setCity={setCity}
-            hotels={hotels}
-            loading={loading}
-            searched={searched}
-            handleSearch={handleSearch}
-          />
+          <ErrorBoundary>
+            <MarketIntelligence 
+              city={city}
+              setCity={setCity}
+              hotels={hotels}
+              loading={loading}
+              searched={searched}
+              handleSearch={handleSearch}
+            />
+          </ErrorBoundary>
         );
       case 'menu_2':
         return (
-          <TrendAnalysis 
-            hotels={hotels}
-            searched={searched}
-            loading={loading}
-          />
+          <ErrorBoundary>
+            <TrendAnalysis 
+              hotels={hotels}
+              searched={searched}
+              loading={loading}
+            />
+          </ErrorBoundary>
         );
       case 'menu_3':
         return <Subscription />;

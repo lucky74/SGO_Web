@@ -23,11 +23,12 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
 
     if (response.data.properties) {
       return response.data.properties.slice(0, 60).map((item: any) => {
-        const starMatch = String(item.hotel_class).match(/(\d+)/);
+        if (!item) return null;
+        const starMatch = String(item.hotel_class || '').match(/(\d+)/);
         const stars = starMatch ? parseInt(starMatch[0]) : 0;
         
         return {
-        name: item.name,
+        name: item.name || 'Unknown Hotel',
         price: item.rate_per_night && item.rate_per_night.lowest ? String(item.rate_per_night.lowest) : 'N/A',
         rating: item.overall_rating || 0,
         reviews: item.reviews || 0,
@@ -38,7 +39,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
         link: item.link || '#',
         deal: item.deal_description || undefined,
         location: item.location || undefined
-      }});
+      }}).filter((item: any) => item !== null);
     }
     return [];
   } catch (error) {
