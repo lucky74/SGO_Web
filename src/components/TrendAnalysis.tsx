@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Lock, Download } from 'lucide-react';
+import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Lock, Download, Tag, Award, Star } from 'lucide-react';
 import { generatePDF } from '../utils/pdfGenerator';
 
 interface TrendAnalysisProps {
@@ -373,11 +373,54 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
         </div>
       </div>
 
+      {/* Key Metrics */}
+      <div id="report-trend-metrics" className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+        <div className='glass-card p-4 rounded-xl flex items-center gap-4'>
+          <div className='p-3 bg-blue-500/20 rounded-lg text-blue-400'>
+            <Tag size={24} />
+          </div>
+          <div>
+            <p className='text-slate-400 text-xs'>Min Price</p>
+            <p className='text-lg font-bold'>IDR {minPrice.toLocaleString()}</p>
+          </div>
+        </div>
+        <div className='glass-card p-4 rounded-xl flex items-center gap-4'>
+          <div className='p-3 bg-green-500/20 rounded-lg text-green-400'>
+            <TrendingUp size={24} />
+          </div>
+          <div>
+            <p className='text-slate-400 text-xs'>Avg Price</p>
+            <p className='text-lg font-bold'>IDR {Math.round(pieData.reduce((acc, curr) => acc + curr.value, 0) > 0 ? prices.reduce((a,b)=>a+b,0)/prices.length : 0).toLocaleString()}</p>
+          </div>
+        </div>
+        <div className='glass-card p-4 rounded-xl flex items-center gap-4'>
+          <div className='p-3 bg-purple-500/20 rounded-lg text-purple-400'>
+            <Award size={24} />
+          </div>
+          <div>
+            <p className='text-slate-400 text-xs'>Max Price</p>
+            <p className='text-lg font-bold'>IDR {maxPrice.toLocaleString()}</p>
+          </div>
+        </div>
+        <div className='glass-card p-4 rounded-xl flex items-center gap-4'>
+          <div className='p-3 bg-yellow-500/20 rounded-lg text-yellow-400'>
+            <Star size={24} />
+          </div>
+          <div>
+            <p className='text-slate-400 text-xs'>Dominant</p>
+            <p className='text-lg font-bold'>{dominantClass}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Charts */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        {/* Price Trend Line Chart */}
-        <div className='glass-card p-6 rounded-xl'>
-          <h3 className='text-xl font-bold mb-6 text-slate-200'>{t('m2_chart_price')}</h3>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+        {/* Price Trend Chart */}
+        <div id="report-trend-chart-1" className='glass-card p-6 rounded-xl'>
+          <h3 className='text-xl font-bold mb-6 flex items-center gap-2'>
+            <TrendingUp size={20} className='text-blue-400' />
+            {t('m2_chart_price')}
+          </h3>
           <div className='h-80 w-full'>
             <ResponsiveContainer width='100%' height='100%'>
               <LineChart data={priceTrendData}>
@@ -411,6 +454,11 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
           </div>
         </div>
       </div>
+
+      {/* HIDDEN REPORT TEMPLATE */}
+      {searched && hotels.length > 0 && (
+        <TrendReportTemplate hotels={hotels} pieData={pieData} scatterData={scatterData} />
+      )}
     </div>
   );
 };

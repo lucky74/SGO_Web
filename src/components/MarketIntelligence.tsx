@@ -270,7 +270,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                 )}
 
               {/* Executive Summary */}
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <div id="report-summary-metrics" className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                 <div className='glass-card p-6 rounded-xl border-l-4 border-blue-500'>
                   <h3 className='text-slate-400 text-sm mb-1'><span>{t('m1_metric_1')}</span></h3>
                   <p className='text-3xl font-bold'><span>{displayedHotels.length}</span></p>
@@ -290,7 +290,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               </div>
 
               {/* Chart */}
-              <div className='glass-card p-6 rounded-xl'>
+              <div id="report-main-chart" className='glass-card p-6 rounded-xl'>
                 <h3 className='text-xl font-bold mb-6'><span>{t('m1_viz_title')}</span></h3>
                 <div className='h-80 w-full'>
                   <ResponsiveContainer width='100%' height='100%'>
@@ -309,7 +309,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               </div>
 
               {/* Data Table */}
-              <div className='glass-card rounded-xl overflow-hidden'>
+              <div id="report-data-table" className='glass-card rounded-xl overflow-hidden'>
                 <div className='p-6 border-b border-slate-700'>
                   <h3 className='text-xl font-bold'><span>{t('m1_table_title')}</span></h3>
                 </div>

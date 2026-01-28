@@ -18,16 +18,144 @@ export const generatePDF = async (elementId: string, title: string) => {
       allowTaint: true,
       backgroundColor: '#ffffff', // Force white background
       onclone: (clonedDoc) => {
-        // No longer need complex injection because we are targeting a pre-styled report template.
-        // Just ensure it's visible in the clone.
-        const element = clonedDoc.getElementById(elementId);
-        if (element) {
-           element.style.display = 'block'; // Make sure it's visible
-           element.style.position = 'relative'; // Reset position
-           element.style.left = '0';
-           element.style.top = '0';
-           element.style.margin = '0 auto';
+        // --- 1. PREPARE NEW DOCUMENT STRUCTURE ---
+        const originalContainer = clonedDoc.getElementById(elementId);
+        if (!originalContainer) return;
+
+        // Create a new Root for the PDF Report
+        const reportRoot = clonedDoc.createElement('div');
+        reportRoot.id = 'pdf-report-root';
+        reportRoot.style.width = '100%';
+        reportRoot.style.padding = '40px';
+        reportRoot.style.boxSizing = 'border-box';
+        reportRoot.style.backgroundColor = '#ffffff';
+        reportRoot.style.color = '#000000';
+        reportRoot.style.fontFamily = 'Arial, sans-serif';
+
+        // --- 2. HEADER (KOP SURAT) ---
+        const headerDiv = clonedDoc.createElement('div');
+        headerDiv.innerHTML = `
+            <div style="border-bottom: 3px double #000; padding-bottom: 20px; margin-bottom: 30px; text-align: center;">
+                <h1 style="margin: 0; font-size: 24px; font-weight: 800; text-transform: uppercase; color: #000;">SGO INTELIJEN</h1>
+                <p style="margin: 5px 0; font-size: 14px; color: #555;">Hotel Market Intelligence & Trend Analysis Report</p>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 15px; color: #333;">
+                    <span>Generated on: ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span>Confidential - For Internal Use Only</span>
+                </div>
+            </div>
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 20px; text-decoration: underline;">${title.replace(/_/g, ' ').toUpperCase()} REPORT</h2>
+        `;
+        reportRoot.appendChild(headerDiv);
+
+        // --- 3. EXTRACT & RESTRUCTURE CONTENT ---
+        
+        // Helper to find and append element
+        const moveElement = (id: string, sectionTitle: string) => {
+            const el = clonedDoc.getElementById(id);
+            if (el) {
+                const section = clonedDoc.createElement('div');
+                section.style.marginBottom = '40px';
+                section.style.pageBreakInside = 'avoid'; // Prevent breaking inside section
+
+                const title = clonedDoc.createElement('h3');
+                title.innerText = sectionTitle;
+                title.style.borderLeft = '4px solid #000';
+                title.style.paddingLeft = '10px';
+                title.style.marginBottom = '15px';
+                title.style.fontSize = '16px';
+                title.style.textTransform = 'uppercase';
+                title.style.color = '#000';
+                
+                section.appendChild(title);
+                section.appendChild(el);
+                reportRoot.appendChild(section);
+
+                // Fix styling of moved element
+                el.style.backgroundColor = '#fff';
+                el.style.color = '#000';
+                el.style.border = 'none';
+                el.style.padding = '0';
+                el.style.margin = '0';
+                
+                // Fix specific child elements
+                const cards = el.querySelectorAll('.glass-card');
+                cards.forEach((card: any) => {
+                    card.style.backgroundColor = '#fff';
+                    card.style.border = '1px solid #ccc';
+                    card.style.color = '#000';
+                    card.style.boxShadow = 'none';
+                    card.style.marginBottom = '10px';
+                });
+
+                const texts = el.querySelectorAll('*');
+                texts.forEach((t: any) => {
+                    t.style.color = '#000';
+                    t.style.textShadow = 'none';
+                });
+            }
+        };
+
+        // MARKET INTELLIGENCE REPORT STRUCTURE
+        if (elementId === 'market-intelligence-report') {
+            moveElement('report-summary-metrics', 'Executive Summary');
+            moveElement('report-main-chart', 'Market Price Analysis');
+            moveElement('report-data-table', 'Detailed Hotel Listings');
+        } 
+        // TREND ANALYSIS REPORT STRUCTURE
+        else if (elementId === 'trend-analysis-report') {
+            moveElement('report-trend-metrics', 'Performance Metrics');
+            
+            // Group Charts
+            const chartsContainer = clonedDoc.createElement('div');
+            chartsContainer.style.display = 'block';
+            
+            const chart1 = clonedDoc.getElementById('report-trend-chart-1');
+            const chart2 = clonedDoc.getElementById('report-trend-chart-2');
+            const chart3 = clonedDoc.getElementById('report-trend-chart-3');
+            
+            if (chart1 || chart2 || chart3) {
+                 const chartSection = clonedDoc.createElement('div');
+                 chartSection.style.marginBottom = '40px';
+                 chartSection.innerHTML = `<h3 style="border-left: 4px solid #000; padding-left: 10px; margin-bottom: 15px; font-size: 16px; text-transform: uppercase; color: #000;">Visual Market Trends</h3>`;
+                 
+                 [chart1, chart2, chart3].forEach(c => {
+                    if (c) {
+                        c.style.backgroundColor = '#fff';
+                        c.style.marginBottom = '20px';
+                        c.style.border = '1px solid #eee';
+                        c.style.padding = '10px';
+                        // Fix text color inside charts
+                        c.querySelectorAll('text').forEach((t: any) => t.style.fill = '#000');
+                        chartSection.appendChild(c);
+                    }
+                 });
+                 reportRoot.appendChild(chartSection);
+            }
+
+            moveElement('report-trend-table', 'Competitor Leaderboard');
         }
+
+        // --- 4. FINAL CLEANUP ---
+        // Replace original content with new report root
+        originalContainer.innerHTML = '';
+        originalContainer.appendChild(reportRoot);
+        
+        // Force width for PDF capture
+        originalContainer.style.width = '1200px';
+        originalContainer.style.height = 'auto';
+        originalContainer.style.position = 'relative';
+        originalContainer.style.overflow = 'visible';
+
+        // Add Print Styles for Tables
+        const style = clonedDoc.createElement('style');
+        style.innerHTML = `
+            table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #000 !important; font-size: 12px !important; }
+            th { background-color: #eee !important; color: #000 !important; font-weight: bold !important; padding: 8px !important; border: 1px solid #000 !important; }
+            td { padding: 8px !important; border: 1px solid #ccc !important; color: #000 !important; }
+            tr:nth-child(even) { background-color: #f9f9f9 !important; }
+            .hide-on-pdf { display: none !important; }
+        `;
+        clonedDoc.head.appendChild(style);
       }
     });
 
