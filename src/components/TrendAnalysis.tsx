@@ -23,18 +23,6 @@ interface StarGroup {
 const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading }) => {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-
-  const handleDownloadPDF = async () => {
-    setIsGeneratingPdf(true);
-    try {
-      await generatePDF('Laporan_Analisa_Tren');
-    } catch (error) {
-      console.error('PDF Generation failed', error);
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
 
   // LOCK FEATURE FOR BASIC USERS
   if (user?.role === 'basic') {
@@ -188,30 +176,6 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
             {t('m2_desc')}
           </p>
         </div>
-        
-        {(user?.role === 'advanced' || user?.role === 'enterprise') && (
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isGeneratingPdf}
-            className={`hide-on-pdf glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold border border-blue-500/30 transition-all ${
-              isGeneratingPdf 
-                ? 'bg-blue-600/50 cursor-wait opacity-80' 
-                : 'hover:bg-blue-600/20 hover:scale-105 active:scale-95'
-            }`}
-          >
-            {isGeneratingPdf ? (
-              <>
-                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                <span>Generating...</span>
-              </>
-            ) : (
-              <>
-                <Download size={16} />
-                <span>Export PDF</span>
-              </>
-            )}
-          </button>
-        )}
       </div>
 
       {/* AI Smart Insight */}

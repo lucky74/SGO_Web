@@ -3,104 +3,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Star, Lock, AlertCircle, Download } from 'lucide-react';
+import { Search, MapPin, Star, Lock, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { generatePDF } from '../utils/pdfGenerator';
-
-// --- PRINT REPORT COMPONENT ---
-const MarketReportTemplate = ({ city, hotels, chartData }: { city: string, hotels: Hotel[], chartData: any[] }) => {
-  const metrics = [
-    { label: 'Total Properties', value: hotels.length },
-    { label: 'Average Price', value: `IDR ${(hotels.reduce((acc, h) => acc + (parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0), 0) / (hotels.length || 1)).toLocaleString('id-ID', { maximumFractionDigits: 0 })}` },
-    { label: 'Total Reviews', value: hotels.reduce((acc, h) => acc + h.reviews, 0).toLocaleString() }
-  ];
-
-  return (
-    <div id="market-report-template" className="fixed top-0 left-0 -z-50 bg-white text-slate-900 font-serif" style={{ width: '1123px', minHeight: '794px', padding: '40px', left: '-9999px' }}>
-      {/* HEADER */}
-      <div className="flex justify-between items-end border-b-4 border-slate-900 pb-4 mb-8">
-        <div>
-          <h1 className="text-4xl font-bold tracking-wider text-slate-900">SGO INTELIJEN</h1>
-          <p className="text-sm font-sans text-slate-500 mt-1 tracking-widest uppercase">Market Intelligence & Strategy Unit</p>
-        </div>
-        <div className="text-right font-sans text-sm text-slate-500">
-          <p>Generated on: {new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-          <p>Report ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
-        </div>
-      </div>
-
-      {/* TITLE */}
-      <div className="text-center mb-10">
-        <h2 className="text-2xl font-bold uppercase decoration-double underline decoration-slate-400 underline-offset-4 mb-2">Laporan Analisis Pasar: {city}</h2>
-        <p className="italic text-slate-600">Confidential Market Data Assessment</p>
-      </div>
-
-      {/* EXECUTIVE SUMMARY */}
-      <div className="mb-10">
-        <h3 className="text-lg font-bold uppercase border-l-4 border-slate-900 pl-3 mb-4 font-sans">1. Executive Summary</h3>
-        <div className="grid grid-cols-3 gap-6">
-          {metrics.map((m, i) => (
-            <div key={i} className="border border-slate-300 p-4 bg-slate-50">
-              <p className="text-xs uppercase tracking-wide text-slate-500 font-sans mb-1">{m.label}</p>
-              <p className="text-2xl font-bold text-slate-900 font-mono">{m.value}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-4 text-justify text-sm leading-relaxed font-sans text-slate-700">
-          Berdasarkan data pasar terkini di area <strong>{city}</strong>, terdapat <strong>{hotels.length}</strong> properti yang terpantau aktif. 
-          Rata-rata harga pasar saat ini berada di angka <strong>{metrics[1].value}</strong>, dengan total interaksi ulasan pelanggan mencapai <strong>{metrics[2].value}</strong>. 
-          Laporan ini menyajikan analisis kompetitif mendalam untuk mendukung pengambilan keputusan strategis.
-        </p>
-      </div>
-
-      {/* CHART SECTION */}
-      <div className="mb-10 break-inside-avoid">
-        <h3 className="text-lg font-bold uppercase border-l-4 border-slate-900 pl-3 mb-4 font-sans">2. Price Distribution Analysis</h3>
-        <div className="border border-slate-200 p-4 h-[350px] bg-white">
-           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="name" stroke="#64748b" fontSize={10} angle={-45} textAnchor="end" height={60} />
-              <YAxis stroke="#64748b" fontSize={10} />
-              <Bar dataKey="price" fill="#334155" name="Price (IDR)" radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* TABLE SECTION */}
-      <div className="mb-8">
-        <h3 className="text-lg font-bold uppercase border-l-4 border-slate-900 pl-3 mb-4 font-sans">3. Detailed Property Data</h3>
-        <table className="w-full text-sm font-sans border-collapse border border-slate-300">
-          <thead>
-            <tr className="bg-slate-100">
-              <th className="border border-slate-300 p-2 text-left">Property Name</th>
-              <th className="border border-slate-300 p-2 text-right">Price (IDR)</th>
-              <th className="border border-slate-300 p-2 text-center">Rating</th>
-              <th className="border border-slate-300 p-2 text-right">Reviews</th>
-            </tr>
-          </thead>
-          <tbody>
-            {hotels.map((h, i) => (
-              <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                <td className="border border-slate-300 p-2 font-medium">{h.name}</td>
-                <td className="border border-slate-300 p-2 text-right font-mono">{h.price}</td>
-                <td className="border border-slate-300 p-2 text-center">{h.rating}</td>
-                <td className="border border-slate-300 p-2 text-right">{h.reviews.toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* FOOTER */}
-      <div className="border-t border-slate-300 pt-4 flex justify-between items-center text-xs text-slate-400 font-sans mt-auto">
-        <span>&copy; 2026 SGO Intelijen. All rights reserved.</span>
-        <span>Developer SGO Intelijen copyright 2026</span>
-      </div>
-    </div>
-  );
-};
 
 interface MarketIntelligenceProps {
   city: string;
@@ -117,19 +21,6 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   const { t } = useLanguage();
   const { user } = useAuth();
   const [error, setError] = useState('');
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-
-  const handleDownloadPDF = async () => {
-    setIsGeneratingPdf(true);
-    try {
-      // Use the main view ID which contains the tagged elements for extraction
-      await generatePDF(`Laporan_Analisis_Pasar_${city}`);
-    } catch (error) {
-      console.error('PDF Generation failed', error);
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
 
   const validateAndSearch = () => {
     // If user has restricted city, check if the searched city contains the allowed city name
@@ -171,29 +62,6 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               <h2 className='text-2xl md:text-3xl font-bold mb-2'><span>{t('m1_title')}</span></h2>
               <p className='text-slate-400 max-w-2xl'><span>{t('m1_desc')}</span></p>
             </div>
-            {(user?.role === 'advanced' || user?.role === 'enterprise') && (
-                <button
-                  onClick={handleDownloadPDF}
-                  disabled={isGeneratingPdf}
-                  className={`hide-on-pdf glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold border border-blue-500/30 transition-all ${
-                    isGeneratingPdf 
-                      ? 'bg-blue-600/50 cursor-wait opacity-80' 
-                      : 'hover:bg-blue-600/20 hover:scale-105 active:scale-95'
-                  }`}
-                >
-                  {isGeneratingPdf ? (
-                    <>
-                      <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                      <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download size={16} />
-                      <span>Export PDF</span>
-                    </>
-                  )}
-                </button>
-             )}
           </div>
           
           <div className='flex flex-col md:flex-row gap-4 items-stretch md:items-end hide-on-pdf'>
@@ -363,9 +231,6 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
         </motion.div>
       )}
       {/* HIDDEN REPORT TEMPLATE */}
-      {searched && !loading && (
-        <MarketReportTemplate city={city} hotels={hotels} chartData={chartData} />
-      )}
     </div>
   );
 };

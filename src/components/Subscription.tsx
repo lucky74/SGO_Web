@@ -30,7 +30,6 @@ const Subscription = () => {
         t('feat_radius_10'),
         t('feat_realtime'),
         t('feat_adv_analysis'),
-        t('feat_export'),
         t('feat_priority')
       ],
       highlight: true,
@@ -46,7 +45,6 @@ const Subscription = () => {
         t('feat_radius_20'),
         t('feat_realtime'),
         t('feat_adv_analysis'),
-        t('feat_export'),
         t('feat_priority')
       ],
       highlight: false,

@@ -68,7 +68,6 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'feat_adv_analysis': {'ID': 'Analisa Tren Lanjutan', 'EN': 'Advanced Trend Analysis'},
     'feat_daily': {'ID': 'Update Harian', 'EN': 'Daily Updates'},
     'feat_realtime': {'ID': 'Data Real-time', 'EN': 'Real-time Data'},
-    'feat_export': {'ID': 'Ekspor Laporan', 'EN': 'Report Export'},
     'feat_api': {'ID': 'Akses API Penuh', 'EN': 'Full API Access'},
     'feat_support': {'ID': 'Dukungan Email', 'EN': 'Email Support'},
     'feat_priority': {'ID': 'Dukungan Prioritas WA', 'EN': 'Priority WA Support'},
