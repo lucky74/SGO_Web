@@ -135,7 +135,58 @@ export const generatePDF = async (elementId: string, title: string) => {
             moveElement('report-trend-table', 'Competitor Leaderboard');
         }
 
-        // --- 4. FINAL CLEANUP ---
+        // --- 4. SMART PAGINATION (Prevent Cut-off Charts) ---
+        // Calculate A4 Landscape height in pixels based on 1200px width
+        // A4: 297mm x 210mm. Ratio: 1200px / 297mm = ~4.04 px/mm
+        // Page Height = 210mm * 4.04 = ~848px
+        const PAGE_HEIGHT_PX = 800; // Using 800px to be safe (leave room for margins/footer)
+        let currentY = 0;
+        
+        // Force layout calculation
+        // We need to append reportRoot to body temporarily to get accurate heights?
+        // In html2canvas onclone, the document is inside an iframe.
+        
+        const sections = Array.from(reportRoot.children) as HTMLElement[];
+        
+        sections.forEach((section) => {
+            // Get approximate height (might be tricky in detached DOM)
+            // Assuming standard block heights:
+            // Header ~ 150px
+            // Section Title ~ 40px
+            // Chart ~ 400px
+            // Table ~ variable
+            
+            // Let's try to trust offsetHeight if available, otherwise estimate
+            let h = section.offsetHeight || 300; // Fallback 300px
+            
+            // Special handling for Charts (usually taller)
+            if (section.querySelector('.recharts-wrapper') || section.querySelector('canvas')) {
+                h = Math.max(h, 450); 
+            }
+            // Special handling for Header
+            if (section.innerHTML.includes('SGO INTELIJEN')) {
+                h = 180;
+            }
+
+            const posOnPage = currentY % PAGE_HEIGHT_PX;
+            const spaceLeft = PAGE_HEIGHT_PX - posOnPage;
+
+            // If section is taller than space left, AND it fits on a fresh page
+            if (h > spaceLeft && h < PAGE_HEIGHT_PX) {
+                // Add spacer to push to next page
+                const spacer = clonedDoc.createElement('div');
+                spacer.style.height = `${spaceLeft + 20}px`; // +20 for safety
+                spacer.style.width = '100%';
+                spacer.style.display = 'block';
+                reportRoot.insertBefore(spacer, section);
+                
+                currentY += (spaceLeft + 20);
+            }
+            
+            currentY += h;
+        });
+
+        // --- 5. FINAL CLEANUP ---
         // Replace original content with new report root
         originalContainer.innerHTML = '';
         originalContainer.appendChild(reportRoot);
