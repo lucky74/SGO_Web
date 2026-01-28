@@ -1,11 +1,12 @@
 
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
 export const generatePDF = async (elementId: string, title: string) => {
   const element = document.getElementById(elementId);
   if (!element) {
     console.error(`Element with id ${elementId} not found`);
+    alert('Error: Element not found for PDF generation');
     return;
   }
 
@@ -13,7 +14,9 @@ export const generatePDF = async (elementId: string, title: string) => {
     const canvas = await html2canvas(element, {
       scale: 2, // Higher quality
       logging: false,
-      useCORS: true // Handle cross-origin images if any
+      useCORS: true, // Handle cross-origin images if any
+      allowTaint: true,
+      backgroundColor: '#0f172a' // Ensure background color is captured (slate-900)
     });
 
     const imgData = canvas.toDataURL('image/png');
@@ -55,5 +58,6 @@ export const generatePDF = async (elementId: string, title: string) => {
     pdf.save(`${title.replace(/\s+/g, '_')}_Report.pdf`);
   } catch (error) {
     console.error('Error generating PDF:', error);
+    alert('Failed to generate PDF. Please check console for details.');
   }
 };
