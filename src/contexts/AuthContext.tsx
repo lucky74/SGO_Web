@@ -9,6 +9,7 @@ interface AuthContextType {
   login: (email: string, key: string) => Promise<boolean>;
   logout: () => void;
   addUser: (user: User) => Promise<void>;
+  updateUser: (userId: string, updates: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,7 +61,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           allowedCity: u.allowed_city,
           address: u.address,
           coordinates: u.lat && u.lng ? { lat: u.lat, lng: u.lng } : undefined,
-          password: u.password
+          password: u.password,
+          joinedDate: u.joined_date,
+          isActive: u.is_active !== false // Default to true if null/undefined
         }));
         
         // Combine MOCK_USERS and Supabase users
@@ -68,7 +71,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const supabaseEmails = new Set(mappedUsers.map(u => u.email));
         const uniqueMockUsers = MOCK_USERS.filter(u => !supabaseEmails.has(u.email));
         
-        setUsers([...uniqueMockUsers, ...mappedUsers]);
+        // Ensure mock users have isActive property
+        const processedMockUsers = uniqueMockUsers.map(u => ({
+          ...u,
+          isActive: u.isActive !== false
+        }));
+        
+        setUsers([...processedMockUsers, ...mappedUsers]);
       }
     } catch (err) {
       console.error('Error fetching users:', err);
@@ -84,6 +93,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const validPassword = VALID_PASSWORDS[email] || foundUser?.password;
     
     if (foundUser && validPassword === key) {
+      // Check if account is active
+      if (foundUser.isActive === false) {
+        return false;
+      }
+
       setIsAuthenticated(true);
       setUser(foundUser);
       return true;
@@ -101,7 +115,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addUser = async (newUser: User) => {
     // Update local state immediately for UI responsiveness
-    setUsers(prev => [...prev, newUser]);
+    setUsers(prev => [...prev, { ...newUser, isActive: true }]);
 
     // Save to Supabase
     try {
@@ -115,7 +129,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
          address: newUser.address,
          lat: newUser.coordinates?.lat,
          lng: newUser.coordinates?.lng,
-         password: newUser.password
+         password: newUser.password,
+         joined_date: newUser.joinedDate,
+         is_active: true
        }]);
        
        // Refetch to get the real ID from DB (optional, but good practice)
@@ -125,8 +141,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateUser = async (userId: string, updates: Partial<User>) => {
+    // Update local state
+    setUsers(prev => prev.map(u => u.id === userId ? { ...u, ...updates } : u));
+
+    // Update Supabase
+    try {
+      const supabaseUpdates: any = {};
+      if (updates.isActive !== undefined) supabaseUpdates.is_active = updates.isActive;
+      // Add other fields here as needed
+      
+      // Only attempt update if there are fields to update
+      if (Object.keys(supabaseUpdates).length > 0) {
+        // Note: We need to handle the case where ID might be string in app but int in DB
+        // Assuming Supabase handles stringified numbers correctly for numeric ID columns
+        await supabase.from('users').update(supabaseUpdates).eq('id', userId);
+      }
+    } catch (err) {
+      console.error('Error updating user:', err);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, users, login, logout, addUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, users, login, logout, addUser, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

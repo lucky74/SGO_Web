@@ -12,6 +12,8 @@ export interface User {
   address?: string;
   coordinates?: { lat: number; lng: number };
   password?: string; // Stored for mock authentication
+  joinedDate?: string; // Date of registration (YYYY-MM-DD)
+  isActive?: boolean; // Account status
 }
 
 export const MOCK_USERS: User[] = [
@@ -21,7 +23,8 @@ export const MOCK_USERS: User[] = [
     name: 'SGO Owner (Super Admin)',
     role: 'enterprise',
     hotelName: 'Sahid Group Headquarters',
-    maxRadius: 999
+    maxRadius: 999,
+    isActive: true
   },
   {
     id: '2',

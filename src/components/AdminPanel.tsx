@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { User, UserRole } from '../data/users';
 import { motion } from 'framer-motion';
-import { Plus, MapPin, Building, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { Plus, MapPin, Building, Mail, Lock, User as UserIcon, Calendar, CheckCircle, XCircle } from 'lucide-react';
 
 const AdminPanel: React.FC = () => {
-  const { users, addUser } = useAuth();
+  const { users, addUser, updateUser } = useAuth();
   
   const [formData, setFormData] = useState({
     hotelName: '',
@@ -15,14 +15,19 @@ const AdminPanel: React.FC = () => {
     email: '',
     password: '',
     lat: '',
-    lng: ''
+    lng: '',
+    joinedDate: new Date().toISOString().split('T')[0], // Default to today
+    isActive: true
   });
 
   const [success, setSuccess] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value 
+    }));
   };
 
   const generateEmail = () => {
@@ -54,7 +59,9 @@ const AdminPanel: React.FC = () => {
       coordinates: formData.lat && formData.lng ? {
         lat: parseFloat(formData.lat),
         lng: parseFloat(formData.lng)
-      } : undefined
+      } : undefined,
+      joinedDate: formData.joinedDate,
+      isActive: formData.isActive
     };
 
     addUser(newUser);
@@ -69,7 +76,9 @@ const AdminPanel: React.FC = () => {
       email: '',
       password: '',
       lat: '',
-      lng: ''
+      lng: '',
+      joinedDate: new Date().toISOString().split('T')[0],
+      isActive: true
     });
 
     setTimeout(() => setSuccess(''), 3000);
@@ -103,9 +112,8 @@ const AdminPanel: React.FC = () => {
                     name='hotelName'
                     value={formData.hotelName}
                     onChange={handleInputChange}
-                    onBlur={generateEmail}
                     className='w-full bg-slate-800 border border-slate-600 rounded-lg pl-10 pr-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                    placeholder='e.g. Grand Pangrango'
+                    placeholder='e.g. Grand Hotel Bogor'
                     required
                   />
                 </div>
@@ -121,23 +129,39 @@ const AdminPanel: React.FC = () => {
                     value={formData.address}
                     onChange={handleInputChange}
                     className='w-full bg-slate-800 border border-slate-600 rounded-lg pl-10 pr-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                    placeholder='Full Address'
+                    placeholder='Full address'
                     required
                   />
                 </div>
               </div>
 
-              <div>
-                <label className='block text-sm text-slate-400 mb-1'>City (Restriction)</label>
-                <input
-                  type='text'
-                  name='city'
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  className='w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                  placeholder='e.g. Bogor'
-                  required
-                />
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <label className='block text-sm text-slate-400 mb-1'>City</label>
+                  <input
+                    type='text'
+                    name='city'
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className='w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white focus:border-blue-500 outline-none'
+                    placeholder='e.g. Bogor'
+                    required
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm text-slate-400 mb-1'>Package</label>
+                  <select
+                    name='role'
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className='w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white focus:border-blue-500 outline-none'
+                  >
+                    <option value='basic'>Basic (5km)</option>
+                    <option value='pro'>Pro (10km)</option>
+                    <option value='advanced'>Advanced (20km)</option>
+                    <option value='enterprise'>Enterprise (Unlimited)</option>
+                  </select>
+                </div>
               </div>
 
               <div className='grid grid-cols-2 gap-4'>
@@ -149,7 +173,7 @@ const AdminPanel: React.FC = () => {
                     value={formData.lat}
                     onChange={handleInputChange}
                     className='w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                    placeholder='-6.597...'
+                    placeholder='e.g. -6.597'
                   />
                 </div>
                 <div>
@@ -160,7 +184,7 @@ const AdminPanel: React.FC = () => {
                     value={formData.lng}
                     onChange={handleInputChange}
                     className='w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                    placeholder='106.80...'
+                    placeholder='e.g. 106.805'
                   />
                 </div>
               </div>
@@ -168,42 +192,30 @@ const AdminPanel: React.FC = () => {
 
             {/* Account Details */}
             <div className='space-y-4'>
-              <h3 className='text-lg font-semibold text-green-400 mb-4'>Account Credentials</h3>
+              <h3 className='text-lg font-semibold text-emerald-400 mb-4'>Account Information</h3>
               
               <div>
-                <label className='block text-sm text-slate-400 mb-1'>Subscription Package</label>
-                <select
-                  name='role'
-                  value={formData.role}
-                  onChange={(e) => {
-                    handleInputChange(e);
-                    // Regenerate email if role changes
-                    const hotelDomain = formData.hotelName.toLowerCase().replace(/\s+/g, '') + '.com';
-                    const email = `SGO-${e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)}@${hotelDomain}`;
-                    if(formData.hotelName) setFormData(prev => ({ ...prev, role: e.target.value as UserRole, email }));
-                  }}
-                  className='w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                >
-                  <option value='basic'>Basic (5 Hotels)</option>
-                  <option value='pro'>Pro (10 Hotels)</option>
-                  <option value='advanced'>Advanced (20 Hotels)</option>
-                  <option value='enterprise'>Enterprise (Unlimited)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className='block text-sm text-slate-400 mb-1'>Email Username</label>
-                <div className='relative'>
-                  <Mail className='absolute left-3 top-3 text-slate-500' size={18} />
-                  <input
-                    type='text'
-                    name='email'
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className='w-full bg-slate-800 border border-slate-600 rounded-lg pl-10 pr-4 py-2.5 text-white focus:border-blue-500 outline-none'
-                    placeholder='Auto-generated...'
-                    readOnly
-                  />
+                <label className='block text-sm text-slate-400 mb-1'>Email Account</label>
+                <div className='flex gap-2'>
+                  <div className='relative flex-1'>
+                    <Mail className='absolute left-3 top-3 text-slate-500' size={18} />
+                    <input
+                      type='text'
+                      name='email'
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className='w-full bg-slate-800 border border-slate-600 rounded-lg pl-10 pr-4 py-2.5 text-white focus:border-blue-500 outline-none'
+                      placeholder='Auto-generated...'
+                      readOnly
+                    />
+                  </div>
+                  <button
+                    type='button'
+                    onClick={generateEmail}
+                    className='px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors'
+                  >
+                    Generate
+                  </button>
                 </div>
                 <p className='text-xs text-slate-500 mt-1'>Auto-generated format: SGO-[Package]@[Hotel].com</p>
               </div>
@@ -224,7 +236,37 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
 
-              <div className='pt-8'>
+              <div>
+                <label className='block text-sm text-slate-400 mb-1'>Joined Date</label>
+                <div className='relative'>
+                  <Calendar className='absolute left-3 top-3 text-slate-500' size={18} />
+                  <input
+                    type='date'
+                    name='joinedDate'
+                    value={formData.joinedDate}
+                    onChange={handleInputChange}
+                    className='w-full bg-slate-800 border border-slate-600 rounded-lg pl-10 pr-4 py-2.5 text-white focus:border-blue-500 outline-none'
+                    required
+                  />
+                </div>
+                <p className='text-xs text-slate-500 mt-1'>Start date for monthly subscription</p>
+              </div>
+
+              <div className='flex items-center gap-3 bg-slate-800 p-4 rounded-lg border border-slate-700'>
+                <input
+                  type='checkbox'
+                  name='isActive'
+                  checked={formData.isActive}
+                  onChange={handleInputChange}
+                  className='w-5 h-5 rounded border-slate-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800'
+                />
+                <div>
+                  <label className='block text-sm font-medium text-white'>Active Account</label>
+                  <p className='text-xs text-slate-400'>Enable or disable hotel access</p>
+                </div>
+              </div>
+
+              <div className='pt-4'>
                 <button
                   type='submit'
                   className='w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2'
@@ -259,7 +301,8 @@ const AdminPanel: React.FC = () => {
                 <th className='p-3'>Email</th>
                 <th className='p-3'>Role</th>
                 <th className='p-3'>City</th>
-                <th className='p-3'>Radius</th>
+                <th className='p-3'>Joined Date</th>
+                <th className='p-3'>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -278,7 +321,29 @@ const AdminPanel: React.FC = () => {
                     </span>
                   </td>
                   <td className='p-3 text-slate-400'>{user.allowedCity || 'All'}</td>
-                  <td className='p-3 text-slate-400'>{user.maxRadius === 999 ? 'Unlimited' : user.maxRadius}</td>
+                  <td className='p-3 text-slate-400'>{user.joinedDate || '-'}</td>
+                  <td className='p-3'>
+                    <button
+                      onClick={() => updateUser(user.id, { isActive: !user.isActive })}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        user.isActive 
+                          ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' 
+                          : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                      }`}
+                    >
+                      {user.isActive ? (
+                        <>
+                          <CheckCircle size={14} />
+                          Active
+                        </>
+                      ) : (
+                        <>
+                          <XCircle size={14} />
+                          Inactive
+                        </>
+                      )}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
