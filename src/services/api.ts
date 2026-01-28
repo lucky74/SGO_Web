@@ -58,7 +58,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
       // If API returns empty, use mock data for demonstration
       if (data.length === 0) {
         console.log('API returned empty data, using mock data.');
-        return MOCK_HOTELS.map(h => ({...h, location: city}));
+        return getMockData(city);
       }
       
       return data;
@@ -66,11 +66,39 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
     
     // Fallback if structure is invalid
     console.warn('Invalid API response structure, using mock data.');
-    return MOCK_HOTELS.map(h => ({...h, location: city}));
+    return getMockData(city);
 
   } catch (error) {
     console.error('Error fetching hotel data:', error);
     // Final fallback
-    return MOCK_HOTELS.map(h => ({...h, location: city}));
+    return getMockData(city);
   }
+};
+
+const getMockData = (city: string): Hotel[] => {
+  const searchCity = city.toLowerCase().trim();
+  
+  // If searching for "Indonesia" or "All", return ALL mock data
+  if (searchCity === 'indonesia' || searchCity === 'all' || searchCity === '') {
+    return MOCK_HOTELS;
+  }
+
+  // Filter mock data by city
+  const filtered = MOCK_HOTELS.filter(h => 
+    (h.location?.toLowerCase().includes(searchCity)) || 
+    (h.name.toLowerCase().includes(searchCity))
+  );
+
+  // If we found matching hotels in our expanded mock DB, return them
+  if (filtered.length > 0) {
+    return filtered;
+  }
+
+  // If no specific city found in mock DB, return a generic set with the searched city name
+  // This ensures the user always sees "results" for their demo
+  return MOCK_HOTELS.slice(0, 10).map(h => ({
+    ...h,
+    name: h.name.replace(/Jakarta|Bali|Bandung|Surabaya|Yogyakarta|Medan|Makassar/g, city),
+    location: city
+  }));
 };
