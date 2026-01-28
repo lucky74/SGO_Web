@@ -1,9 +1,11 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, Lightbulb, Trophy, Users, Diamond } from 'lucide-react';
+import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Lock, Download } from 'lucide-react';
+import { generatePDF } from '../utils/pdfGenerator';
 
 interface TrendAnalysisProps {
   hotels: Hotel[];
@@ -20,6 +22,33 @@ interface StarGroup {
 
 const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading }) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
+
+  // LOCK FEATURE FOR BASIC USERS
+  if (user?.role === 'basic') {
+    return (
+      <div className='glass-card p-8 rounded-2xl flex flex-col items-center justify-center text-center min-h-[400px] border border-slate-700/50'>
+        <div className='bg-slate-800/50 p-6 rounded-full mb-6 relative group'>
+          <TrendingUp size={48} className='text-slate-600 blur-sm' />
+          <div className='absolute inset-0 flex items-center justify-center'>
+            <Lock size={32} className='text-yellow-500 drop-shadow-lg' />
+          </div>
+        </div>
+        
+        <h2 className='text-2xl font-bold bg-gradient-to-r from-yellow-200 to-yellow-500 bg-clip-text text-transparent mb-3'>
+          {t('feat_adv_analysis')} Locked
+        </h2>
+        
+        <p className='text-slate-400 max-w-md mb-8'>
+          Upgrade to <span className='text-blue-400 font-bold'>PRO</span> or higher to unlock AI-powered price trends, competitor mapping, and market leadership insights.
+        </p>
+
+        <button className='bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/20 transition-all hover:scale-105'>
+          Upgrade Plan
+        </button>
+      </div>
+    );
+  }
 
   const getOccupancyStatus = (hotel: Hotel) => {
     if (hotel.rating >= 4.5 && hotel.reviews > 1000) return 'status_top_tier';
@@ -135,16 +164,28 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   const dominantClass = pieData.sort((a,b) => b.value - a.value)[0]?.name || 'Unknown';
 
   return (
-    <div className='space-y-8'>
+    <div id='trend-analysis-report' className='space-y-8'>
       {/* Header */}
-      <div className='glass-card p-4 md:p-8 rounded-2xl'>
-        <h2 className='text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3'>
-          <TrendingUp className='text-blue-400' />
-          {t('menu_2')}
-        </h2>
-        <p className='text-slate-400'>
-          {t('m2_desc')}
-        </p>
+      <div className='glass-card p-4 md:p-8 rounded-2xl flex flex-col md:flex-row justify-between items-start gap-4'>
+        <div>
+          <h2 className='text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3'>
+            <TrendingUp className='text-blue-400' />
+            {t('menu_2')}
+          </h2>
+          <p className='text-slate-400'>
+            {t('m2_desc')}
+          </p>
+        </div>
+        
+        {(user?.role === 'advanced' || user?.role === 'enterprise') && (
+          <button
+            onClick={() => generatePDF('trend-analysis-report', 'SGO_Trend_Analysis')}
+            className='glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-blue-600/20 border border-blue-500/30 transition-colors'
+          >
+            <Download size={16} />
+            <span>Export PDF</span>
+          </button>
+        )}
       </div>
 
       {/* AI Smart Insight */}

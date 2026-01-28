@@ -3,8 +3,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Star, Lock, AlertCircle } from 'lucide-react';
+import { Search, MapPin, Star, Lock, AlertCircle, Download } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { generatePDF } from '../utils/pdfGenerator';
 
 interface MarketIntelligenceProps {
   city: string;
@@ -53,12 +54,25 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   }));
 
   return (
-    <div className='space-y-8'>
+    <div id='market-intelligence-report' className='space-y-8'>
       {/* Header Section */}
       <div className='glass-card p-4 md:p-8 rounded-2xl relative overflow-hidden'>
         <div className='relative z-10'>
-          <h2 className='text-2xl md:text-3xl font-bold mb-2'><span>{t('m1_title')}</span></h2>
-          <p className='text-slate-400 mb-6 max-w-2xl'><span>{t('m1_desc')}</span></p>
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
+            <div>
+              <h2 className='text-2xl md:text-3xl font-bold mb-2'><span>{t('m1_title')}</span></h2>
+              <p className='text-slate-400 max-w-2xl'><span>{t('m1_desc')}</span></p>
+            </div>
+            {(user?.role === 'advanced' || user?.role === 'enterprise') && (
+                <button
+                  onClick={() => generatePDF('market-intelligence-report', 'SGO_Market_Report')}
+                  className='glass-btn px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-blue-600/20 border border-blue-500/30 transition-colors'
+                >
+                  <Download size={16} />
+                  <span>Export PDF</span>
+                </button>
+             )}
+          </div>
           
           <div className='flex flex-col md:flex-row gap-4 items-stretch md:items-end'>
             <div className='flex-1 w-full md:max-w-md'>

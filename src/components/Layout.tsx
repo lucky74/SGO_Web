@@ -114,8 +114,13 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
       </div>
 
       {/* Main Content */}
-      <div className='flex-1 p-4 lg:p-8 pt-20 lg:pt-8 w-full overflow-hidden'>
-        {children}
+      <div className='flex-1 p-4 lg:p-8 pt-20 lg:pt-8 w-full overflow-hidden flex flex-col'>
+        <div className="flex-grow">
+          {children}
+        </div>
+        <footer className="mt-8 pt-6 border-t border-slate-800/50 text-center text-slate-500 text-xs">
+          Developer SGO Intelijen copyright 2026
+        </footer>
       </div>
     </div>
   );
