@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LANGUAGES, Language } from '../data/translations';
@@ -12,8 +12,8 @@ const Login: React.FC = () => {
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    if (login(email, key)) {
+  const handleLogin = async () => {
+    if (await login(email, key)) {
       setError('');
     } else {
       setError(t('access_denied'));
