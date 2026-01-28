@@ -4,8 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, ZAxis, PieChart, Pie, Cell, Legend } from 'recharts';
-import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Lock, Download, Tag, Award, Star } from 'lucide-react';
-import { generatePDF } from '../utils/pdfGenerator';
+import { TrendingUp, Lightbulb, Trophy, Users, Diamond, Lock, Tag, Award, Star } from 'lucide-react';
 
 interface TrendAnalysisProps {
   hotels: Hotel[];
