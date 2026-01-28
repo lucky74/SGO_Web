@@ -1,9 +1,9 @@
-﻿import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Hotel } from '../services/api';
-import { motion } from 'framer-motion';
-import { Search, MapPin, Star, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, MapPin, Star, Lock, AlertCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface MarketIntelligenceProps {
@@ -20,6 +20,16 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
 }) => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const [error, setError] = useState('');
+
+  const validateAndSearch = () => {
+    if (user?.allowedCity && city.trim().toLowerCase() !== user.allowedCity.toLowerCase()) {
+      setError(`Access Restricted: Your ${user.role} plan is limited to ${user.allowedCity} area only.`);
+      return;
+    }
+    setError('');
+    handleSearch();
+  };
 
   // Filter Logic based on User Tier
   const maxItems = user?.maxRadius || 5;
@@ -48,15 +58,31 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                 <input
                   type='text'
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) => {
+                    setCity(e.target.value);
+                    if (error) setError('');
+                  }}
                   placeholder='Ex: Jakarta, Bali, Bandung...'
-                  className='w-full bg-slate-800 border border-slate-600 rounded-xl py-3 pl-10 pr-4 text-white focus:border-blue-500 outline-none'
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  className={`w-full bg-slate-800 border ${error ? 'border-red-500' : 'border-slate-600'} rounded-xl py-3 pl-10 pr-4 text-white focus:border-blue-500 outline-none transition-colors`}
+                  onKeyDown={(e) => e.key === 'Enter' && validateAndSearch()}
                 />
               </div>
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="flex items-center gap-2 text-red-400 text-sm mt-2 ml-1"
+                  >
+                    <AlertCircle size={16} />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <button
-              onClick={handleSearch}
+              onClick={validateAndSearch}
               disabled={loading}
               className='glass-btn px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-transform disabled:opacity-50'
             >
