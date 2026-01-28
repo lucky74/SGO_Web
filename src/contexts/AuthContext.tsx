@@ -14,9 +14,28 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
+  // Initialize state from localStorage if available
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    const saved = localStorage.getItem('isAuthenticated');
+    return saved === 'true';
+  });
+  
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    localStorage.setItem('isAuthenticated', isAuthenticated.toString());
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [isAuthenticated, user]);
 
   // Load users from Supabase on mount
   useEffect(() => {
@@ -76,6 +95,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('user');
   };
 
   const addUser = async (newUser: User) => {
