@@ -455,10 +455,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
         </div>
       </div>
 
-      {/* HIDDEN REPORT TEMPLATE */}
-      {searched && hotels.length > 0 && (
-        <TrendReportTemplate hotels={hotels} pieData={pieData} scatterData={scatterData} />
-      )}
+
     </div>
   );
 };
