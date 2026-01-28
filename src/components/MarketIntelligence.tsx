@@ -23,9 +23,19 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   const [error, setError] = useState('');
 
   const validateAndSearch = () => {
-    if (user?.allowedCity && city.trim().toLowerCase() !== user.allowedCity.toLowerCase()) {
-      setError(`Access Restricted: Your ${user.role} plan is limited to ${user.allowedCity} area only.`);
-      return;
+    // If user has restricted city, check if the searched city contains the allowed city name
+    if (user?.allowedCity) {
+      const searchCity = city.trim().toLowerCase();
+      const allowed = user.allowedCity.toLowerCase();
+      
+      // Allow if the search string includes the allowed city (e.g. "Bogor Selatan" contains "Bogor")
+      // OR if the allowed city includes the search string (e.g. "Bogor" contains "Bo" - partial typing)
+      // Ideally, we want to ensure they are searching for the correct area.
+      // Let's enforce that the allowed city name must be present in the search.
+      if (!searchCity.includes(allowed)) {
+        setError(`Access Restricted: Your ${user.role} plan is limited to ${user.allowedCity} area only.`);
+        return;
+      }
     }
     setError('');
     handleSearch();
