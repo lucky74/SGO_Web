@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Hotel } from '../services/api';
 import { motion } from 'framer-motion';
@@ -61,12 +61,12 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
   // Process data for charts
   const sortedByPrice = [...hotels].sort((a, b) => {
-    const priceA = parseInt(a.price.replace(/[^0-9]/g, '')) || 0;
-    const priceB = parseInt(b.price.replace(/[^0-9]/g, '')) || 0;
+    const priceA = parseInt(String(a.price).replace(/[^0-9]/g, '')) || 0;
+    const priceB = parseInt(String(b.price).replace(/[^0-9]/g, '')) || 0;
     return priceA - priceB;
   });
 
-  const prices = sortedByPrice.map(h => parseInt(h.price.replace(/[^0-9]/g, '')) || 0).filter(p => p > 0);
+  const prices = sortedByPrice.map(h => parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0).filter(p => p > 0);
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
   const medianPrice = prices[Math.floor(prices.length / 2)];
@@ -74,12 +74,12 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   const priceTrendData = sortedByPrice.map(h => ({
     name: h.name.substring(0, 10) + '...',
     full_name: h.name,
-    price: parseInt(h.price.replace(/[^0-9]/g, '')) || 0,
+    price: parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0,
     rating: h.rating
   }));
 
   const scatterData = hotels.map(h => ({
-    x: parseInt(h.price.replace(/[^0-9]/g, '')) || 0,
+    x: parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0,
     y: h.rating,
     z: h.reviews,
     name: h.name,
@@ -111,7 +111,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
     // If no hotels in this class, return null
     if (groupHotels.length === 0) return null;
 
-    const avgPrice = groupHotels.reduce((acc, h) => acc + (parseInt(h.price.replace(/[^0-9]/g, '')) || 0), 0) / groupHotels.length;
+    const avgPrice = groupHotels.reduce((acc, h) => acc + (parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0), 0) / groupHotels.length;
     const leader = groupHotels.reduce((prev, curr) => (curr.rating > prev.rating ? curr : prev), groupHotels[0]);
 
     return {
@@ -124,8 +124,8 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
 
   const bestValueList = [...hotels].sort((a, b) => {
-    const priceA = parseInt(a.price.replace(/[^0-9]/g, '')) || 1;
-    const priceB = parseInt(b.price.replace(/[^0-9]/g, '')) || 1;
+    const priceA = parseInt(String(a.price).replace(/[^0-9]/g, '')) || 1;
+    const priceB = parseInt(String(b.price).replace(/[^0-9]/g, '')) || 1;
     const scoreA = a.rating / priceA;
     const scoreB = b.rating / priceB;
     return scoreB - scoreA;
