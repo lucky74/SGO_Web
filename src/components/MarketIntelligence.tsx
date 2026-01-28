@@ -42,7 +42,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   };
 
   // Filter Logic based on User Tier
-  const maxItems = user?.maxRadius || 5;
+  const maxItems = (user?.role === 'enterprise') ? 1000 : (user?.maxRadius || 5);
   const displayedHotels = hotels.slice(0, maxItems);
   const isLimited = hotels.length > maxItems;
 
