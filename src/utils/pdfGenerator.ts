@@ -39,7 +39,7 @@ export const generatePDF = async (elementId: string, title: string) => {
     }
 
     // Add Footer to all pages
-    const pageCount = pdf.internal.getNumberOfPages();
+    const pageCount = (pdf as any).internal.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
       pdf.setFontSize(10);
