@@ -43,6 +43,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchUsers();
   }, []);
 
+  // Sync current user with latest data from users list
+  useEffect(() => {
+    if (user && users.length > 0) {
+      const updatedUser = users.find(u => u.email === user.email);
+      // Only update if there are changes to avoid infinite loops, but here we just check if it exists
+      // and we want to ensure latest permissions/roles are applied
+      if (updatedUser) {
+        // Simple deep equal check could be better, but for now let's just update if key fields differ
+        if (updatedUser.role !== user.role || updatedUser.maxRadius !== user.maxRadius) {
+            console.log('Syncing user data with latest version...', updatedUser);
+            setUser(updatedUser);
+        }
+      }
+    }
+  }, [users]); // Depend on users list updates
+
   const fetchUsers = async () => {
     try {
       const { data, error } = await supabase
