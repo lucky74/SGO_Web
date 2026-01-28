@@ -3,10 +3,6 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
 export const generatePDF = async (elementId: string, title: string) => {
-  // Try to find the specific element first, but for full report we prefer to capture from body/common parent
-  // to ensure we can find both MarketIntelligence and TrendAnalysis if they are siblings.
-  const element = document.getElementById(elementId) || document.body;
-  
   // Logic to unhide both reports if they exist
   const miWrapper = document.getElementById('mi-wrapper');
   const taWrapper = document.getElementById('ta-wrapper');
