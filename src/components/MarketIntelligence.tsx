@@ -123,7 +123,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
     setIsGeneratingPdf(true);
     try {
       // Use the main view ID which contains the tagged elements for extraction
-      await generatePDF('market-intelligence-report', `Laporan_Analisis_Pasar_${city}`);
+      await generatePDF(`Laporan_Analisis_Pasar_${city}`);
     } catch (error) {
       console.error('PDF Generation failed', error);
     } finally {

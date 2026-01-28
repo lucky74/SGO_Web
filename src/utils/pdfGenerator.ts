@@ -2,7 +2,7 @@
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
-export const generatePDF = async (elementId: string, title: string) => {
+export const generatePDF = async (title: string) => {
   // Logic to unhide both reports if they exist
   const miWrapper = document.getElementById('mi-wrapper');
   const taWrapper = document.getElementById('ta-wrapper');
