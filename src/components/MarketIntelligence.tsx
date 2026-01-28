@@ -122,8 +122,8 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   const handleDownloadPDF = async () => {
     setIsGeneratingPdf(true);
     try {
-      // Target the NEW hidden report template instead of the main view
-      await generatePDF('market-report-template', `Laporan_Analisis_Pasar_${city}`);
+      // Use the main view ID which contains the tagged elements for extraction
+      await generatePDF('market-intelligence-report', `Laporan_Analisis_Pasar_${city}`);
     } catch (error) {
       console.error('PDF Generation failed', error);
     } finally {

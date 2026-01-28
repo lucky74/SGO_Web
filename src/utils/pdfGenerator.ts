@@ -157,15 +157,26 @@ export const generatePDF = async (elementId: string, title: string) => {
             // Table ~ variable
             
             // Let's try to trust offsetHeight if available, otherwise estimate
-            let h = section.offsetHeight || 300; // Fallback 300px
+            // In onclone, offsetHeight might be 0 if not attached to document body.
+            // We can try to guess based on class names or content.
+            
+            let h = section.offsetHeight;
+            
+            if (h === 0) {
+                // Fallback estimates
+                if (section.innerHTML.includes('SGO INTELIJEN')) h = 200; // Header
+                else if (section.querySelector('h3')) h = 100 + (section.innerText.length / 2); // Title + some content
+                else h = 300; // Generic block
+            }
             
             // Special handling for Charts (usually taller)
-            if (section.querySelector('.recharts-wrapper') || section.querySelector('canvas')) {
-                h = Math.max(h, 450); 
+            if (section.querySelector('.recharts-wrapper') || section.querySelector('canvas') || section.id.includes('chart')) {
+                h = Math.max(h, 500); // Give charts plenty of space
             }
-            // Special handling for Header
-            if (section.innerHTML.includes('SGO INTELIJEN')) {
-                h = 180;
+            // Special handling for Tables (can be long)
+            if (section.querySelector('table')) {
+                const rows = section.querySelectorAll('tr').length;
+                h = Math.max(h, rows * 40 + 100); // Estimate table height
             }
 
             const posOnPage = currentY % PAGE_HEIGHT_PX;

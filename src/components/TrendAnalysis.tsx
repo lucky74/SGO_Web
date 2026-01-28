@@ -28,7 +28,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   const handleDownloadPDF = async () => {
     setIsGeneratingPdf(true);
     try {
-      await generatePDF('trend-report-template', 'Laporan_Analisa_Tren');
+      await generatePDF('trend-analysis-report', 'Laporan_Analisa_Tren');
     } catch (error) {
       console.error('PDF Generation failed', error);
     } finally {
