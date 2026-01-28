@@ -79,7 +79,8 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
               </div>
               <AnimatePresence>
                 {error && (
-                  <motion.div
+                    <motion.div
+                    key="error-message"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
@@ -121,10 +122,12 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                     <div className="bg-yellow-500/10 border border-yellow-500/50 p-4 rounded-xl flex items-center gap-3">
                         <Lock className="text-yellow-500" size={24} />
                         <div>
-                            <p className="text-yellow-200 font-bold text-sm">{t('m1_access_limited')} {(user?.role || '').toUpperCase()}</p>
+                            <p className="text-yellow-200 font-bold text-sm">
+                                <span>{t('m1_access_limited')}</span> <span>{(user?.role || '').toUpperCase()}</span>
+                            </p>
                             <p className="text-yellow-200/70 text-xs">
-                                {t('m1_limit_warning')} {maxItems} {t('m1_limit_warning_2')} {hotels.length} {t('m1_limit_warning_3')} 
-                                <span className="underline cursor-pointer ml-1 hover:text-white">{t('m1_upgrade_link')}</span> {t('m1_upgrade_text')}
+                                <span>{t('m1_limit_warning')}</span> <span>{maxItems}</span> <span>{t('m1_limit_warning_2')}</span> <span>{hotels.length}</span> <span>{t('m1_limit_warning_3')}</span> 
+                                <span className="underline cursor-pointer ml-1 hover:text-white">{t('m1_upgrade_link')}</span> <span>{t('m1_upgrade_text')}</span>
                             </p>
                         </div>
                     </div>
@@ -192,7 +195,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                           <td className='px-6 py-4'>
                             <div className='font-medium text-white'>{hotel.name}</div>
                             <div className='text-xs text-slate-500 flex items-center gap-1 mt-1'>
-                                <MapPin size={12} /> {hotel.location || city}
+                                <MapPin size={12} /> <span>{hotel.location || city}</span>
                             </div>
                           </td>
                           <td className='px-6 py-4 text-emerald-400 font-bold'>{hotel.price}</td>
@@ -200,7 +203,7 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                             <div className='flex items-center gap-1'>
                               <Star size={14} className='text-yellow-400 fill-yellow-400' />
                               <span>{(hotel.rating || 0).toFixed(1)}</span>
-                              <span className='text-slate-500 text-xs'>&bull; {hotel.reviews} {t('m1_reviews')}</span>
+                              <span className='text-slate-500 text-xs'><span>&bull;</span> <span>{hotel.reviews}</span> <span>{t('m1_reviews')}</span></span>
                             </div>
                           </td>
                           <td className='px-6 py-4'>
