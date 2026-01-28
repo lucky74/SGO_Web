@@ -16,8 +16,82 @@ export const generatePDF = async (elementId: string, title: string) => {
       logging: false,
       useCORS: true, // Handle cross-origin images if any
       allowTaint: true,
-      backgroundColor: '#0f172a', // Ensure background color is captured (slate-900)
+      backgroundColor: '#ffffff', // Force white background
       onclone: (clonedDoc) => {
+        // Inject Print Styles
+        const style = clonedDoc.createElement('style');
+        style.innerHTML = `
+          /* General Reset */
+          * {
+            color: #1e293b !important; /* Dark Slate Text */
+            text-shadow: none !important;
+            font-family: 'Times New Roman', Times, serif !important; /* Document Font */
+          }
+          
+          /* Container Background */
+          #trend-analysis-report, #market-intelligence-report, .glass-card {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            border: none !important;
+            box-shadow: none !important;
+          }
+
+          /* Sections */
+          .glass-card {
+            border-bottom: 1px solid #cbd5e1 !important;
+            margin-bottom: 2rem !important;
+            padding: 1rem 0 !important;
+            border-radius: 0 !important;
+          }
+
+          /* Headers */
+          h2, h3 {
+            color: #0f172a !important; /* Very Dark Slate */
+            font-weight: bold !important;
+            text-transform: uppercase;
+            border-left: 5px solid #3b82f6;
+            padding-left: 10px;
+          }
+
+          /* Tables */
+          table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin-top: 1rem !important;
+          }
+          th {
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+            font-weight: bold !important;
+            border-bottom: 2px solid #334155 !important;
+            text-transform: uppercase;
+            font-size: 0.8rem !important;
+          }
+          td {
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 8px !important;
+          }
+          tr:nth-child(even) {
+            background-color: #f8fafc !important;
+          }
+
+          /* Charts (SVG) Fixes */
+          text {
+            fill: #334155 !important; /* Axis labels */
+            font-family: sans-serif !important;
+            font-size: 12px !important;
+          }
+          .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line {
+            stroke: #e2e8f0 !important; /* Lighter grid lines */
+          }
+          
+          /* Hide Elements */
+          .hide-on-pdf {
+            display: none !important;
+          }
+        `;
+        clonedDoc.head.appendChild(style);
+
         // Hide elements with 'hide-on-pdf' class
         const hiddenElements = clonedDoc.getElementsByClassName('hide-on-pdf');
         Array.from(hiddenElements).forEach((el) => {
@@ -27,20 +101,10 @@ export const generatePDF = async (elementId: string, title: string) => {
         // Force specific styles for PDF layout
         const clonedElement = clonedDoc.getElementById(elementId);
         if (clonedElement) {
-          clonedElement.style.width = '1200px'; // Force desktop width for consistent layout
-          clonedElement.style.padding = '40px'; // Add padding
-          clonedElement.style.margin = '0';
-          
-          // Ensure all text is visible and properly colored
-          const allText = clonedElement.querySelectorAll('*');
-          allText.forEach((el) => {
-            if (el instanceof HTMLElement) {
-              // Ensure text color is light for dark background
-               // We don't force it here because Tailwind classes usually handle it, 
-               // but if there are issues, we can uncomment:
-               // el.style.color = '#e2e8f0'; 
-            }
-          });
+          clonedElement.style.width = '1400px'; // Wider for Landscape
+          clonedElement.style.padding = '40px';
+          clonedElement.style.margin = '0 auto';
+          clonedElement.style.color = '#1e293b';
         }
       }
     });
@@ -77,7 +141,9 @@ export const generatePDF = async (elementId: string, title: string) => {
       // Wait, if image covers the whole page, footer might be covered or invisible.
       // If we use landscape, the image might fit better.
       // Let's make footer white/light gray
-      pdf.setTextColor(200, 200, 200); 
+      // pdf.setTextColor(200, 200, 200); 
+      // Changed to dark gray for white background report
+      pdf.setTextColor(100, 100, 100);
       pdf.text(
         'Laporan di buat oleh SGO Intelijen',
         pdfWidth / 2,
