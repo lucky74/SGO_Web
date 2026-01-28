@@ -1,4 +1,4 @@
-﻿export type Language = 'ID' | 'EN';
+export type Language = 'ID' | 'EN';
 
 export const LANGUAGES: { code: Language; label: string; flag: string }[] = [
     { code: 'ID', label: 'Indonesia', flag: '\uD83C\uDDEE\uD83C\uDDE9' },
@@ -91,7 +91,7 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'm4_label_notif': {"ID":"Notifikasi Email Harian","EN":"Daily Email Notifications"},
 
     'menu_1': {"ID":"Dasbor Utama","EN":"Main Dashboard"},
-    'menu_2': {"ID":"Intelijen Pasar","EN":"Market Intelligence"},
+    'menu_2': {"ID":"Analisa Tren","EN":"Trend Analysis"},
     'menu_3': {"ID":"Paket Langganan","EN":"Subscription Plan"},
     'menu_4': {"ID":"Kontrol Akun","EN":"Account Control"},
     'status_online': {"ID":"ONLINE","EN":"ONLINE"},
