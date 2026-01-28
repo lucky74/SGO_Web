@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
 import { User, UserRole } from '../data/users';
 import { motion } from 'framer-motion';
-import { Save, Plus, MapPin, Building, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { Plus, MapPin, Building, Mail, Lock, User as UserIcon } from 'lucide-react';
 
 const AdminPanel: React.FC = () => {
   const { users, addUser } = useAuth();
-  const { t } = useLanguage();
   
   const [formData, setFormData] = useState({
     hotelName: '',

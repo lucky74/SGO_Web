@@ -15,7 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
   const { t, language, setLanguage } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const menus = [
+  const menus: { id: string; icon: React.ElementType; label: string }[] = [
     { id: 'menu_1', icon: LayoutDashboard, label: t('menu_1') },
     { id: 'menu_2', icon: TrendingUp, label: t('menu_2') },
     { id: 'menu_3', icon: CreditCard, label: t('menu_3') },
