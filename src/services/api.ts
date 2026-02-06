@@ -31,8 +31,8 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
       });
     } catch (apiError) {
       console.warn('API call failed, falling back to mock data:', apiError);
-      // Return mock data filtered by city if API fails
-      return MOCK_HOTELS.map(h => ({...h, location: city}));
+      // Return mock data properly filtered using getMockData
+      return getMockData(city);
     }
 
     if (response && response.data && Array.isArray(response.data.properties)) {
