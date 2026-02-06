@@ -36,7 +36,8 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
     }
 
     if (response && response.data && Array.isArray(response.data.properties)) {
-      const data = response.data.properties.slice(0, 60).map((item: any) => {
+      // Limit to 20 items as requested by user
+      const data = response.data.properties.slice(0, 20).map((item: any) => {
         if (!item) return null;
         const starMatch = String(item.hotel_class || '').match(/(\d+)/);
         const stars = starMatch ? parseInt(starMatch[0]) : 0;
