@@ -94,11 +94,21 @@ const getMockData = (city: string): Hotel[] => {
     return filtered;
   }
 
-  // If no specific city found in mock DB, return a generic set with the searched city name
-  // This ensures the user always sees "results" for their demo
-  return MOCK_HOTELS.slice(0, 10).map(h => ({
-    ...h,
-    name: h.name.replace(/Jakarta|Bali|Bandung|Surabaya|Yogyakarta|Medan|Makassar/g, city),
-    location: city
-  }));
-};
+    // If no specific city found in mock DB, return a generic set with the searched city name
+    // This ensures the user always sees "results" for their demo
+    // Limit to 20 to prevent "double-double" issues as requested
+    const genericHotels = MOCK_HOTELS.slice(0, 20).map(h => ({
+      ...h,
+      name: h.name.replace(/Jakarta|Bali|Bandung|Surabaya|Yogyakarta|Medan|Makassar/g, city),
+      location: city
+    }));
+
+    // Ensure uniqueness by name to avoid duplicates
+    const uniqueHotels = genericHotels.filter((hotel, index, self) =>
+      index === self.findIndex((t) => (
+        t.name === hotel.name
+      ))
+    );
+
+    return uniqueHotels;
+  };

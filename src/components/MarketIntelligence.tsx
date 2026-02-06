@@ -42,8 +42,10 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   };
 
   // Filter Logic based on User Tier
+  // User requested to lock at 20 hotels max to prevent "double-double" issues and keep it clean
   const isEnterprise = user?.role === 'enterprise' || user?.email === 'sentraguest.os@gmail.com';
-  const maxItems = isEnterprise ? 1000 : (user?.maxRadius || 5);
+  // Even for enterprise, cap at 20 as per latest user instruction
+  const maxItems = isEnterprise ? 20 : (user?.maxRadius || 5);
   const displayedHotels = hotels.slice(0, maxItems);
   const isLimited = hotels.length > maxItems;
 
