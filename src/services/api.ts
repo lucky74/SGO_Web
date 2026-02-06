@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-// Force Vercel Deploy Trigger - Revert Search Logic
-
 import { MOCK_HOTELS } from '../data/mockHotels';
 
 export interface Hotel {
@@ -30,7 +28,7 @@ export const fetchHotels = async (city: string): Promise<Hotel[]> => {
     try {
       response = await axios.get('/api/hotels', {
         params: { city },
-        timeout: 3000 // 3s timeout
+        timeout: 15000 // Increased timeout to 15s for SerpApi
       });
     } catch (apiError) {
       console.warn('API call failed, falling back to mock data:', apiError);
@@ -100,12 +98,12 @@ const getMockData = (city: string): Hotel[] => {
 
     // If no specific city found in mock DB, return a generic set with the searched city name
     // This ensures the user always sees "results" for their demo
-    // Limit to 20 to prevent "double-double" issues as requested
-    const genericHotels = MOCK_HOTELS.slice(0, 20).map(h => ({
+    // Use a larger slice first to ensure we have enough unique items after deduplication
+    const genericHotels = MOCK_HOTELS.slice(0, 100).map(h => ({
       ...h,
-      // Revert to original behavior: inject the search term into the hotel name
-      // This makes the result look relevant to the search query (e.g. "Jl. Sudirman Grand Hotel")
-      name: h.name.replace(/Jakarta|Bali|Bandung|Surabaya|Yogyakarta|Medan|Makassar/g, city),
+      // Remove the city name from the hotel name to make it generic but realistic
+      // e.g. "Jakarta Resort Hotel 1" -> "Resort Hotel 1"
+      name: h.name.replace(/Jakarta\s*|Bali\s*|Bandung\s*|Surabaya\s*|Yogyakarta\s*|Medan\s*|Makassar\s*/g, '').trim(),
       location: city
     }));
 
@@ -116,5 +114,6 @@ const getMockData = (city: string): Hotel[] => {
       ))
     );
 
-    return uniqueHotels;
+    // Limit to 20 items as requested by user
+    return uniqueHotels.slice(0, 20);
   };
