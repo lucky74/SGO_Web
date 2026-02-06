@@ -1,0 +1,23 @@
+Berikut adalah daftar akun paket langganan yang sudah disiapkan di dalam sistem untuk keperluan pengujian:
+
+1. Akun Super Admin (Enterprise - Tanpa Batas)
+
+- Email: sentraguest.os@gmail.com
+- Password: SGO-ADMIN-2026
+- Fitur: Akses seluruh Indonesia, Radius pencarian tak terbatas, Semua fitur terbuka.
+2. Akun Paket Basic (Radius 5 KM)
+
+- Email: basic@hotel.com
+- Password: BASIC-123
+- Fitur: Hanya bisa melihat 5 hotel terdekat, terbatas satu kota (Bogor).
+3. Akun Paket Pro (Radius 10 KM)
+
+- Email: pro@hotel.com
+- Password: PRO-123
+- Fitur: Bisa melihat 10 hotel terdekat.
+4. Akun Paket Advanced (Radius 20 KM)
+
+- Email: advanced@hotel.com
+- Password: ADV-123
+- Fitur: Bisa melihat 20 hotel terdekat.
+Bapak bisa menggunakan akun-akun ini di halaman login untuk melihat perbedaan fitur yang didapatkan oleh masing-masing paket langganan

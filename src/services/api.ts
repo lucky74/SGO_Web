@@ -99,7 +99,9 @@ const getMockData = (city: string): Hotel[] => {
     // Limit to 20 to prevent "double-double" issues as requested
     const genericHotels = MOCK_HOTELS.slice(0, 20).map(h => ({
       ...h,
-      name: h.name.replace(/Jakarta|Bali|Bandung|Surabaya|Yogyakarta|Medan|Makassar/g, city),
+      // Create a neutral hotel name by removing the original city prefix
+      // e.g., "Jakarta Grand Hotel 1" -> "Grand Hotel 1"
+      name: h.name.replace(/Jakarta|Bali|Bandung|Surabaya|Yogyakarta|Medan|Makassar/g, '').trim(),
       location: city
     }));
 
