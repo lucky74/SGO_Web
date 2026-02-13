@@ -131,11 +131,15 @@ const Subscription = () => {
       </div>
 
       <div className="mt-12 text-center p-6 bg-slate-800/50 rounded-2xl border border-slate-700 max-w-3xl mx-auto">
-        <h4 className="text-lg font-bold text-slate-200 mb-2">Butuh Paket Custom?</h4>
-        <p className="text-slate-400 text-sm">
-          Kami menyediakan solusi khusus untuk grup hotel besar dengan kebutuhan integrasi sistem internal.
-          Hubungi tim sales kami untuk penawaran Enterprise.
-        </p>
+        <h4 className="text-lg font-bold text-slate-200 mb-4">Untuk Berlangganan Hubungi kami :</h4>
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <p className="text-slate-300 text-lg font-medium">
+            Email : <span className="text-blue-400">sentraguest.os@gmail.com</span>
+          </p>
+          <p className="text-slate-300 text-lg font-medium">
+            WhatsApp : <span className="text-emerald-400">0895-0243-6075</span>
+          </p>
+        </div>
       </div>
     </div>
   );
