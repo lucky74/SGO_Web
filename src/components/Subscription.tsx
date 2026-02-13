@@ -13,9 +13,9 @@ const Subscription = () => {
       icon: <Building2 className="text-slate-400" size={32} />,
       features: [
         t('feat_radius_5'),
-        t('feat_basic_analysis'),
-        t('feat_daily'),
-        t('feat_support')
+        t('feat_realtime'),
+        t('feat_adv_analysis'),
+        t('feat_support'),
       ],
       highlight: false,
       button: t('m3_btn_choose'),
@@ -30,7 +30,7 @@ const Subscription = () => {
         t('feat_radius_10'),
         t('feat_realtime'),
         t('feat_adv_analysis'),
-        t('feat_priority')
+        t('feat_support')
       ],
       highlight: true,
       button: t('m3_btn_choose'),
