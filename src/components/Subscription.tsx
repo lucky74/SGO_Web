@@ -45,7 +45,7 @@ const Subscription = () => {
         t('feat_radius_20'),
         t('feat_realtime'),
         t('feat_adv_analysis'),
-        t('feat_priority')
+        t('feat_support')
       ],
       highlight: false,
       button: t('m3_btn_choose'),
