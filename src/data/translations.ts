@@ -50,6 +50,7 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
 
     // Tier 4 (Enterprise)
     'm3_plan_enterprise': {'ID': 'Enterprise', 'EN': 'Enterprise'},
+    'm3_price_ent_fixed': {'ID': 'Rp 3 Juta', 'EN': 'IDR 3 Million'},
     'm3_price_custom': {'ID': 'Khusus', 'EN': 'Custom'},
     'm3_desc_ent': {'ID': 'Akses Seluruh Indonesia', 'EN': 'All Indonesia Access'},
 
