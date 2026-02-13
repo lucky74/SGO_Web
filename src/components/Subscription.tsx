@@ -50,7 +50,7 @@ const Subscription = () => {
     },
     {
       name: t('m3_plan_enterprise'),
-      price: t('m3_price_custom'),
+      price: t('m3_price_ent_fixed'),
       desc: t('m3_desc_ent'),
       icon: <Crown className="text-yellow-400" size={32} />,
       features: [
