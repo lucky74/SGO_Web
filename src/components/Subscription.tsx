@@ -29,7 +29,6 @@ const Subscription = () => {
         t('feat_radius_10'),
         t('feat_realtime'),
         t('feat_adv_analysis'),
-        t('feat_support')
       ],
       highlight: true,
       button: t('m3_btn_choose'),
@@ -104,7 +103,7 @@ const Subscription = () => {
               {plan.price !== t('m3_price_custom') && <span className="text-slate-400">{t('m3_period_month')}</span>}
             </div>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-8 flex-grow">
               {plan.features.map((feature, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="p-1 rounded-full bg-emerald-500/10 text-emerald-400">
