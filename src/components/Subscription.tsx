@@ -60,10 +60,9 @@ const Subscription = () => {
         t('feat_radius_all'),
         t('feat_realtime'),
         t('feat_adv_analysis'),
-        t('feat_support')
       ],
       highlight: false,
-      button: t('m3_btn_contact'),
+      button: t('m3_btn_choose'),
       color: 'border-yellow-500'
     }
   ];
