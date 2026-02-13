@@ -18,7 +18,7 @@ export interface User {
 
 export const MOCK_USERS: User[] = [
   {
-    id: '1',
+    id: 'mock-1',
     email: 'sentraguest.os@gmail.com',
     name: 'SGO Owner (Super Admin)',
     role: 'enterprise',
@@ -27,7 +27,7 @@ export const MOCK_USERS: User[] = [
     isActive: true
   },
   {
-    id: '2',
+    id: 'mock-2',
     email: 'basic@hotel.com',
     name: 'Hotel Manager Basic',
     role: 'basic',
@@ -36,7 +36,7 @@ export const MOCK_USERS: User[] = [
     allowedCity: 'Bogor'
   },
   {
-    id: '3',
+    id: 'mock-3',
     email: 'pro@hotel.com',
     name: 'Hotel Manager Pro',
     role: 'pro',
@@ -45,7 +45,7 @@ export const MOCK_USERS: User[] = [
     allowedCity: 'Bogor'
   },
   {
-    id: '4',
+    id: 'mock-4',
     email: 'advanced@hotel.com',
     name: 'Hotel Manager Advanced',
     role: 'advanced',
