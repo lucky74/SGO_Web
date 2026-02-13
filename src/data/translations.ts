@@ -64,13 +64,13 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'feat_radius_20': {'ID': 'Radius: 20 Kompetitor', 'EN': 'Radius: 20 Competitors'},
     'feat_radius_all': {'ID': 'Radius: Tanpa Batas', 'EN': 'Radius: Unlimited'},
     
-    'feat_basic_analysis': {'ID': 'Analisa Harga Dasar', 'EN': 'Basic Price Analysis'},
-    'feat_adv_analysis': {'ID': 'Analisa Tren Lanjutan', 'EN': 'Advanced Trend Analysis'},
-    'feat_daily': {'ID': 'Update Harian', 'EN': 'Daily Updates'},
+    'feat_basic_analysis': {'ID': 'Data Real-time', 'EN': 'Real-time Data'},
+    'feat_adv_analysis': {'ID': 'Analisa Tren Pasar', 'EN': 'Market Trend Analysis'},
+    'feat_daily': {'ID': 'Dukungan Email', 'EN': 'Email Support'},
     'feat_realtime': {'ID': 'Data Real-time', 'EN': 'Real-time Data'},
-    'feat_api': {'ID': 'Akses API Penuh', 'EN': 'Full API Access'},
+    'feat_api': {'ID': 'Analisa Tren Pasar', 'EN': 'Market Trend Analysis'},
     'feat_support': {'ID': 'Dukungan Email', 'EN': 'Email Support'},
-    'feat_priority': {'ID': 'Dukungan Prioritas WA', 'EN': 'Priority WA Support'},
+    'feat_priority': {'ID': 'Dukungan Email', 'EN': 'Email Support'},
     
     // Account Control
     'm4_profile': {'ID': 'Profil Pengguna', 'EN': 'User Profile'},

@@ -59,9 +59,8 @@ const Subscription = () => {
       features: [
         t('feat_radius_all'),
         t('feat_realtime'),
-        t('feat_api'),
-        'Custom Integrations',
-        'Dedicated Manager'
+        t('feat_adv_analysis'),
+        t('feat_support')
       ],
       highlight: false,
       button: t('m3_btn_contact'),
