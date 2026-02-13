@@ -1,5 +1,6 @@
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vite';
+// Deploy trigger: 2026-02-13 Force Update
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
