@@ -22,30 +22,67 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   const { user } = useAuth();
   const [error, setError] = useState('');
 
+  // Simple city-to-coordinate mapping for radius validation
+  const CITY_COORDS: { [key: string]: { lat: number; lng: number } } = {
+    'jakarta': { lat: -6.2088, lng: 106.8456 },
+    'bogor': { lat: -6.5971, lng: 106.8060 },
+    'bandung': { lat: -6.9175, lng: 107.6191 },
+    'surabaya': { lat: -7.2575, lng: 112.7520 },
+    'semarang': { lat: -6.9932, lng: 110.4203 },
+    'yogyakarta': { lat: -7.7956, lng: 110.3695 },
+    'denpasar': { lat: -8.6705, lng: 115.2126 },
+    'bali': { lat: -8.4095, lng: 115.1889 },
+    'medan': { lat: 3.5952, lng: 98.6722 },
+    'makassar': { lat: -5.1477, lng: 119.4327 },
+    'bekasi': { lat: -6.2383, lng: 106.9756 },
+    'tangerang': { lat: -6.1702, lng: 106.6403 },
+    'depok': { lat: -6.4025, lng: 106.7942 },
+    'malang': { lat: -7.9666, lng: 112.6326 },
+    'balikpapan': { lat: -1.2654, lng: 116.8312 },
+    'batam': { lat: 1.1347, lng: 104.1050 }
+  };
+
+  const normalizeCity = (name: string) => name.trim().toLowerCase();
+  const getCityCoordinates = (name: string) => CITY_COORDS[normalizeCity(name)];
+
+  const haversineKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const toRad = (v: number) => (v * Math.PI) / 180;
+    const R = 6371; // km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
   const validateAndSearch = () => {
-    // If user has restricted city, check if the searched city contains the allowed city name
-    if (user?.allowedCity) {
-      const searchCity = city.trim().toLowerCase();
-      const allowed = user.allowedCity.toLowerCase();
-      
-      // Allow if the search string includes the allowed city (e.g. "Bogor Selatan" contains "Bogor")
-      // OR if the allowed city includes the search string (e.g. "Bogor" contains "Bo" - partial typing)
-      // Ideally, we want to ensure they are searching for the correct area.
-      // Let's enforce that the allowed city name must be present in the search.
-      if (!searchCity.includes(allowed)) {
-        setError(`Access Restricted: Your ${user.role} plan is limited to ${user.allowedCity} area only.`);
-        return;
+    // New logic: validate by GPS radius from admin-provided coordinates
+    if (user && user.role !== 'enterprise') {
+      const origin = user.coordinates;
+      const radiusKm = (user.maxRadius || 5);
+      const target = getCityCoordinates(city);
+
+      // If we have both origin and target coordinates, enforce radius
+      if (origin && target && radiusKm < 999) {
+        const distance = haversineKm(origin.lat, origin.lng, target.lat, target.lng);
+        if (distance > radiusKm) {
+          setError(`Akses dibatasi: radius paket Anda ${radiusKm} km. Jarak ke lokasi pencarian ± ${Math.round(distance)} km dari titik koordinat akun.`);
+          return;
+        }
       }
+      // If coordinates unavailable or enterprise/unlimited, do not block
     }
     setError('');
     handleSearch();
   };
 
   // Filter Logic based on User Tier
-  // User requested to lock at 20 hotels max to prevent "double-double" issues and keep it clean
+  // Limit display to 20 items for cleaner reports (as requested)
   const isEnterprise = user?.role === 'enterprise' || user?.email === 'sentraguest.os@gmail.com';
-  // Even for enterprise, cap at 20 as per latest user instruction
-  const maxItems = isEnterprise ? 20 : (user?.maxRadius || 5);
+  const maxItems = 20;
   const displayedHotels = hotels.slice(0, maxItems);
   const isLimited = hotels.length > maxItems;
 
@@ -239,6 +276,4 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
 };
 
 export default MarketIntelligence;
-
-
 
