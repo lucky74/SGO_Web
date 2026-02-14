@@ -52,10 +52,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Only update if there are changes to avoid infinite loops, but here we just check if it exists
       // and we want to ensure latest permissions/roles are applied
       if (updatedUser) {
-        // Simple deep equal check could be better, but for now let's just update if key fields differ
-        if (updatedUser.role !== user.role || updatedUser.maxRadius !== user.maxRadius) {
-            console.log('Syncing user data with latest version...', updatedUser);
-            setUser(updatedUser);
+        if (updatedUser.isActive === false) {
+          setLastError('inactive');
+          setIsAuthenticated(false);
+          setUser(null);
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('user');
+        } else if (updatedUser.role !== user.role || updatedUser.maxRadius !== user.maxRadius) {
+          setUser(updatedUser);
         }
       }
     }
@@ -101,6 +105,31 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.error('Error fetching users:', err);
     }
   };
+
+  // Realtime lockout: if admin deactivates while user is logged in, immediately logout
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`user-status-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'update', schema: 'public', table: 'users', filter: `id=eq.${user.id}` },
+        (payload: any) => {
+          const newActive = payload?.new?.is_active;
+          if (newActive === false) {
+            setLastError('inactive');
+            setIsAuthenticated(false);
+            setUser(null);
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('user');
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   const login = async (email: string, key: string): Promise<boolean> => {
     // 1. Check if user exists in the dynamic users list (includes Supabase users)
