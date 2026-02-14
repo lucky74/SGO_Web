@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LANGUAGES, Language } from '../data/translations';
 import { motion } from 'framer-motion';
 import { Lock, Mail } from 'lucide-react';
+import { supabase } from '../services/supabaseClient';
 
 const Login: React.FC = () => {
   const { login, lastError } = useAuth();
@@ -20,6 +21,22 @@ const Login: React.FC = () => {
       setError(lastError === 'inactive' ? t('account_inactive') : t('access_denied'));
     }
   };
+
+  useEffect(() => {
+    if (!email) return;
+    const channel = supabase
+      .channel(`user-status-${email}`)
+      .on('broadcast', { event: 'status' }, (payload: any) => {
+        const active = payload?.payload?.is_active;
+        if (active === true) {
+          setError('');
+        }
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [email]);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-900 relative overflow-hidden'>

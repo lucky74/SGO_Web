@@ -109,6 +109,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Lockout polling: regularly check user status and logout immediately if deactivated
   useEffect(() => {
     if (!user) return;
+    const bc = supabase
+      .channel(`user-status-${user.id}`)
+      .on('broadcast', { event: 'status' }, (payload: any) => {
+        const active = payload?.payload?.is_active;
+        if (active === false) {
+          setLastError('inactive');
+          setIsAuthenticated(false);
+          setUser(null);
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('user');
+        }
+      })
+      .subscribe();
     let alive = true;
     const checkStatus = async () => {
       try {
@@ -131,6 +144,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => {
       alive = false;
       clearInterval(interval);
+      supabase.removeChannel(bc);
     };
   }, [user]);
 
@@ -208,6 +222,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Note: We need to handle the case where ID might be string in app but int in DB
         // Assuming Supabase handles stringified numbers correctly for numeric ID columns
         await supabase.from('users').update(supabaseUpdates).eq('id', userId);
+
+        // Broadcast status change to target user channel for instant lock/unlock
+        if (updates.isActive !== undefined) {
+          const channel = supabase.channel(`user-status-${userId}`);
+          await channel.subscribe();
+          await channel.send({
+            type: 'broadcast',
+            event: 'status',
+            payload: { is_active: updates.isActive }
+          });
+          supabase.removeChannel(channel);
+        }
       }
     } catch (err) {
       console.error('Error updating user:', err);
