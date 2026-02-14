@@ -61,6 +61,16 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   const validateAndSearch = () => {
     // New logic: validate by GPS radius from admin-provided coordinates
     if (user && user.role !== 'enterprise') {
+      // Fallback: jika tidak ada koordinat, gunakan allowedCity berbasis teks
+      if (!user.coordinates && user.allowedCity) {
+        const searchCity = normalizeCity(city);
+        const allowed = normalizeCity(user.allowedCity);
+        if (!searchCity.includes(allowed)) {
+          setError(`Akses dibatasi: paket Anda hanya untuk area ${user.allowedCity}.`);
+          return;
+        }
+      }
+
       const origin = user.coordinates;
       const radiusKm = (user.maxRadius || 5);
       const target = getCityCoordinates(city);
@@ -83,7 +93,15 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   // Limit tampilan sesuai paket:
   // Basic: 5, Pro: 10, Advanced: 20, Enterprise: 20 (jarak tak terbatas)
   const maxItems = user?.role === 'enterprise' ? 20 : (user?.maxRadius || 5);
-  const displayedHotels = hotels.slice(0, maxItems);
+  // Filter hotels agar sesuai kota pencarian; jika API tidak memberi lokasi, fallback ke semua
+  const normalizedCity = normalizeCity(city);
+  const filteredHotels = hotels.filter(h => {
+    const loc = normalizeCity(h.location || '');
+    return loc && normalizedCity ? loc.includes(normalizedCity) : true;
+  });
+
+  const baseHotels = filteredHotels.length > 0 ? filteredHotels : hotels;
+  const displayedHotels = baseHotels.slice(0, maxItems);
   const isLimited = hotels.length > maxItems;
 
   // Prepare chart data
