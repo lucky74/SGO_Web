@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
   addUser: (user: User) => Promise<void>;
   updateUser: (userId: string, updates: Partial<User>) => Promise<void>;
+  lastError: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +28,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
 
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  const [lastError, setLastError] = useState<string | null>(null);
 
   // Persist state to localStorage
   useEffect(() => {
@@ -109,14 +111,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (foundUser && validPassword === key) {
       // Check if account is active
       if (foundUser.isActive === false) {
+        setLastError('inactive');
         return false;
       }
 
       setIsAuthenticated(true);
       setUser(foundUser);
+      setLastError(null);
       return true;
     }
     
+    setLastError('invalid');
     return false;
   };
 
@@ -178,7 +183,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, users, login, logout, addUser, updateUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, users, login, logout, addUser, updateUser, lastError }}>
       {children}
     </AuthContext.Provider>
   );

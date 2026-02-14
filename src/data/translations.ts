@@ -87,6 +87,7 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'login_title': {"ID":"Masuk Sistem SGO","EN":"SGO System Login"},
     'login_subtitle': {"ID":"Masukkan kredensial Anda untuk melanjutkan","EN":"Enter your credentials to continue"},
     'login_btn': {"ID":"Masuk Sekarang","EN":"Login Now"},
+    'account_inactive': {"ID":"Akun dinonaktifkan. Silakan hubungi admin.","EN":"Account is deactivated. Please contact admin."},
     'm4_notif_desc': {"ID":"Aktifkan notifikasi email harian untuk menerima laporan ringkasan pergerakan harga kompetitor dan tren pasar terbaru langsung ke inbox Anda.","EN":"Enable daily email notifications to receive summary reports of competitor price movements and latest market trends directly to your inbox."},
     'm4_label_notif': {"ID":"Notifikasi Email Harian","EN":"Daily Email Notifications"},
 

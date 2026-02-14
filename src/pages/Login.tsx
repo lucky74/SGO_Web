@@ -6,17 +6,18 @@ import { motion } from 'framer-motion';
 import { Lock, Mail } from 'lucide-react';
 
 const Login: React.FC = () => {
-  const { login } = useAuth();
+  const { login, lastError } = useAuth();
   const { t, setLanguage, language } = useLanguage();
   const [email, setEmail] = useState('');
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    if (await login(email, key)) {
+    const ok = await login(email, key);
+    if (ok) {
       setError('');
     } else {
-      setError(t('access_denied'));
+      setError(lastError === 'inactive' ? t('account_inactive') : t('access_denied'));
     }
   };
 
