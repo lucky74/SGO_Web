@@ -44,6 +44,33 @@ const Login: React.FC = () => {
     };
   }, [email]);
 
+  useEffect(() => {
+    if (!email) return;
+    let alive = true;
+    const check = async () => {
+      try {
+        const { data } = await supabase
+          .from('users')
+          .select('is_active')
+          .eq('email', email)
+          .maybeSingle();
+        const isActive = data ? data.is_active !== false : true;
+        if (!alive) return;
+        if (isActive) {
+          if (error) setError('');
+        } else {
+          setError(t('account_inactive'));
+        }
+      } catch {}
+    };
+    const id = setInterval(check, 3000);
+    check();
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
+  }, [email, t]);
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-900 relative overflow-hidden'>
       {notif && (
