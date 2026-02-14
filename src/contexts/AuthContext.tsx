@@ -52,13 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Only update if there are changes to avoid infinite loops, but here we just check if it exists
       // and we want to ensure latest permissions/roles are applied
       if (updatedUser) {
-        if (updatedUser.isActive === false) {
-          setLastError('inactive');
-          setIsAuthenticated(false);
-          setUser(null);
-          localStorage.removeItem('isAuthenticated');
-          localStorage.removeItem('user');
-        } else if (updatedUser.role !== user.role || updatedUser.maxRadius !== user.maxRadius) {
+        if (updatedUser.role !== user.role || updatedUser.maxRadius !== user.maxRadius) {
           setUser(updatedUser);
         }
       }
@@ -225,14 +219,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         // Broadcast status change to target user channel for instant lock/unlock
         if (updates.isActive !== undefined) {
-          const channel = supabase.channel(`user-status-${userId}`);
-          await channel.subscribe();
-          await channel.send({
-            type: 'broadcast',
-            event: 'status',
-            payload: { is_active: updates.isActive }
-          });
-          supabase.removeChannel(channel);
+          const targetUser = users.find(u => u.id === userId);
+          const payload = { is_active: updates.isActive, email: targetUser?.email };
+          const chId = supabase.channel(`user-status-${userId}`);
+          await chId.subscribe();
+          await chId.send({ type: 'broadcast', event: 'status', payload });
+          supabase.removeChannel(chId);
+          if (targetUser?.email) {
+            const chEmail = supabase.channel(`user-status-${targetUser.email}`);
+            await chEmail.subscribe();
+            await chEmail.send({ type: 'broadcast', event: 'status', payload });
+            supabase.removeChannel(chEmail);
+          }
         }
       }
     } catch (err) {
