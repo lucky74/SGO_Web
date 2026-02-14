@@ -79,11 +79,9 @@ const Login: React.FC = () => {
           setLoginStatus('active');
           setNotif(t('account_activated'));
           setTimeout(() => setNotif(''), 3000);
-          setNotif(t('account_activated'));
-          setTimeout(() => setNotif(''), 3000);
-          setLoginStatus('inactive');
         } else {
           setError(t('account_inactive'));
+          setLoginStatus('inactive');
         }
       } catch {}
     };
@@ -91,6 +89,8 @@ const Login: React.FC = () => {
     check();
     return () => {
       alive = false;
+      clearInterval(id);
+    };
   }, [trackedEmail, t]);
 
   return (
