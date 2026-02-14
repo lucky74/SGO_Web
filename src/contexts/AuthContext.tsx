@@ -29,6 +29,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [pollGuardUntil, setPollGuardUntil] = useState<number>(0);
 
   // Persist state to localStorage
   useEffect(() => {
@@ -118,6 +119,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       .subscribe();
     let alive = true;
     const checkStatus = async () => {
+      if (Date.now() < pollGuardUntil) return;
       try {
         const { data } = await supabase
           .from('users')
@@ -140,29 +142,62 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       clearInterval(interval);
       supabase.removeChannel(bc);
     };
-  }, [user]);
+  }, [user, pollGuardUntil]);
 
   const login = async (email: string, key: string): Promise<boolean> => {
-    // 1. Check if user exists in the dynamic users list (includes Supabase users)
-    const foundUser = users.find(u => u.email === email);
-    
-    const validPassword = (foundUser?.password !== undefined ? foundUser.password : VALID_PASSWORDS[email]);
-    
-    if (foundUser && validPassword === key) {
-      // Check if account is active
-      if (foundUser.isActive === false) {
-        setLastError('inactive');
-        return false;
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
+      const mapped: User | undefined = data ? {
+        id: String(data.id),
+        email: data.email,
+        name: data.name,
+        role: data.role,
+        hotelName: data.hotel_name,
+        maxRadius: data.max_radius,
+        allowedCity: data.allowed_city,
+        address: data.address,
+        coordinates: data.lat && data.lng ? { lat: data.lat, lng: data.lng } : undefined,
+        password: data.password,
+        joinedDate: data.joined_date,
+        isActive: data.is_active !== false
+      } : undefined;
+      const fallback = users.find(u => u.email === email);
+      const candidate = mapped || fallback;
+      const validPassword = (candidate?.password !== undefined ? candidate.password : VALID_PASSWORDS[email]);
+      if (candidate && validPassword === key) {
+        if (candidate.isActive === false) {
+          setLastError('inactive');
+          return false;
+        }
+        setIsAuthenticated(true);
+        setUser(candidate);
+        setLastError(null);
+        setPollGuardUntil(Date.now() + 4000);
+        return true;
       }
-
-      setIsAuthenticated(true);
-      setUser(foundUser);
-      setLastError(null);
-      return true;
+      setLastError('invalid');
+      return false;
+    } catch {
+      const fallback = users.find(u => u.email === email);
+      const validPassword = (fallback?.password !== undefined ? fallback.password : VALID_PASSWORDS[email]);
+      if (fallback && validPassword === key) {
+        if (fallback.isActive === false) {
+          setLastError('inactive');
+          return false;
+        }
+        setIsAuthenticated(true);
+        setUser(fallback);
+        setLastError(null);
+        setPollGuardUntil(Date.now() + 4000);
+        return true;
+      }
+      setLastError('invalid');
+      return false;
     }
-    
-    setLastError('invalid');
-    return false;
   };
 
   const logout = () => {
