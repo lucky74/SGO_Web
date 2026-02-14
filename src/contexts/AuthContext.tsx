@@ -104,9 +104,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // 1. Check if user exists in the dynamic users list (includes Supabase users)
     const foundUser = users.find(u => u.email === email);
     
-    // 2. Check password
-    // First check hardcoded passwords, then check user object password
-    const validPassword = VALID_PASSWORDS[email] || foundUser?.password;
+    const validPassword = (foundUser?.password !== undefined ? foundUser.password : VALID_PASSWORDS[email]);
     
     if (foundUser && validPassword === key) {
       // Check if account is active
@@ -165,6 +163,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const supabaseUpdates: any = {};
       if (updates.isActive !== undefined) supabaseUpdates.is_active = updates.isActive;
+      if (updates.password !== undefined) supabaseUpdates.password = updates.password;
       // Add other fields here as needed
       
       // Only attempt update if there are fields to update

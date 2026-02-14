@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { User as UserIcon, Mail, Shield, Bell, Lock, LogOut, Smartphone } from 'lucide-react';
+import { User as UserIcon, Mail, Shield, Lock, LogOut, Smartphone } from 'lucide-react';
 
 const AccountControl: React.FC = () => {
   const { t } = useLanguage();
-  const { user, logout } = useAuth();
-  const [notifEnabled, setNotifEnabled] = useState(true);
+  const { user, logout, updateUser } = useAuth();
+  const [showPassForm, setShowPassForm] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passMsg, setPassMsg] = useState('');
 
   if (!user) return null;
 
@@ -87,29 +90,62 @@ const AccountControl: React.FC = () => {
                             <div className='text-xs text-slate-500'>{t('m4_password_hint')}</div>
                         </div>
                     </div>
-                    <button className='text-blue-400 text-sm font-bold hover:underline'>{t('m4_btn_change')}</button>
+                    <button 
+                      className='text-blue-400 text-sm font-bold hover:underline'
+                      onClick={() => {
+                        setShowPassForm(!showPassForm);
+                        setPassMsg('');
+                      }}
+                    >
+                      {t('m4_btn_change')}
+                    </button>
                 </div>
-
-                {/* Notification Setting */}
-                <div className='p-4 bg-slate-800/50 rounded-lg border border-slate-700'>
-                    <div className='flex items-center justify-between mb-2'>
-                        <div className='flex items-center gap-3'>
-                            <Bell className={notifEnabled ? 'text-yellow-400' : 'text-slate-400'} size={20} />
-                            <div>
-                                <div className='font-bold text-sm'>{t('m4_label_notif')}</div>
-                            </div>
-                        </div>
-                        <div 
-                            className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${notifEnabled ? 'bg-green-500' : 'bg-slate-600'}`}
-                            onClick={() => setNotifEnabled(!notifEnabled)}
-                        >
-                            <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-all ${notifEnabled ? 'left-6' : 'left-1'}`}></div>
-                        </div>
+                {showPassForm && (
+                  <div className='mt-3 p-4 bg-slate-800/50 rounded-lg border border-slate-700'>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                      <input 
+                        type='password' 
+                        placeholder='Kata sandi baru' 
+                        className='w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none'
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                      <input 
+                        type='password' 
+                        placeholder='Ulangi kata sandi' 
+                        className='w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none'
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
                     </div>
-                    <p className='text-xs text-slate-400 mt-2 leading-relaxed'>
-                        {t('m4_notif_desc')}
-                    </p>
-                </div>
+                    <div className='mt-3 flex items-center gap-3'>
+                      <button
+                        onClick={async () => {
+                          setPassMsg('');
+                          if (!newPassword || newPassword.length < 6) {
+                            setPassMsg('Minimal 6 karakter.');
+                            return;
+                          }
+                          if (newPassword !== confirmPassword) {
+                            setPassMsg('Konfirmasi tidak cocok.');
+                            return;
+                          }
+                          await updateUser(user.id, { password: newPassword });
+                          setPassMsg('Kata sandi berhasil diperbarui.');
+                          setNewPassword('');
+                          setConfirmPassword('');
+                          setShowPassForm(false);
+                        }}
+                        className='bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold'
+                      >
+                        Simpan
+                      </button>
+                      {passMsg && <span className='text-sm text-slate-300'>{passMsg}</span>}
+                    </div>
+                  </div>
+                )}
+
+                
 
                 {/* Active Session */}
                 <div className='mt-6 pt-6 border-t border-slate-700'>
