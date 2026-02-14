@@ -106,28 +106,31 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Realtime lockout: if admin deactivates while user is logged in, immediately logout
+  // Lockout polling: regularly check user status and logout immediately if deactivated
   useEffect(() => {
     if (!user) return;
-    const channel = supabase
-      .channel(`user-status-${user.id}`)
-      .on(
-        'postgres_changes',
-        { event: 'update', schema: 'public', table: 'users', filter: `id=eq.${user.id}` },
-        (payload: any) => {
-          const newActive = payload?.new?.is_active;
-          if (newActive === false) {
-            setLastError('inactive');
-            setIsAuthenticated(false);
-            setUser(null);
-            localStorage.removeItem('isAuthenticated');
-            localStorage.removeItem('user');
-          }
+    let alive = true;
+    const checkStatus = async () => {
+      try {
+        const { data } = await supabase
+          .from('users')
+          .select('is_active')
+          .eq('id', user.id)
+          .single();
+        const isActive = data ? data.is_active !== false : true;
+        if (!isActive && alive) {
+          setLastError('inactive');
+          setIsAuthenticated(false);
+          setUser(null);
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('user');
         }
-      )
-      .subscribe();
+      } catch {}
+    };
+    const interval = setInterval(checkStatus, 5000);
     return () => {
-      supabase.removeChannel(channel);
+      alive = false;
+      clearInterval(interval);
     };
   }, [user]);
 
