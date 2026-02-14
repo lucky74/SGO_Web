@@ -81,7 +81,6 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
 
   // Filter Logic based on User Tier
   // Limit display to 20 items for cleaner reports (as requested)
-  const isEnterprise = user?.role === 'enterprise' || user?.email === 'sentraguest.os@gmail.com';
   const maxItems = 20;
   const displayedHotels = hotels.slice(0, maxItems);
   const isLimited = hotels.length > maxItems;
@@ -276,4 +275,3 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
 };
 
 export default MarketIntelligence;
-
