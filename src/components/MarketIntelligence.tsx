@@ -80,8 +80,9 @@ const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
   };
 
   // Filter Logic based on User Tier
-  // Limit display to 20 items for cleaner reports (as requested)
-  const maxItems = 20;
+  // Limit tampilan sesuai paket:
+  // Basic: 5, Pro: 10, Advanced: 20, Enterprise: 20 (jarak tak terbatas)
+  const maxItems = user?.role === 'enterprise' ? 20 : (user?.maxRadius || 5);
   const displayedHotels = hotels.slice(0, maxItems);
   const isLimited = hotels.length > maxItems;
 
