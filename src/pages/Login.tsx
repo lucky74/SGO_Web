@@ -58,6 +58,8 @@ const Login: React.FC = () => {
         if (!alive) return;
         if (isActive) {
           if (error) setError('');
+          setNotif(t('account_activated'));
+          setTimeout(() => setNotif(''), 3000);
         } else {
           setError(t('account_inactive'));
         }
@@ -146,6 +148,15 @@ const Login: React.FC = () => {
               className='text-red-400 text-sm text-center bg-red-900/20 p-2 rounded border border-red-900/50'
             >
               {error}
+            </motion.div>
+          )}
+          {!error && notif && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className='text-green-400 text-sm text-center bg-green-900/20 p-2 rounded border border-green-900/50'
+            >
+              {notif}
             </motion.div>
           )}
 
