@@ -266,6 +266,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             await chEmail.send({ type: 'broadcast', event: 'status', payload });
             supabase.removeChannel(chEmail);
           }
+          const chGlobal = supabase.channel('user-status-global');
+          await chGlobal.subscribe();
+          await chGlobal.send({ type: 'broadcast', event: 'status', payload });
+          supabase.removeChannel(chGlobal);
         }
       }
     } catch (err) {

@@ -13,53 +13,75 @@ const Login: React.FC = () => {
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
   const [notif, setNotif] = useState<string>('');
+  const [loginStatus, setLoginStatus] = useState<'unknown'|'inactive'|'active'>('unknown');
+  const [trackedEmail, setTrackedEmail] = useState<string>('');
 
   const handleLogin = async () => {
     const ok = await login(email, key);
     if (ok) {
       setError('');
+      setLoginStatus('active');
     } else {
       setError(lastError === 'inactive' ? t('account_inactive') : t('access_denied'));
+      if (lastError === 'inactive') setLoginStatus('inactive');
     }
   };
 
   useEffect(() => {
-    if (!email) return;
+    const last = localStorage.getItem('lastEmail') || '';
+    setTrackedEmail(last);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('lastEmail', email);
+    setTrackedEmail(email || localStorage.getItem('lastEmail') || '');
+  }, [email]);
+
+  useEffect(() => {
     const channel = supabase
-      .channel(`user-status-${email}`)
+      .channel('user-status-global')
       .on('broadcast', { event: 'status' }, (payload: any) => {
-        const active = payload?.payload?.is_active;
+        const p = payload?.payload;
+        if (!p?.email) return;
+        const match = trackedEmail && p.email.toLowerCase() === trackedEmail.toLowerCase();
+        if (!match) return;
+        const active = p.is_active;
         if (active === true) {
           setError('');
+          setLoginStatus('active');
           setNotif(t('account_activated'));
           setTimeout(() => setNotif(''), 3000);
         } else if (active === false) {
-          setNotif(t('account_inactive'));
-          setTimeout(() => setNotif(''), 3000);
+          setLoginStatus('inactive');
+          setError(t('account_inactive'));
         }
       })
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [email]);
+  }, [trackedEmail]);
 
   useEffect(() => {
-    if (!email) return;
+    if (!trackedEmail) return;
     let alive = true;
     const check = async () => {
       try {
         const { data } = await supabase
           .from('users')
           .select('is_active')
-          .eq('email', email)
+          .eq('email', trackedEmail)
           .maybeSingle();
         const isActive = data ? data.is_active !== false : true;
         if (!alive) return;
         if (isActive) {
           if (error) setError('');
+          setLoginStatus('active');
           setNotif(t('account_activated'));
           setTimeout(() => setNotif(''), 3000);
+          setNotif(t('account_activated'));
+          setTimeout(() => setNotif(''), 3000);
+          setLoginStatus('inactive');
         } else {
           setError(t('account_inactive'));
         }
@@ -69,9 +91,7 @@ const Login: React.FC = () => {
     check();
     return () => {
       alive = false;
-      clearInterval(id);
-    };
-  }, [email, t]);
+  }, [trackedEmail, t]);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-900 relative overflow-hidden'>
@@ -148,6 +168,15 @@ const Login: React.FC = () => {
               className='text-red-400 text-sm text-center bg-red-900/20 p-2 rounded border border-red-900/50'
             >
               {error}
+            </motion.div>
+          )}
+          {!error && loginStatus === 'active' && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className='text-green-400 text-sm text-center bg-green-900/20 p-2 rounded border border-green-900/50'
+            >
+              {t('account_activated')}
             </motion.div>
           )}
           {!error && notif && (
