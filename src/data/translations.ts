@@ -35,7 +35,7 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     
     // Tier 1
     'm3_plan_basic': {'ID': 'Basic', 'EN': 'Basic'},
-    'm3_price_basic': {'ID': 'Rp 500rb', 'EN': 'IDR 500K'},
+    'm3_price_basic': {'ID': 'Rp 750rb', 'EN': 'IDR 750K'},
     'm3_desc_basic': {'ID': 'Pantau 5 Hotel Terdekat', 'EN': 'Monitor 5 Nearest Hotels'},
     
     // Tier 2

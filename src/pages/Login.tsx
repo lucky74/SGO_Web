@@ -200,6 +200,7 @@ const Login: React.FC = () => {
         <div className='mt-8 text-center text-xs text-slate-500'>
             <p className="mb-1">Powered by Sentra Guest Os (SGO) @2026</p>
             <p className="text-blue-400">sentraguest.os@gmail.com</p>
+            <p className="text-green-400">WhatsApp: 089502436075</p>
         </div>
       </motion.div>
     </div>
