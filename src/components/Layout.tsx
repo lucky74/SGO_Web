@@ -1,3 +1,7 @@
+
+
+
+
 import React, { ReactNode, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -22,8 +26,9 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
     { id: 'menu_4', icon: User, label: t('menu_4') },
   ];
 
-  // Add Admin Menu if user is enterprise
-  if (user?.role === 'enterprise') {
+  // Tampilkan Admin Panel hanya untuk super admin
+  const isSuperAdmin = user?.email === 'sentraguest.os@gmail.com';
+  if (isSuperAdmin) {
     menus.push({ id: 'menu_admin', icon: Lock, label: 'Admin Panel' });
   }
 
