@@ -165,13 +165,25 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
   if (typeof window !== 'undefined') {
     try {
+      const leaders = starGroups.map(group => {
+        const statusKey = getOccupancyStatus(group.leader);
+        return {
+          star: group.star,
+          leaderName: group.leader.name,
+          avgPrice: group.avgPrice,
+          rating: group.leader.rating,
+          occupancyStatusKey: statusKey
+        };
+      });
+
       const snapshot = {
         city: city || '',
         dominantClass,
         minPrice,
         maxPrice,
         medianPrice,
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
+        leaders
       };
       window.localStorage.setItem('sgo-market-snapshot', JSON.stringify(snapshot));
     } catch {

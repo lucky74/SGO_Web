@@ -12,6 +12,14 @@ type Message = {
   at: number;
 };
 
+type MarketLeaderSnapshot = {
+  star: number;
+  leaderName: string;
+  avgPrice: number;
+  rating: number;
+  occupancyStatusKey: string;
+};
+
 type MarketSnapshot = {
   city?: string;
   dominantClass: string;
@@ -19,6 +27,7 @@ type MarketSnapshot = {
   maxPrice: number;
   medianPrice: number;
   generatedAt?: string;
+  leaders?: MarketLeaderSnapshot[];
 };
 
 const GuestChat: React.FC = () => {
@@ -152,11 +161,14 @@ const GuestChat: React.FC = () => {
     const pageWidth = doc.internal.pageSize.getWidth();
     let y = 20;
 
+    doc.setTextColor(15, 23, 42);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
+    doc.setTextColor(30, 64, 175);
     doc.text(t('minutes_title'), pageWidth / 2, y, { align: 'center' });
     y += 8;
 
+    doc.setTextColor(55, 65, 81);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     const dateSource = startAt ? startAt : new Date(sorted[0].at);
@@ -168,17 +180,20 @@ const GuestChat: React.FC = () => {
     y += 6;
 
     doc.setFontSize(10);
+    doc.setTextColor(100, 116, 139);
     doc.text(t('minutes_note'), 20, y);
     y += 8;
 
     if (snapshot) {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
+      doc.setTextColor(22, 163, 74);
       doc.text(t('m2_insight_title'), 20, y);
       y += 6;
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85);
 
       const line1 = `${t('m2_insight_summary')} ${t('m2_insight_dominated')} ${snapshot.dominantClass}. ${t('m2_insight_competition')}`;
       const line2 = `${t('m2_insight_price_range')} IDR ${snapshot.minPrice.toLocaleString('id-ID')} - IDR ${snapshot.maxPrice.toLocaleString('id-ID')}`;
@@ -203,7 +218,37 @@ const GuestChat: React.FC = () => {
       });
 
       y += 4;
+
+      if (snapshot.leaders && snapshot.leaders.length > 0) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(129, 140, 248);
+        doc.text(t('m2_leader_title'), 20, y);
+        y += 6;
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(51, 65, 85);
+
+        snapshot.leaders.forEach((leader) => {
+          const classLabel = leader.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${leader.star}`;
+          const line = `${classLabel}: ${leader.leaderName} – ${t(leader.occupancyStatusKey)}, IDR ${leader.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}, Rating ${leader.rating}`;
+          const lines = doc.splitTextToSize(line, pageWidth - 40);
+          lines.forEach((l: string) => {
+            if (y > 280) {
+              doc.addPage();
+              y = 20;
+            }
+            doc.text(l, 20, y);
+            y += 5;
+          });
+        });
+
+        y += 4;
+      }
     }
+
+    doc.setTextColor(15, 23, 42);
 
     sorted.forEach(m => {
       const timeStr = new Date(m.at).toLocaleTimeString(locale, {
@@ -277,6 +322,36 @@ const GuestChat: React.FC = () => {
               <span className='font-semibold'>{t('m2_insight_price_range')}</span> IDR {snapshot.minPrice.toLocaleString('id-ID')} - IDR {snapshot.maxPrice.toLocaleString('id-ID')}.{' '}
               <span className='font-semibold'>{t('m2_insight_suggested')}</span> IDR {snapshot.medianPrice.toLocaleString('id-ID')} (Median)
             </p>
+            {snapshot.leaders && snapshot.leaders.length > 0 && (
+              <div className='mt-2 border-t border-slate-700 pt-2'>
+                <div className='font-semibold text-purple-300 mb-1'>
+                  {t('m2_leader_title')}
+                </div>
+                <div className='space-y-1'>
+                  {snapshot.leaders.map((leader) => {
+                    const classLabel = leader.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${leader.star}`;
+                    return (
+                      <div key={leader.star} className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1'>
+                        <div className='text-slate-200'>
+                          <span className='font-semibold text-yellow-300'>{classLabel}:</span> {leader.leaderName}
+                        </div>
+                        <div className='text-[10px] text-slate-300 flex flex-wrap items-center gap-2'>
+                          <span className='px-2 py-0.5 rounded-full border border-slate-600 text-slate-100'>
+                            {t(leader.occupancyStatusKey)}
+                          </span>
+                          <span>
+                            IDR {leader.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                          </span>
+                          <span className='text-yellow-300 font-semibold'>
+                            {leader.rating}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
