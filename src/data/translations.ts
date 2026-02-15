@@ -234,7 +234,8 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'm2_empty_state': {'ID': 'Silakan lakukan pencarian di menu Intelijen Hunian terlebih dahulu.', 'EN': 'Please perform a search in the Market Intelligence menu first.'},
     'm2_star': {'ID': 'Bintang', 'EN': 'Star'},
     'm2_non_star': {'ID': 'Non-Bintang', 'EN': 'Non-Star'},
-    
+    'chat_show_leaders': {'ID': 'Tampilkan Pemimpin Pasar', 'EN': 'Show Market Leaders'},
+    'chat_hide_leaders': {'ID': 'Sembunyikan Pemimpin Pasar', 'EN': 'Hide Market Leaders'},
     // Dynamic Status
     'status_top_tier': {'ID': 'Top Tier', 'EN': 'Top Tier'},
     'status_high_demand': {'ID': 'High Demand', 'EN': 'High Demand'},

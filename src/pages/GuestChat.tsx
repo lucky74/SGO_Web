@@ -47,6 +47,7 @@ const GuestChat: React.FC = () => {
   const [error, setError] = useState('');
   const [now, setNow] = useState<number>(() => Date.now());
   const [snapshot, setSnapshot] = useState<MarketSnapshot | null>(null);
+  const [showLeaders, setShowLeaders] = useState(false);
 
   const params = useMemo(() => {
     if (typeof window === 'undefined') return { room: '', token: '', start: '' };
@@ -324,32 +325,43 @@ const GuestChat: React.FC = () => {
             </p>
             {snapshot.leaders && snapshot.leaders.length > 0 && (
               <div className='mt-2 border-t border-slate-700 pt-2'>
-                <div className='font-semibold text-purple-300 mb-1'>
-                  {t('m2_leader_title')}
+                <div className='flex items-center justify-between gap-2 mb-1'>
+                  <div className='font-semibold text-purple-300'>
+                    {t('m2_leader_title')}
+                  </div>
+                  <button
+                    type='button'
+                    onClick={() => setShowLeaders(v => !v)}
+                    className='text-[10px] px-2 py-0.5 rounded-full border border-slate-600 text-slate-100 hover:bg-slate-700'
+                  >
+                    {showLeaders ? t('chat_hide_leaders') : t('chat_show_leaders')}
+                  </button>
                 </div>
-                <div className='space-y-1'>
-                  {snapshot.leaders.map((leader) => {
-                    const classLabel = leader.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${leader.star}`;
-                    return (
-                      <div key={leader.star} className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1'>
-                        <div className='text-slate-200'>
-                          <span className='font-semibold text-yellow-300'>{classLabel}:</span> {leader.leaderName}
+                {showLeaders && (
+                  <div className='mt-1 space-y-1'>
+                    {snapshot.leaders.map((leader) => {
+                      const classLabel = leader.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${leader.star}`;
+                      return (
+                        <div key={leader.star} className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1'>
+                          <div className='text-slate-200'>
+                            <span className='font-semibold text-yellow-300'>{classLabel}:</span> {leader.leaderName}
+                          </div>
+                          <div className='text-[10px] text-slate-300 flex flex-wrap items-center gap-2'>
+                            <span className='px-2 py-0.5 rounded-full border border-slate-600 text-slate-100'>
+                              {t(leader.occupancyStatusKey)}
+                            </span>
+                            <span>
+                              IDR {leader.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                            </span>
+                            <span className='text-yellow-300 font-semibold'>
+                              {leader.rating}
+                            </span>
+                          </div>
                         </div>
-                        <div className='text-[10px] text-slate-300 flex flex-wrap items-center gap-2'>
-                          <span className='px-2 py-0.5 rounded-full border border-slate-600 text-slate-100'>
-                            {t(leader.occupancyStatusKey)}
-                          </span>
-                          <span>
-                            IDR {leader.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
-                          </span>
-                          <span className='text-yellow-300 font-semibold'>
-                            {leader.rating}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
           </div>
