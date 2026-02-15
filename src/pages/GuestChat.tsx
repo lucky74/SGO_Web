@@ -51,12 +51,15 @@ const GuestChat: React.FC = () => {
   const [showLeaders, setShowLeaders] = useState(false);
 
   const params = useMemo(() => {
-    if (typeof window === 'undefined') return { room: '', token: '', start: '' };
+    if (typeof window === 'undefined') {
+      return { room: '', token: '', start: '', insight: '' };
+    }
     const search = new URLSearchParams(window.location.search);
     return {
       room: search.get('room') || '',
       token: search.get('token') || '',
-      start: search.get('start') || ''
+      start: search.get('start') || '',
+      insight: search.get('insight') || ''
     };
   }, []);
 
@@ -85,6 +88,29 @@ const GuestChat: React.FC = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    const fromParam = params.insight;
+    if (fromParam) {
+      try {
+        const parsed = JSON.parse(fromParam);
+        if (
+          parsed &&
+          typeof parsed.dominantClass === 'string' &&
+          typeof parsed.minPrice === 'number' &&
+          typeof parsed.maxPrice === 'number' &&
+          typeof parsed.medianPrice === 'number'
+        ) {
+          setSnapshot(parsed);
+          try {
+            window.localStorage.setItem('sgo-market-snapshot', fromParam);
+          } catch {
+          }
+          return;
+        }
+      } catch {
+      }
+    }
+
     try {
       const raw = window.localStorage.getItem('sgo-market-snapshot');
       if (!raw) return;
@@ -94,7 +120,7 @@ const GuestChat: React.FC = () => {
       setSnapshot(parsed);
     } catch {
     }
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     if (!channelName) return;

@@ -205,8 +205,16 @@ const AccountControl: React.FC = () => {
               {roomId && roomToken && (
                 <button
                   onClick={() => {
+                    if (typeof window === 'undefined') return;
                     const base = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
-                    const url = meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
+                    const withStart = meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
+                    let url = withStart;
+                    try {
+                      const raw = window.localStorage.getItem('sgo-market-snapshot');
+                      if (raw) {
+                        url = `${withStart}&insight=${encodeURIComponent(raw)}`;
+                      }
+                    } catch {}
                     navigator.clipboard?.writeText(url).then(() => {
                       setCopyMsg(t('discussion_copy_success'));
                     }).catch(() => {
@@ -244,8 +252,16 @@ const AccountControl: React.FC = () => {
                   <textarea
                     value={(() => {
                       if (!roomId || !roomToken) return '';
+                      if (typeof window === 'undefined') return '';
                       const base = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
-                      return meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
+                      const withStart = meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
+                      try {
+                        const raw = window.localStorage.getItem('sgo-market-snapshot');
+                        if (raw) {
+                          return `${withStart}&insight=${encodeURIComponent(raw)}`;
+                        }
+                      } catch {}
+                      return withStart;
                     })()}
                     readOnly
                     className='w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 h-16'
