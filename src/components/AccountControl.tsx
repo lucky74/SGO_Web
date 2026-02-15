@@ -11,6 +11,9 @@ const AccountControl: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passMsg, setPassMsg] = useState('');
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [roomToken, setRoomToken] = useState<string | null>(null);
+  const [copyMsg, setCopyMsg] = useState('');
 
   if (!user) return null;
 
@@ -158,6 +161,82 @@ const AccountControl: React.FC = () => {
                         <span className='text-green-400 text-xs font-bold'>{t('m4_status_active')}</span>
                     </div>
                 </div>
+            </div>
+        </motion.div>
+
+        {/* Discussion Room */}
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className='glass-card p-6 rounded-xl md:col-span-2'
+        >
+            <h3 className='text-xl font-bold mb-4 flex items-center gap-2'>
+                <Shield size={20} className='text-emerald-400' /> Ruang Diskusi Manajemen
+            </h3>
+            <p className='text-sm text-slate-400 mb-4'>
+              Gunakan ruang diskusi untuk berbagi link ke Owner, GM, dan Manager tanpa perlu akun login tambahan. 
+              Setiap ruang memiliki <span className='font-semibold text-slate-200'>Room ID</span> dan <span className='font-semibold text-slate-200'>Token</span> unik.
+            </p>
+            <div className='flex flex-col md:flex-row items-start md:items-center gap-3 mb-4'>
+              <button
+                onClick={() => {
+                  const id = 'ROOM-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                  const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                  setRoomId(id);
+                  setRoomToken(token);
+                  setCopyMsg('');
+                }}
+                className='bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg font-bold text-sm'
+              >
+                Buat Ruang Diskusi Baru
+              </button>
+              {roomId && roomToken && (
+                <button
+                  onClick={() => {
+                    const url = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
+                    navigator.clipboard?.writeText(url).then(() => {
+                      setCopyMsg('Link ruang diskusi tersalin. Kirim via WhatsApp/Email ke manajemen.');
+                    }).catch(() => {
+                      setCopyMsg('Gagal menyalin otomatis. Silakan salin manual teks di bawah.');
+                    });
+                  }}
+                  className='bg-slate-800 hover:bg-slate-700 text-slate-100 px-4 py-2 rounded-lg text-sm font-medium'
+                >
+                  Salin Link Ruang Diskusi
+                </button>
+              )}
+            </div>
+            {roomId && roomToken && (
+              <div className='space-y-3'>
+                <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-center gap-2'>
+                  <span className='text-xs font-semibold text-slate-400'>Room ID</span>
+                  <input
+                    type='text'
+                    value={roomId}
+                    readOnly
+                    className='w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100'
+                  />
+                </div>
+                <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-center gap-2'>
+                  <span className='text-xs font-semibold text-slate-400'>Token</span>
+                  <input
+                    type='text'
+                    value={roomToken}
+                    readOnly
+                    className='w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100'
+                  />
+                </div>
+                <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-start gap-2'>
+                  <span className='text-xs font-semibold text-slate-400'>Link Diskusi</span>
+                  <textarea
+                    value={`${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`}
+                    readOnly
+                    className='w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 h-16'
+                  />
+                </div>
+                {copyMsg && (
+                  <p className='text-xs text-emerald-400 mt-1'>{copyMsg}</p>
+                )}
             </div>
         </motion.div>
       </div>
