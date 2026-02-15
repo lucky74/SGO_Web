@@ -243,10 +243,11 @@ const AccountControl: React.FC = () => {
                 <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-start gap-2'>
                   <span className='text-xs font-semibold text-slate-400'>Link Diskusi</span>
                   <textarea
-                    value={() => {
+                    value={(() => {
+                      if (!roomId || !roomToken) return '';
                       const base = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
                       return meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
-                    }()}
+                    })()}
                     readOnly
                     className='w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 h-16'
                   />
