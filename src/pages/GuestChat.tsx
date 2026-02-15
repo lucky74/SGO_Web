@@ -124,7 +124,7 @@ const GuestChat: React.FC = () => {
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.text('Notulen Rapat Market Hotel', pageWidth / 2, y, { align: 'center' });
+    doc.text('Market Hotel Meeting Minutes', pageWidth / 2, y, { align: 'center' });
     y += 8;
 
     doc.setFontSize(11);
@@ -134,11 +134,11 @@ const GuestChat: React.FC = () => {
 
     doc.text(`Room ID : ${params.room}`, 20, y);
     y += 6;
-    doc.text(`Tanggal : ${dateStr}`, 20, y);
+    doc.text(`Date    : ${dateStr}`, 20, y);
     y += 6;
 
     doc.setFontSize(10);
-    doc.text('Catatan: Notulen ini dihasilkan langsung dari ruang diskusi SGO tanpa disimpan di server.', 20, y);
+    doc.text('Note: These minutes are generated directly from the SGO discussion room and are not stored on any server.', 20, y);
     y += 8;
 
     sorted.forEach(m => {
@@ -167,7 +167,7 @@ const GuestChat: React.FC = () => {
     });
 
     const safeRoom = params.room.replace(/[^A-Za-z0-9\-]/g, '');
-    const fileName = `Notulen-Rapat-${safeRoom || 'MarketHotel'}.pdf`;
+    const fileName = `Meeting-Minutes-${safeRoom || 'MarketHotel'}.pdf`;
     doc.save(fileName);
   };
 
