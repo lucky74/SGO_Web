@@ -12,6 +12,15 @@ type Message = {
   at: number;
 };
 
+type MarketSnapshot = {
+  city?: string;
+  dominantClass: string;
+  minPrice: number;
+  maxPrice: number;
+  medianPrice: number;
+  generatedAt?: string;
+};
+
 const GuestChat: React.FC = () => {
   const { t, language } = useLanguage();
   const locale = language === 'EN' ? 'en-US' : 'id-ID';
@@ -28,6 +37,7 @@ const GuestChat: React.FC = () => {
   const [text, setText] = useState('');
   const [error, setError] = useState('');
   const [now, setNow] = useState<number>(() => Date.now());
+  const [snapshot, setSnapshot] = useState<MarketSnapshot | null>(null);
 
   const params = useMemo(() => {
     if (typeof window === 'undefined') return { room: '', token: '', start: '' };
@@ -60,6 +70,19 @@ const GuestChat: React.FC = () => {
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 15000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.localStorage.getItem('sgo-market-snapshot');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed.dominantClass !== 'string') return;
+      if (typeof parsed.minPrice !== 'number' || typeof parsed.maxPrice !== 'number' || typeof parsed.medianPrice !== 'number') return;
+      setSnapshot(parsed);
+    } catch {
+    }
   }, []);
 
   useEffect(() => {
@@ -148,6 +171,40 @@ const GuestChat: React.FC = () => {
     doc.text(t('minutes_note'), 20, y);
     y += 8;
 
+    if (snapshot) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text(t('m2_insight_title'), 20, y);
+      y += 6;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+
+      const line1 = `${t('m2_insight_summary')} ${t('m2_insight_dominated')} ${snapshot.dominantClass}. ${t('m2_insight_competition')}`;
+      const line2 = `${t('m2_insight_price_range')} IDR ${snapshot.minPrice.toLocaleString('id-ID')} - IDR ${snapshot.maxPrice.toLocaleString('id-ID')}`;
+      const line3 = `${t('m2_insight_suggested')} IDR ${snapshot.medianPrice.toLocaleString('id-ID')} (Median)`;
+
+      const lines1 = doc.splitTextToSize(line1, pageWidth - 40);
+      lines1.forEach((line: string) => {
+        doc.text(line, 20, y);
+        y += 5;
+      });
+
+      const lines2 = doc.splitTextToSize(line2, pageWidth - 40);
+      lines2.forEach((line: string) => {
+        doc.text(line, 20, y);
+        y += 5;
+      });
+
+      const lines3 = doc.splitTextToSize(line3, pageWidth - 40);
+      lines3.forEach((line: string) => {
+        doc.text(line, 20, y);
+        y += 5;
+      });
+
+      y += 4;
+    }
+
     sorted.forEach(m => {
       const timeStr = new Date(m.at).toLocaleTimeString(locale, {
         hour: '2-digit',
@@ -207,6 +264,21 @@ const GuestChat: React.FC = () => {
             </p>
           )}
         </div>
+
+        {snapshot && (
+          <div className='mb-3 text-[11px] text-slate-200 bg-slate-800/60 border border-slate-700 rounded-lg p-3'>
+            <div className='font-semibold text-emerald-300 mb-1'>
+              {t('m2_insight_title')}{snapshot.city ? ` (${snapshot.city})` : ''}
+            </div>
+            <p className='mb-1 text-slate-300'>
+              <span className='font-semibold'>{t('m2_insight_summary')}</span> {t('m2_insight_dominated')} <span className='font-semibold'>{snapshot.dominantClass}</span>. {t('m2_insight_competition')}
+            </p>
+            <p className='text-slate-300'>
+              <span className='font-semibold'>{t('m2_insight_price_range')}</span> IDR {snapshot.minPrice.toLocaleString('id-ID')} - IDR {snapshot.maxPrice.toLocaleString('id-ID')}.{' '}
+              <span className='font-semibold'>{t('m2_insight_suggested')}</span> IDR {snapshot.medianPrice.toLocaleString('id-ID')} (Median)
+            </p>
+          </div>
+        )}
 
         {!joined && (
           <div className='mb-4 space-y-3'>

@@ -10,6 +10,7 @@ interface TrendAnalysisProps {
   hotels: Hotel[];
   searched: boolean;
   loading: boolean;
+  city?: string;
 }
 
 interface StarGroup {
@@ -19,7 +20,7 @@ interface StarGroup {
   leader: Hotel;
 }
 
-const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading }) => {
+const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading, city }) => {
   const { t } = useLanguage();
   const { user } = useAuth();
 
@@ -161,6 +162,21 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
 
   const topRated = [...hotels].sort((a, b) => b.rating - a.rating).slice(0, 3);
   const dominantClass = pieData.sort((a,b) => b.value - a.value)[0]?.name || 'Unknown';
+
+  if (typeof window !== 'undefined') {
+    try {
+      const snapshot = {
+        city: city || '',
+        dominantClass,
+        minPrice,
+        maxPrice,
+        medianPrice,
+        generatedAt: new Date().toISOString()
+      };
+      window.localStorage.setItem('sgo-market-snapshot', JSON.stringify(snapshot));
+    } catch {
+    }
+  }
 
   return (
     <div id='trend-analysis-report' className='space-y-8'>

@@ -54,6 +54,7 @@ const Dashboard: React.FC = () => {
                       hotels={hotels}
                       searched={searched}
                       loading={loading}
+                      city={city}
                     />
                   </ErrorBoundary>
             </div>
