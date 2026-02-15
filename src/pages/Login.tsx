@@ -12,7 +12,6 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
-  const [notif, setNotif] = useState<string>('');
   const [loginStatus, setLoginStatus] = useState<'unknown'|'inactive'|'active'>('unknown');
   const [trackedEmail, setTrackedEmail] = useState<string>('');
 
@@ -49,8 +48,6 @@ const Login: React.FC = () => {
         if (active === true) {
           setError('');
           setLoginStatus('active');
-          setNotif(t('account_activated'));
-          setTimeout(() => setNotif(''), 3000);
         } else if (active === false) {
           setLoginStatus('inactive');
           setError(t('account_inactive'));
@@ -77,8 +74,6 @@ const Login: React.FC = () => {
         if (isActive) {
           if (error) setError('');
           setLoginStatus('active');
-          setNotif(t('account_activated'));
-          setTimeout(() => setNotif(''), 3000);
         } else {
           setError(t('account_inactive'));
           setLoginStatus('inactive');
@@ -95,15 +90,6 @@ const Login: React.FC = () => {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-slate-900 relative overflow-hidden'>
-      {notif && (
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className='fixed top-4 left-1/2 -translate-x-1/2 bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 shadow-lg z-50'
-        >
-          {notif}
-        </motion.div>
-      )}
       {/* Background Animation */}
       <div className='absolute inset-0 z-0'>
         <div className='absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob'></div>
@@ -177,15 +163,6 @@ const Login: React.FC = () => {
               className='text-green-400 text-sm text-center bg-green-900/20 p-2 rounded border border-green-900/50'
             >
               {t('account_activated')}
-            </motion.div>
-          )}
-          {!error && notif && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className='text-green-400 text-sm text-center bg-green-900/20 p-2 rounded border border-green-900/50'
-            >
-              {notif}
             </motion.div>
           )}
 
