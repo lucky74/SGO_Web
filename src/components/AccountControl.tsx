@@ -237,7 +237,8 @@ const AccountControl: React.FC = () => {
                 {copyMsg && (
                   <p className='text-xs text-emerald-400 mt-1'>{copyMsg}</p>
                 )}
-            </div>
+              </div>
+            )}
         </motion.div>
       </div>
     </div>
