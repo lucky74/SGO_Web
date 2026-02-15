@@ -13,6 +13,7 @@ const AccountControl: React.FC = () => {
   const [passMsg, setPassMsg] = useState('');
   const [roomId, setRoomId] = useState<string | null>(null);
   const [roomToken, setRoomToken] = useState<string | null>(null);
+  const [meetingAt, setMeetingAt] = useState<string>('');
   const [copyMsg, setCopyMsg] = useState('');
 
   if (!user) return null;
@@ -173,10 +174,22 @@ const AccountControl: React.FC = () => {
             <h3 className='text-xl font-bold mb-4 flex items-center gap-2'>
                 <Shield size={20} className='text-emerald-400' /> Ruang Diskusi Manajemen
             </h3>
-            <p className='text-sm text-slate-400 mb-4'>
+            <p className='text-sm text-slate-400 mb-2'>
               Gunakan ruang diskusi untuk berbagi link ke Owner, GM, dan Manager tanpa perlu akun login tambahan. 
               Setiap ruang memiliki <span className='font-semibold text-slate-200'>Room ID</span> dan <span className='font-semibold text-slate-200'>Token</span> unik.
             </p>
+            <p className='text-xs text-slate-500 mb-4'>
+              Anda juga dapat menjadwalkan jam mulai diskusi. Link hanya bisa dipakai setelah waktu yang ditentukan.
+            </p>
+            <div className='grid grid-cols-1 md:grid-cols-[140px,1fr] gap-3 mb-4 items-center'>
+              <span className='text-xs font-semibold text-slate-400'>Jadwal Mulai</span>
+              <input
+                type='datetime-local'
+                value={meetingAt}
+                onChange={(e) => setMeetingAt(e.target.value)}
+                className='bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500'
+              />
+            </div>
             <div className='flex flex-col md:flex-row items-start md:items-center gap-3 mb-4'>
               <button
                 onClick={() => {
@@ -193,7 +206,8 @@ const AccountControl: React.FC = () => {
               {roomId && roomToken && (
                 <button
                   onClick={() => {
-                    const url = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
+                    const base = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
+                    const url = meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
                     navigator.clipboard?.writeText(url).then(() => {
                       setCopyMsg('Link ruang diskusi tersalin. Kirim via WhatsApp/Email ke manajemen.');
                     }).catch(() => {
@@ -229,7 +243,10 @@ const AccountControl: React.FC = () => {
                 <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-start gap-2'>
                   <span className='text-xs font-semibold text-slate-400'>Link Diskusi</span>
                   <textarea
-                    value={`${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`}
+                    value={() => {
+                      const base = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
+                      return meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
+                    }()}
                     readOnly
                     className='w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-100 h-16'
                   />

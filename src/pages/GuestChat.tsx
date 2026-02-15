@@ -19,13 +19,15 @@ const GuestChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState('');
   const [error, setError] = useState('');
+  const [now, setNow] = useState<number>(() => Date.now());
 
   const params = useMemo(() => {
-    if (typeof window === 'undefined') return { room: '', token: '' };
+    if (typeof window === 'undefined') return { room: '', token: '', start: '' };
     const search = new URLSearchParams(window.location.search);
     return {
       room: search.get('room') || '',
-      token: search.get('token') || ''
+      token: search.get('token') || '',
+      start: search.get('start') || ''
     };
   }, []);
 
@@ -34,6 +36,23 @@ const GuestChat: React.FC = () => {
     const tokenPart = params.token.substring(0, 8);
     return `discussion-${params.room}-${tokenPart}`;
   }, [params.room, params.token]);
+
+  const startAt = useMemo(() => {
+    if (!params.start) return null as Date | null;
+    const d = new Date(params.start);
+    if (isNaN(d.getTime())) return null;
+    return d;
+  }, [params.start]);
+
+  const notStartedYet = useMemo(() => {
+    if (!startAt) return false;
+    return now < startAt.getTime();
+  }, [now, startAt]);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 15000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (!channelName) return;
@@ -60,6 +79,10 @@ const GuestChat: React.FC = () => {
     }
     if (!name.trim()) {
       setError('Nama wajib diisi.');
+      return;
+    }
+    if (notStartedYet && startAt) {
+      setError(`Ruang diskusi belum dimulai. Jadwal: ${startAt.toLocaleString('id-ID')}`);
       return;
     }
     setError('');
@@ -107,12 +130,22 @@ const GuestChat: React.FC = () => {
           <p className='text-xs text-slate-400'>
             Room ID: <span className='font-mono text-slate-200'>{params.room}</span>
           </p>
+          {startAt && (
+            <p className='text-xs text-amber-300 mt-1'>
+              Jadwal mulai: {startAt.toLocaleString('id-ID')}
+            </p>
+          )}
         </div>
 
         {!joined && (
           <div className='mb-4 space-y-3'>
             <p className='text-sm text-slate-300'>
               Masukkan nama dan peran Anda untuk bergabung ke diskusi ini.
+              {startAt && notStartedYet && (
+                <span className='block text-xs text-amber-300 mt-1'>
+                  Sesi ini akan dibuka pada {startAt.toLocaleString('id-ID')}. Sebelum waktu tersebut, chat belum bisa digunakan.
+                </span>
+              )}
             </p>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
               <input
@@ -135,7 +168,8 @@ const GuestChat: React.FC = () => {
             {error && <p className='text-xs text-red-400'>{error}</p>}
             <button
               onClick={handleJoin}
-              className='bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-bold'
+              disabled={notStartedYet}
+              className='bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-400 text-white px-4 py-2 rounded-lg text-sm font-bold'
             >
               Gabung ke Ruang Diskusi
             </button>
@@ -168,12 +202,12 @@ const GuestChat: React.FC = () => {
               placeholder={joined ? 'Ketik pesan...' : 'Isi nama dulu untuk mengirim pesan'}
               value={text}
               onChange={(e) => setText(e.target.value)}
-              disabled={!joined}
+              disabled={!joined || notStartedYet}
               className='flex-1 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 disabled:opacity-60'
             />
             <button
               onClick={handleSend}
-              disabled={!joined || !text.trim()}
+              disabled={!joined || !text.trim() || notStartedYet}
               className='bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-400 text-white px-4 py-2 rounded-lg text-sm font-bold'
             >
               Kirim
@@ -190,4 +224,3 @@ const GuestChat: React.FC = () => {
 };
 
 export default GuestChat;
-
