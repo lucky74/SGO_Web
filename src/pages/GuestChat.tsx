@@ -47,6 +47,7 @@ const GuestChat: React.FC = () => {
   const [error, setError] = useState('');
   const [now, setNow] = useState<number>(() => Date.now());
   const [snapshot, setSnapshot] = useState<MarketSnapshot | null>(null);
+  const [showInsight, setShowInsight] = useState(false);
   const [showLeaders, setShowLeaders] = useState(false);
 
   const params = useMemo(() => {
@@ -313,56 +314,69 @@ const GuestChat: React.FC = () => {
 
         {snapshot && (
           <div className='mb-3 text-[11px] text-slate-200 bg-slate-800/60 border border-slate-700 rounded-lg p-3'>
-            <div className='font-semibold text-emerald-300 mb-1'>
-              {t('m2_insight_title')}{snapshot.city ? ` (${snapshot.city})` : ''}
+            <div className='flex items-center justify-between gap-2 mb-1'>
+              <div className='font-semibold text-emerald-300'>
+                {t('m2_insight_title')}{snapshot.city ? ` (${snapshot.city})` : ''}
+              </div>
+              <button
+                type='button'
+                onClick={() => setShowInsight(v => !v)}
+                className='text-[10px] px-2 py-0.5 rounded-full border border-slate-600 text-slate-100 hover:bg-slate-700'
+              >
+                {showInsight ? t('chat_hide_insight') : t('chat_show_insight')}
+              </button>
             </div>
-            <p className='mb-1 text-slate-300'>
-              <span className='font-semibold'>{t('m2_insight_summary')}</span> {t('m2_insight_dominated')} <span className='font-semibold'>{snapshot.dominantClass}</span>. {t('m2_insight_competition')}
-            </p>
-            <p className='text-slate-300'>
-              <span className='font-semibold'>{t('m2_insight_price_range')}</span> IDR {snapshot.minPrice.toLocaleString('id-ID')} - IDR {snapshot.maxPrice.toLocaleString('id-ID')}.{' '}
-              <span className='font-semibold'>{t('m2_insight_suggested')}</span> IDR {snapshot.medianPrice.toLocaleString('id-ID')} (Median)
-            </p>
-            {snapshot.leaders && snapshot.leaders.length > 0 && (
-              <div className='mt-2 border-t border-slate-700 pt-2'>
-                <div className='flex items-center justify-between gap-2 mb-1'>
-                  <div className='font-semibold text-purple-300'>
-                    {t('m2_leader_title')}
-                  </div>
-                  <button
-                    type='button'
-                    onClick={() => setShowLeaders(v => !v)}
-                    className='text-[10px] px-2 py-0.5 rounded-full border border-slate-600 text-slate-100 hover:bg-slate-700'
-                  >
-                    {showLeaders ? t('chat_hide_leaders') : t('chat_show_leaders')}
-                  </button>
-                </div>
-                {showLeaders && (
-                  <div className='mt-1 space-y-1'>
-                    {snapshot.leaders.map((leader) => {
-                      const classLabel = leader.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${leader.star}`;
-                      return (
-                        <div key={leader.star} className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1'>
-                          <div className='text-slate-200'>
-                            <span className='font-semibold text-yellow-300'>{classLabel}:</span> {leader.leaderName}
-                          </div>
-                          <div className='text-[10px] text-slate-300 flex flex-wrap items-center gap-2'>
-                            <span className='px-2 py-0.5 rounded-full border border-slate-600 text-slate-100'>
-                              {t(leader.occupancyStatusKey)}
-                            </span>
-                            <span>
-                              IDR {leader.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
-                            </span>
-                            <span className='text-yellow-300 font-semibold'>
-                              {leader.rating}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
+            {showInsight && (
+              <>
+                <p className='mb-1 text-slate-300'>
+                  <span className='font-semibold'>{t('m2_insight_summary')}</span> {t('m2_insight_dominated')} <span className='font-semibold'>{snapshot.dominantClass}</span>. {t('m2_insight_competition')}
+                </p>
+                <p className='text-slate-300'>
+                  <span className='font-semibold'>{t('m2_insight_price_range')}</span> IDR {snapshot.minPrice.toLocaleString('id-ID')} - IDR {snapshot.maxPrice.toLocaleString('id-ID')}.{' '}
+                  <span className='font-semibold'>{t('m2_insight_suggested')}</span> IDR {snapshot.medianPrice.toLocaleString('id-ID')} (Median)
+                </p>
+                {snapshot.leaders && snapshot.leaders.length > 0 && (
+                  <div className='mt-2 border-t border-slate-700 pt-2'>
+                    <div className='flex items-center justify-between gap-2 mb-1'>
+                      <div className='font-semibold text-purple-300'>
+                        {t('m2_leader_title')}
+                      </div>
+                      <button
+                        type='button'
+                        onClick={() => setShowLeaders(v => !v)}
+                        className='text-[10px] px-2 py-0.5 rounded-full border border-slate-600 text-slate-100 hover:bg-slate-700'
+                      >
+                        {showLeaders ? t('chat_hide_leaders') : t('chat_show_leaders')}
+                      </button>
+                    </div>
+                    {showLeaders && (
+                      <div className='mt-1 space-y-1'>
+                        {snapshot.leaders.map((leader) => {
+                          const classLabel = leader.star === 0 ? t('m2_non_star') : `${t('m2_star')} ${leader.star}`;
+                          return (
+                            <div key={leader.star} className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1'>
+                              <div className='text-slate-200'>
+                                <span className='font-semibold text-yellow-300'>{classLabel}:</span> {leader.leaderName}
+                              </div>
+                              <div className='text-[10px] text-slate-300 flex flex-wrap items-center gap-2'>
+                                <span className='px-2 py-0.5 rounded-full border border-slate-600 text-slate-100'>
+                                  {t(leader.occupancyStatusKey)}
+                                </span>
+                                <span>
+                                  IDR {leader.avgPrice.toLocaleString('id-ID', { maximumFractionDigits: 0 })}
+                                </span>
+                                <span className='text-yellow-300 font-semibold'>
+                                  {leader.rating}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         )}
