@@ -159,7 +159,7 @@ const GuestChat: React.FC = () => {
       y += 5;
 
       doc.setFont('helvetica', 'normal');
-      textLines.forEach(line => {
+      textLines.forEach((line: string) => {
         doc.text(line, 24, y);
         y += 5;
       });
