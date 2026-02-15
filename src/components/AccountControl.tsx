@@ -172,17 +172,16 @@ const AccountControl: React.FC = () => {
             className='glass-card p-6 rounded-xl md:col-span-2'
         >
             <h3 className='text-xl font-bold mb-4 flex items-center gap-2'>
-                <Shield size={20} className='text-emerald-400' /> Ruang Diskusi Manajemen
+                <Shield size={20} className='text-emerald-400' /> {t('discussion_title')}
             </h3>
             <p className='text-sm text-slate-400 mb-2'>
-              Gunakan ruang diskusi untuk berbagi link ke Owner, GM, dan Manager tanpa perlu akun login tambahan. 
-              Setiap ruang memiliki <span className='font-semibold text-slate-200'>Room ID</span> dan <span className='font-semibold text-slate-200'>Token</span> unik.
+              {t('discussion_desc')}
             </p>
             <p className='text-xs text-slate-500 mb-4'>
-              Anda juga dapat menjadwalkan jam mulai diskusi. Link hanya bisa dipakai setelah waktu yang ditentukan.
+              {t('discussion_schedule_hint')}
             </p>
             <div className='grid grid-cols-1 md:grid-cols-[140px,1fr] gap-3 mb-4 items-center'>
-              <span className='text-xs font-semibold text-slate-400'>Jadwal Mulai</span>
+              <span className='text-xs font-semibold text-slate-400'>{t('discussion_schedule_label')}</span>
               <input
                 type='datetime-local'
                 value={meetingAt}
@@ -201,7 +200,7 @@ const AccountControl: React.FC = () => {
                 }}
                 className='bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg font-bold text-sm'
               >
-                Buat Ruang Diskusi Baru
+                {t('discussion_create_button')}
               </button>
               {roomId && roomToken && (
                 <button
@@ -209,21 +208,21 @@ const AccountControl: React.FC = () => {
                     const base = `${window.location.origin}/chat?room=${encodeURIComponent(roomId)}&token=${encodeURIComponent(roomToken)}`;
                     const url = meetingAt ? `${base}&start=${encodeURIComponent(meetingAt)}` : base;
                     navigator.clipboard?.writeText(url).then(() => {
-                      setCopyMsg('Link ruang diskusi tersalin. Kirim via WhatsApp/Email ke manajemen.');
+                      setCopyMsg(t('discussion_copy_success'));
                     }).catch(() => {
-                      setCopyMsg('Gagal menyalin otomatis. Silakan salin manual teks di bawah.');
+                      setCopyMsg(t('discussion_copy_fail'));
                     });
                   }}
                   className='bg-slate-800 hover:bg-slate-700 text-slate-100 px-4 py-2 rounded-lg text-sm font-medium'
                 >
-                  Salin Link Ruang Diskusi
+                  {t('discussion_copy_button')}
                 </button>
               )}
             </div>
             {roomId && roomToken && (
               <div className='space-y-3'>
                 <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-center gap-2'>
-                  <span className='text-xs font-semibold text-slate-400'>Room ID</span>
+                  <span className='text-xs font-semibold text-slate-400'>{t('discussion_room_id_label')}</span>
                   <input
                     type='text'
                     value={roomId}
@@ -232,7 +231,7 @@ const AccountControl: React.FC = () => {
                   />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-center gap-2'>
-                  <span className='text-xs font-semibold text-slate-400'>Token</span>
+                  <span className='text-xs font-semibold text-slate-400'>{t('discussion_token_label')}</span>
                   <input
                     type='text'
                     value={roomToken}
@@ -241,7 +240,7 @@ const AccountControl: React.FC = () => {
                   />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-[120px,1fr] items-start gap-2'>
-                  <span className='text-xs font-semibold text-slate-400'>Link Diskusi</span>
+                  <span className='text-xs font-semibold text-slate-400'>{t('discussion_link_label')}</span>
                   <textarea
                     value={(() => {
                       if (!roomId || !roomToken) return '';

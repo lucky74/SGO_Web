@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type Message = {
   id: string;
@@ -11,9 +12,15 @@ type Message = {
   at: number;
 };
 
-const roles = ['Owner', 'GM', 'Manager', 'Lainnya'];
-
 const GuestChat: React.FC = () => {
+  const { t, language } = useLanguage();
+  const locale = language === 'EN' ? 'en-US' : 'id-ID';
+  const roles = [
+    t('chat_role_owner'),
+    t('chat_role_gm'),
+    t('chat_role_manager'),
+    t('chat_role_other')
+  ];
   const [name, setName] = useState('');
   const [role, setRole] = useState('Owner');
   const [joined, setJoined] = useState(false);
@@ -75,15 +82,15 @@ const GuestChat: React.FC = () => {
 
   const handleJoin = () => {
     if (!params.room || !params.token) {
-      setError('Link ruang diskusi tidak valid.');
+      setError(t('chat_error_invalid_link'));
       return;
     }
     if (!name.trim()) {
-      setError('Nama wajib diisi.');
+      setError(t('chat_error_name_required'));
       return;
     }
     if (notStartedYet && startAt) {
-      setError(`Ruang diskusi belum dimulai. Jadwal: ${startAt.toLocaleString('id-ID')}`);
+      setError(`${t('chat_error_not_started')} ${startAt.toLocaleString(locale)}`);
       return;
     }
     setError('');
@@ -110,7 +117,7 @@ const GuestChat: React.FC = () => {
 
   const handleExportPdf = () => {
     if (!messages.length) {
-      setError('Belum ada pesan untuk dijadikan notulen.');
+      setError(t('chat_no_messages'));
       return;
     }
     const sorted = [...messages].sort((a, b) => a.at - b.at);
@@ -124,25 +131,25 @@ const GuestChat: React.FC = () => {
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.text('Market Hotel Meeting Minutes', pageWidth / 2, y, { align: 'center' });
+    doc.text(t('minutes_title'), pageWidth / 2, y, { align: 'center' });
     y += 8;
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     const dateSource = startAt ? startAt : new Date(sorted[0].at);
-    const dateStr = dateSource.toLocaleString('id-ID');
+    const dateStr = dateSource.toLocaleString(locale);
 
-    doc.text(`Room ID : ${params.room}`, 20, y);
+    doc.text(`${t('minutes_room_label')} : ${params.room}`, 20, y);
     y += 6;
-    doc.text(`Date    : ${dateStr}`, 20, y);
+    doc.text(`${t('minutes_date_label')} : ${dateStr}`, 20, y);
     y += 6;
 
     doc.setFontSize(10);
-    doc.text('Note: These minutes are generated directly from the SGO discussion room and are not stored on any server.', 20, y);
+    doc.text(t('minutes_note'), 20, y);
     y += 8;
 
     sorted.forEach(m => {
-      const timeStr = new Date(m.at).toLocaleTimeString('id-ID', {
+      const timeStr = new Date(m.at).toLocaleTimeString(locale, {
         hour: '2-digit',
         minute: '2-digit'
       });
@@ -175,8 +182,8 @@ const GuestChat: React.FC = () => {
     return (
       <div className='min-h-screen flex items-center justify-center bg-slate-900 text-slate-100'>
         <div className='glass-card p-6 rounded-xl max-w-md text-center'>
-          <h1 className='text-xl font-bold mb-2'>Ruang diskusi tidak ditemukan</h1>
-          <p className='text-sm text-slate-400'>Periksa kembali link yang Anda terima dari manajemen hotel.</p>
+          <h1 className='text-xl font-bold mb-2'>{t('chat_not_found_title')}</h1>
+          <p className='text-sm text-slate-400'>{t('chat_not_found_desc')}</p>
         </div>
       </div>
     );
@@ -190,13 +197,13 @@ const GuestChat: React.FC = () => {
         className='glass-card p-4 md:p-6 rounded-2xl w-full max-w-2xl border border-slate-700/60 bg-slate-900/70 backdrop-blur-xl flex flex-col h-[90vh]'
       >
         <div className='mb-4'>
-          <h1 className='text-2xl font-bold mb-1'>Ruang Diskusi Market Hotel</h1>
+          <h1 className='text-2xl font-bold mb-1'>{t('chat_title')}</h1>
           <p className='text-xs text-slate-400'>
-            Room ID: <span className='font-mono text-slate-200'>{params.room}</span>
+            {t('minutes_room_label')}: <span className='font-mono text-slate-200'>{params.room}</span>
           </p>
           {startAt && (
             <p className='text-xs text-amber-300 mt-1'>
-              Jadwal mulai: {startAt.toLocaleString('id-ID')}
+              {t('discussion_schedule_label')}: {startAt.toLocaleString(locale)}
             </p>
           )}
         </div>
@@ -204,17 +211,17 @@ const GuestChat: React.FC = () => {
         {!joined && (
           <div className='mb-4 space-y-3'>
             <p className='text-sm text-slate-300'>
-              Masukkan nama dan peran Anda untuk bergabung ke diskusi ini.
+              {t('chat_join_intro')}
               {startAt && notStartedYet && (
                 <span className='block text-xs text-amber-300 mt-1'>
-                  Sesi ini akan dibuka pada {startAt.toLocaleString('id-ID')}. Sebelum waktu tersebut, chat belum bisa digunakan.
+                  {t('chat_not_started_notice_prefix')} {startAt.toLocaleString(locale)}. {t('chat_not_started_notice_suffix')}
                 </span>
               )}
             </p>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
               <input
                 type='text'
-                placeholder='Nama Anda'
+                placeholder={t('chat_name_placeholder')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className='bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500'
@@ -235,7 +242,7 @@ const GuestChat: React.FC = () => {
               disabled={notStartedYet}
               className='bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-400 text-white px-4 py-2 rounded-lg text-sm font-bold'
             >
-              Gabung ke Ruang Diskusi
+              {t('chat_join_button')}
             </button>
           </div>
         )}
@@ -244,7 +251,7 @@ const GuestChat: React.FC = () => {
           <div className='flex-1 overflow-y-auto p-3 space-y-2'>
             {messages.length === 0 && (
               <p className='text-xs text-slate-500 text-center mt-4'>
-                Belum ada pesan. Mulai diskusi dengan mengirim pesan pertama.
+                {t('chat_no_messages')}
               </p>
             )}
             {messages.sort((a, b) => a.at - b.at).map(m => (
@@ -253,7 +260,7 @@ const GuestChat: React.FC = () => {
                   <span className='font-semibold text-slate-100'>{m.name}</span>
                   <span className='text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-200'>{m.role}</span>
                   <span className='text-[10px] text-slate-500'>
-                    {new Date(m.at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(m.at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
                 <p className='ml-1 text-slate-200'>{m.text}</p>
@@ -263,7 +270,7 @@ const GuestChat: React.FC = () => {
           <div className='border-t border-slate-700 p-3 flex items-center gap-2'>
             <input
               type='text'
-              placeholder={joined ? 'Ketik pesan...' : 'Isi nama dulu untuk mengirim pesan'}
+              placeholder={joined ? t('chat_input_placeholder') : t('chat_input_placeholder_locked')}
               value={text}
               onChange={(e) => setText(e.target.value)}
               disabled={!joined || notStartedYet}
@@ -274,20 +281,20 @@ const GuestChat: React.FC = () => {
               disabled={!joined || !text.trim() || notStartedYet}
               className='bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-400 text-white px-4 py-2 rounded-lg text-sm font-bold'
             >
-              Kirim
+              {language === 'EN' ? 'Send' : 'Kirim'}
             </button>
           </div>
         </div>
 
         <div className='mt-3 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-slate-500'>
           <p className='text-center md:text-left'>
-            Ruang diskusi ini hanya aktif saat halaman terbuka. Riwayat pesan tidak disimpan permanen di server.
+            {t('chat_ephemeral_info')}
           </p>
           <button
             onClick={handleExportPdf}
             className='px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold'
           >
-            Export Notulen (PDF)
+            {t('chat_export_pdf_button')}
           </button>
         </div>
       </motion.div>

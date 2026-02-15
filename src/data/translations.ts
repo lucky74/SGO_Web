@@ -92,6 +92,95 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
     'm4_notif_desc': {"ID":"Aktifkan notifikasi email harian untuk menerima laporan ringkasan pergerakan harga kompetitor dan tren pasar terbaru langsung ke inbox Anda.","EN":"Enable daily email notifications to receive summary reports of competitor price movements and latest market trends directly to your inbox."},
     'm4_label_notif': {"ID":"Notifikasi Email Harian","EN":"Daily Email Notifications"},
 
+    // Management Discussion Room & Chat
+    'discussion_title': {'ID': 'Ruang Diskusi Manajemen', 'EN': 'Management Discussion Room'},
+    'discussion_desc': {
+        'ID': 'Gunakan ruang diskusi untuk berbagi link ke Owner, GM, dan Manager tanpa perlu akun login tambahan. Setiap ruang memiliki Room ID dan Token unik.',
+        'EN': 'Use this discussion room to share links with Owner, GM, and Marketing Manager without additional login accounts. Each room has a unique Room ID and Token.'
+    },
+    'discussion_schedule_hint': {
+        'ID': 'Anda juga dapat menjadwalkan jam mulai diskusi. Link hanya bisa dipakai setelah waktu yang ditentukan.',
+        'EN': 'You can also schedule the discussion start time. The link can only be used after the scheduled time.'
+    },
+    'discussion_schedule_label': {'ID': 'Jadwal Mulai', 'EN': 'Start Time'},
+    'discussion_create_button': {'ID': 'Buat Ruang Diskusi Baru', 'EN': 'Create New Discussion Room'},
+    'discussion_copy_button': {'ID': 'Salin Link Ruang Diskusi', 'EN': 'Copy Discussion Link'},
+    'discussion_room_id_label': {'ID': 'Room ID', 'EN': 'Room ID'},
+    'discussion_token_label': {'ID': 'Token', 'EN': 'Token'},
+    'discussion_link_label': {'ID': 'Link Diskusi', 'EN': 'Discussion Link'},
+    'discussion_copy_success': {
+        'ID': 'Link ruang diskusi tersalin. Kirim via WhatsApp/Email ke manajemen.',
+        'EN': 'Discussion link copied. Share it via WhatsApp/Email to management.'
+    },
+    'discussion_copy_fail': {
+        'ID': 'Gagal menyalin otomatis. Silakan salin manual teks di bawah.',
+        'EN': 'Automatic copy failed. Please copy the text below manually.'
+    },
+
+    'chat_title': {'ID': 'Ruang Diskusi Market Hotel', 'EN': 'Market Hotel Discussion Room'},
+    'chat_not_found_title': {'ID': 'Ruang diskusi tidak ditemukan', 'EN': 'Discussion room not found'},
+    'chat_not_found_desc': {
+        'ID': 'Periksa kembali link yang Anda terima dari manajemen hotel.',
+        'EN': 'Please check the link you received from the hotel management.'
+    },
+    'chat_join_intro': {
+        'ID': 'Masukkan nama dan peran Anda untuk bergabung ke diskusi ini.',
+        'EN': 'Enter your name and role to join this discussion.'
+    },
+    'chat_name_placeholder': {'ID': 'Nama Anda', 'EN': 'Your Name'},
+    'chat_error_name_required': {'ID': 'Nama wajib diisi.', 'EN': 'Name is required.'},
+    'chat_error_invalid_link': {
+        'ID': 'Link ruang diskusi tidak valid.',
+        'EN': 'Discussion room link is not valid.'
+    },
+    'chat_error_not_started': {
+        'ID': 'Ruang diskusi belum dimulai. Jadwal:',
+        'EN': 'Discussion room has not started yet. Schedule:'
+    },
+    'chat_join_button': {
+        'ID': 'Gabung ke Ruang Diskusi',
+        'EN': 'Join Discussion Room'
+    },
+    'chat_no_messages': {
+        'ID': 'Belum ada pesan. Mulai diskusi dengan mengirim pesan pertama.',
+        'EN': 'No messages yet. Start the discussion by sending the first message.'
+    },
+    'chat_input_placeholder': {'ID': 'Ketik pesan...', 'EN': 'Type a message...'},
+    'chat_input_placeholder_locked': {
+        'ID': 'Isi nama dulu untuk mengirim pesan',
+        'EN': 'Enter your name first to send a message'
+    },
+    'chat_ephemeral_info': {
+        'ID': 'Ruang diskusi ini hanya aktif saat halaman terbuka. Riwayat pesan tidak disimpan permanen di server.',
+        'EN': 'This discussion room is only active while this page is open. Message history is not permanently stored on any server.'
+    },
+    'chat_role_owner': {'ID': 'Owner', 'EN': 'Owner'},
+    'chat_role_gm': {'ID': 'GM', 'EN': 'GM'},
+    'chat_role_manager': {'ID': 'Manager', 'EN': 'Manager'},
+    'chat_role_other': {'ID': 'Lainnya', 'EN': 'Other'},
+    'chat_not_started_notice_prefix': {
+        'ID': 'Sesi ini akan dibuka pada',
+        'EN': 'This session will open at'
+    },
+    'chat_not_started_notice_suffix': {
+        'ID': 'Sebelum waktu tersebut, chat belum bisa digunakan.',
+        'EN': 'Before that time, chat cannot be used.'
+    },
+    'chat_export_pdf_button': {
+        'ID': 'Export Notulen (PDF)',
+        'EN': 'Export Minutes (PDF)'
+    },
+    'minutes_title': {
+        'ID': 'Notulen Rapat Market Hotel',
+        'EN': 'Market Hotel Meeting Minutes'
+    },
+    'minutes_room_label': {'ID': 'Room ID', 'EN': 'Room ID'},
+    'minutes_date_label': {'ID': 'Tanggal', 'EN': 'Date'},
+    'minutes_note': {
+        'ID': 'Notulen ini dihasilkan langsung dari ruang diskusi SGO tanpa disimpan di server.',
+        'EN': 'These minutes are generated directly from the SGO discussion room and are not stored on any server.'
+    },
+
     'menu_1': {"ID":"Dasbor Utama","EN":"Main Dashboard"},
     'menu_2': {"ID":"Analisa Tren","EN":"Trend Analysis"},
     'menu_3': {"ID":"Paket Langganan","EN":"Subscription Plan"},
