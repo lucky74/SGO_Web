@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { motion } from 'framer-motion';
+import jsPDF from 'jspdf';
 
 type Message = {
   id: string;
@@ -105,6 +106,69 @@ const GuestChat: React.FC = () => {
       event: 'message',
       payload: msg
     });
+  };
+
+  const handleExportPdf = () => {
+    if (!messages.length) {
+      setError('Belum ada pesan untuk dijadikan notulen.');
+      return;
+    }
+    const sorted = [...messages].sort((a, b) => a.at - b.at);
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 20;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('Notulen Rapat Market Hotel', pageWidth / 2, y, { align: 'center' });
+    y += 8;
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    const dateSource = startAt ? startAt : new Date(sorted[0].at);
+    const dateStr = dateSource.toLocaleString('id-ID');
+
+    doc.text(`Room ID : ${params.room}`, 20, y);
+    y += 6;
+    doc.text(`Tanggal : ${dateStr}`, 20, y);
+    y += 6;
+
+    doc.setFontSize(10);
+    doc.text('Catatan: Notulen ini dihasilkan langsung dari ruang diskusi SGO tanpa disimpan di server.', 20, y);
+    y += 8;
+
+    sorted.forEach(m => {
+      const timeStr = new Date(m.at).toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      const header = `${timeStr} ${m.role} (${m.name}):`;
+      const textLines = doc.splitTextToSize(m.text, pageWidth - 40);
+
+      if (y + textLines.length * 5 + 6 > 280) {
+        doc.addPage();
+        y = 20;
+      }
+
+      doc.setFont('helvetica', 'bold');
+      doc.text(header, 20, y);
+      y += 5;
+
+      doc.setFont('helvetica', 'normal');
+      textLines.forEach(line => {
+        doc.text(line, 24, y);
+        y += 5;
+      });
+      y += 3;
+    });
+
+    const safeRoom = params.room.replace(/[^A-Za-z0-9\-]/g, '');
+    const fileName = `Notulen-Rapat-${safeRoom || 'MarketHotel'}.pdf`;
+    doc.save(fileName);
   };
 
   if (!params.room || !params.token) {
@@ -215,9 +279,17 @@ const GuestChat: React.FC = () => {
           </div>
         </div>
 
-        <p className='mt-3 text-[11px] text-slate-500 text-center'>
-          Ruang diskusi ini hanya aktif saat halaman terbuka. Riwayat pesan tidak disimpan permanen.
-        </p>
+        <div className='mt-3 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-slate-500'>
+          <p className='text-center md:text-left'>
+            Ruang diskusi ini hanya aktif saat halaman terbuka. Riwayat pesan tidak disimpan permanen di server.
+          </p>
+          <button
+            onClick={handleExportPdf}
+            className='px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold'
+          >
+            Export Notulen (PDF)
+          </button>
+        </div>
       </motion.div>
     </div>
   );
