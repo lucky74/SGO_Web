@@ -76,18 +76,64 @@ export default async function handler(req, res) {
       properties = priceRes.data?.properties || [];
     }
 
-    const normalizedHotel = String(hotel).toLowerCase();
-    const ownerPropertyExplicit = properties.find(
-      (p) => typeof p.name === 'string' && p.name.toLowerCase().includes(normalizedHotel)
+    const normalize = (text) =>
+      String(text || '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const normalizedHotel = normalize(hotel);
+    const normalizedCity = normalize(city);
+
+    const rawTokens = normalizedHotel.split(' ').filter(Boolean);
+    const genericTokens = ['hotel', 'hotels', 'bintang', normalizedCity].filter(Boolean);
+    const nameTokens = rawTokens.filter(
+      (t) => !genericTokens.includes(t) && !/^\d+$/.test(t)
     );
 
-    const fallbackOwner = properties[0];
-    const ownerProperty = ownerPropertyExplicit || fallbackOwner;
+    let targetClass;
+    const starMatch = normalizedHotel.match(/bintang\s*(\d)/);
+    if (starMatch) {
+      targetClass = parseInt(starMatch[1], 10);
+    }
 
-    const ownerClass =
-      ownerProperty?.extracted_hotel_class !== undefined
-        ? ownerProperty.extracted_hotel_class
-        : ownerProperty?.hotel_class;
+    let ownerPropertyExplicit = null;
+    if (nameTokens.length && properties.length) {
+      ownerPropertyExplicit = properties.find((p) => {
+        const n = normalize(p.name);
+        return nameTokens.every((t) => n.includes(t));
+      });
+    }
+
+    let ownerProperty = null;
+    let ownerClass = null;
+
+    if (ownerPropertyExplicit) {
+      ownerProperty = ownerPropertyExplicit;
+      ownerClass =
+        ownerProperty.extracted_hotel_class !== undefined
+          ? ownerProperty.extracted_hotel_class
+          : ownerProperty.hotel_class;
+      if (ownerClass === undefined || ownerClass === null) {
+        ownerClass = targetClass || null;
+      }
+    } else if (targetClass && properties.length) {
+      const sameClassProps = properties.filter((p) => {
+        const c =
+          p.extracted_hotel_class !== undefined ? p.extracted_hotel_class : p.hotel_class;
+        return Number(c) === targetClass;
+      });
+      ownerProperty = sameClassProps[0] || properties[0] || null;
+      ownerClass = targetClass;
+    } else {
+      ownerProperty = properties[0] || null;
+      if (ownerProperty) {
+        ownerClass =
+          ownerProperty.extracted_hotel_class !== undefined
+            ? ownerProperty.extracted_hotel_class
+            : ownerProperty.hotel_class;
+      }
+    }
 
     let otaRaw = Array.isArray(ownerProperty?.prices) ? ownerProperty.prices : [];
     if (!otaRaw.length) {
