@@ -123,7 +123,18 @@ export default async function handler(req, res) {
           p.extracted_hotel_class !== undefined ? p.extracted_hotel_class : p.hotel_class;
         return Number(c) === targetClass;
       });
-      ownerProperty = sameClassProps[0] || properties[0] || null;
+
+      if (!sameClassProps.length) {
+        return res.status(200).json({
+          rating,
+          latest_reviews,
+          ota_prices: [],
+          competitors: [],
+          error: `Tidak ditemukan hotel bintang ${targetClass} di ${city}`
+        });
+      }
+
+      ownerProperty = sameClassProps[0];
       ownerClass = targetClass;
     } else {
       ownerProperty = properties[0] || null;

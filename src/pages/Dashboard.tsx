@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
       const res = await fetch(`/api/market-leader?${params.toString()}`);
       const json = (await res.json()) as MarketLeaderData & { error?: string };
       if (json.error) {
-        console.error('Market leader API error:', json.error);
+        setLeaderError(json.error);
       }
       setLeaderData({
         rating: json.rating,
