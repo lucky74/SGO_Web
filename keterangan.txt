@@ -1,0 +1,20 @@
+Data yang ditarik oleh program SGO_Web Anda melalui SerpApi secara otomatis memfilter hotel berdasarkan kelas yang sama (Bintang 4) karena alasan berikut:
+
+Relevansi Harga: Hotel bintang 4 memiliki struktur biaya operasional yang mirip, sehingga perbandingan harga OTA menjadi valid untuk menentukan siapa yang paling kompetitif.
+
+Ekspektasi Tamu: Tamu yang mencari Hotel Nexa biasanya membandingkannya dengan hotel lain yang memiliki fasilitas serupa (kolam renang, restoran, layanan bisnis), bukan dengan hotel melati atau bintang 5 yang harganya jauh di atas.
+
+Akurasi Rating: Dengan membandingkan sesama bintang 4, angka rating (misal 4.7) benar-benar menunjukkan bahwa Nexa adalah pemimpin di kelasnya, bukan karena menang fasilitas melawan hotel kelas bawah.
+
+Cara Kerja di Program SGO Anda:
+Secara teknis, ketika Anda memasukkan query "Hotel di Bandung" atau "Hotel dekat Nexa Bandung" ke SerpApi, sistem Google Hotels akan memberikan daftar properti yang memiliki hotel_class serupa sebagai prioritas utama.
+
+Contoh Kompetitor Bintang 4 untuk Nexa Bandung:
+
+De Paviljoen Bandung: Sama-sama bintang 4, harga bersaing, lokasi strategis.
+
+Amaroossa Hotel: Bintang 4 dengan konsep butik.
+
+Tebu Hotel: Bintang 4 dengan fokus tamu bisnis.
+
+Jika nanti Pak Lucky ingin memantau kelas yang berbeda (misal ingin membandingkan Nexa dengan hotel bintang 5 untuk melihat potensi upselling), kita tinggal menambahkan parameter hotel_class: 5 di dalam kode Node.js Anda.

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const BASE_URL = 'https://serpapi.com/search.json';
+
 export default async function handler(req, res) {
   const { city } = req.query;
 
@@ -7,8 +9,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'City parameter is required' });
   }
 
-  const SGO_KEY = 'd58fcad894baf2a956b0f68ce6073fcf588e2a3b899498051d5a553524f38e7a';
-  const BASE_URL = 'https://serpapi.com/search.json';
+  const apiKey = process.env.SGO_SERP_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: 'SerpApi key is not configured' });
+  }
 
   try {
     const tomorrow = new Date();
@@ -22,7 +27,7 @@ export default async function handler(req, res) {
       params: {
         engine: 'google_hotels',
         q: `Hotels in ${city}`,
-        api_key: SGO_KEY,
+        api_key: apiKey,
         gl: 'id',
         hl: 'id',
         currency: 'IDR',

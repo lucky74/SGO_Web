@@ -22,6 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeMenu, setActiveMenu }) 
   const menus: { id: string; icon: any; label: string }[] = [
     { id: 'menu_1', icon: LayoutDashboard, label: t('menu_1') },
     { id: 'menu_2', icon: TrendingUp, label: t('menu_2') },
+    { id: 'menu_5', icon: TrendingUp, label: t('menu_5') },
     { id: 'menu_3', icon: CreditCard, label: t('menu_3') },
     { id: 'menu_4', icon: User, label: t('menu_4') },
   ];
