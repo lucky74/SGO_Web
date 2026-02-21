@@ -100,7 +100,13 @@ export default async function handler(req, res) {
       competitors
     });
   } catch (error) {
-    console.error('Market Leader SerpApi Error:', error.message);
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    console.error('Market Leader SerpApi Error:', error?.response?.data || error.message);
+    return res.status(200).json({
+      rating: undefined,
+      latest_reviews: [],
+      ota_prices: [],
+      competitors: [],
+      error: error.message || 'SerpApi error'
+    });
   }
 }

@@ -48,11 +48,16 @@ const Dashboard: React.FC = () => {
         hotel: user.hotelName
       });
       const res = await fetch(`/api/market-leader?${params.toString()}`);
-      if (!res.ok) {
-        throw new Error('Failed to fetch market leader data');
+      const json = (await res.json()) as MarketLeaderData & { error?: string };
+      if (json.error) {
+        console.error('Market leader API error:', json.error);
       }
-      const json = (await res.json()) as MarketLeaderData;
-      setLeaderData(json);
+      setLeaderData({
+        rating: json.rating,
+        latest_reviews: json.latest_reviews || [],
+        ota_prices: json.ota_prices || [],
+        competitors: json.competitors || []
+      });
     } catch (err) {
       setLeaderError('Gagal memuat data market leader. Coba lagi beberapa saat.');
       console.error(err);
