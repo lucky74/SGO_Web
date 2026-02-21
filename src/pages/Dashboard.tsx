@@ -40,15 +40,20 @@ const Dashboard: React.FC = () => {
   };
 
   const fetchMarketLeader = async () => {
+    if (!city) {
+      setLeaderError('Masukkan kota di Intelijen Pasar lalu lakukan pencarian terlebih dahulu.');
+      return;
+    }
     if (!leaderQuery.trim()) {
-      setLeaderError('Masukkan nama hotel atau kelas terlebih dahulu.');
+      setLeaderError('Masukkan nama hotel terlebih dahulu.');
       return;
     }
     setLeaderLoading(true);
     setLeaderError(null);
     try {
       const params = new URLSearchParams({
-        q: leaderQuery.trim()
+        city,
+        hotel: leaderQuery.trim()
       });
       const res = await fetch(`/api/market-leader?${params.toString()}`);
       const json = (await res.json()) as MarketLeaderData & { error?: string };
