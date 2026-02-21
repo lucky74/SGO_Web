@@ -154,22 +154,58 @@ export default async function handler(req, res) {
       otaRaw = firstWithPrices?.prices || [];
     }
 
-    const ota_prices = otaRaw.map((item) => {
-      const source = item.source || 'OTA';
-      const rn = item.rate_per_night || {};
-      const extracted = rn.extracted_lowest || rn.extracted_before_taxes_fees;
-      const base =
-        rn.lowest ||
-        rn.before_taxes_fees ||
-        (typeof extracted === 'number'
-          ? `IDR ${extracted.toLocaleString('id-ID', { maximumFractionDigits: 0 })}`
-          : undefined);
-      const price = base || '-';
-      const highlighted =
-        typeof source === 'string' &&
-        (source.toLowerCase().includes('traveloka') || source.toLowerCase().includes('agoda'));
-      return { source, price, highlighted };
-    });
+    const preferredOtas = ['traveloka', 'tiket', 'agoda', 'booking.com', 'booking'];
+
+    const classifyOta = (source) => {
+      const src = String(source || '').toLowerCase();
+      if (preferredOtas.some((k) => src.includes(k))) return 'preferred';
+      if (src.includes('.id') || src.includes('co.id') || src.startsWith('id.')) return 'local';
+      return 'other';
+    };
+
+    const otaCandidates = otaRaw
+      .map((item) => {
+        const source = item.source || 'OTA';
+        const rn = item.rate_per_night || {};
+        const extracted = rn.extracted_lowest || rn.extracted_before_taxes_fees;
+        const base =
+          rn.lowest ||
+          rn.before_taxes_fees ||
+          (typeof extracted === 'number'
+            ? `IDR ${extracted.toLocaleString('id-ID', { maximumFractionDigits: 0 })}`
+            : undefined);
+        const price = base || '-';
+        const category = classifyOta(source);
+        return { source, price, category };
+      })
+      .filter((o) => o.price !== '-');
+
+    const bySource = new Map();
+    for (const o of otaCandidates) {
+      const key = o.source.toLowerCase();
+      if (!bySource.has(key)) {
+        bySource.set(key, o);
+      }
+    }
+    const deduped = Array.from(bySource.values());
+
+    const preferred = deduped.filter((o) => o.category === 'preferred');
+    const local = deduped.filter((o) => o.category === 'local');
+    const others = deduped.filter((o) => o.category === 'other');
+
+    const ordered = [
+      ...preferred.sort((a, b) => a.price.localeCompare(b.price)),
+      ...local.sort((a, b) => a.price.localeCompare(b.price)),
+      ...others.sort((a, b) => a.price.localeCompare(b.price))
+    ];
+
+    const ota_prices = ordered.map((o) => ({
+      source: o.source,
+      price: o.price,
+      highlighted:
+        preferredOtas.some((k) => o.source.toLowerCase().includes(k)) ||
+        classifyOta(o.source) === 'local'
+    }));
 
     let competitorsRaw = properties.filter((p) => p !== ownerProperty);
 
