@@ -40,30 +40,48 @@ export default async function handler(req, res) {
       }
     });
 
-    const [reviewRes, priceRes] = await Promise.all([reviewPromise, pricePromise]);
+    const [reviewResult, priceResult] = await Promise.allSettled([
+      reviewPromise,
+      pricePromise
+    ]);
 
-    const ratingOverview = reviewRes.data?.rating_overview;
-    const rating = ratingOverview?.rating ? `${ratingOverview.rating} / 5.0` : undefined;
+    let rating;
+    let latest_reviews = [];
 
-    const reviewsRaw = reviewRes.data?.reviews || [];
-    const latest_reviews = reviewsRaw.slice(0, 3).map((r) => ({
-      snippet: r.snippet || r.summary || '',
-      label: r.reviewer ? `- ${r.reviewer}` : '- Guest Review'
-    }));
+    if (reviewResult.status === 'fulfilled') {
+      const reviewRes = reviewResult.value;
+      const ratingOverview = reviewRes.data?.rating_overview;
+      rating = ratingOverview?.rating ? `${ratingOverview.rating} / 5.0` : undefined;
 
-    const properties = priceRes.data?.properties || [];
+      const reviewsRaw = reviewRes.data?.reviews || [];
+      latest_reviews = reviewsRaw.slice(0, 3).map((r) => ({
+        snippet: r.snippet || r.summary || '',
+        label: r.reviewer ? `- ${r.reviewer}` : '- Guest Review'
+      }));
+    }
+
+    let properties = [];
+    if (priceResult.status === 'fulfilled') {
+      const priceRes = priceResult.value;
+      properties = priceRes.data?.properties || [];
+    }
 
     const normalizedHotel = hotel.toLowerCase();
-    const ownerProperty =
-      properties.find(
-        (p) =>
-          typeof p.name === 'string' &&
-          p.name.toLowerCase().includes(normalizedHotel)
-      ) || properties[0];
+    const ownerPropertyExplicit = properties.find(
+      (p) => typeof p.name === 'string' && p.name.toLowerCase().includes(normalizedHotel)
+    );
 
+    const fallbackOwner = properties[0];
+    const ownerProperty = ownerPropertyExplicit || fallbackOwner;
     const ownerClass = ownerProperty?.hotel_class;
 
-    const otaRaw = ownerProperty?.offers || [];
+    let otaRaw = ownerProperty?.offers || [];
+    if (!otaRaw || otaRaw.length === 0) {
+      const firstWithOffers = properties.find(
+        (p) => Array.isArray(p.offers) && p.offers.length > 0
+      );
+      otaRaw = firstWithOffers?.offers || [];
+    }
 
     const ota_prices = otaRaw.map((offer) => {
       const source = offer.provider || offer.display_name || offer.name || 'OTA';
@@ -78,11 +96,15 @@ export default async function handler(req, res) {
       return { source, price, highlighted };
     });
 
-    const competitorsRaw = properties.filter((p) => {
+    let competitorsRaw = properties.filter((p) => {
       if (p === ownerProperty) return false;
       if (!ownerClass) return true;
       return p.hotel_class === ownerClass;
     });
+
+    if (!competitorsRaw.length) {
+      competitorsRaw = properties.filter((p) => p !== ownerProperty);
+    }
 
     const competitors = competitorsRaw.slice(0, 3).map((p) => {
       const name = p.name || 'Competitor';
