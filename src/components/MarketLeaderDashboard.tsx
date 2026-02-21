@@ -1,9 +1,3 @@
-type MarketOffer = {
-  source: string;
-  price: string;
-  highlighted?: boolean;
-};
-
 type Competitor = {
   name: string;
   price: string;
@@ -16,13 +10,11 @@ type MarketReview = {
 
 export type MarketLeaderData = {
   rating?: string;
-  ota_prices?: MarketOffer[];
   competitors?: Competitor[];
   latest_reviews?: MarketReview[];
 };
 
 const MarketLeaderDashboard = ({ data }: { data: MarketLeaderData }) => {
-  const otaPrices = data?.ota_prices || [];
   const competitors = data?.competitors || [];
   const reviews = data?.latest_reviews || [];
 
@@ -32,7 +24,7 @@ const MarketLeaderDashboard = ({ data }: { data: MarketLeaderData }) => {
         <div>
           <h2 className="text-lg md:text-xl font-bold text-slate-50">Market Leader Analysis</h2>
           <p className="text-xs text-slate-400">
-            Real-time benchmark OTA dan kompetitor untuk hotel Anda.
+            Real-time benchmark kompetitor dan review terbaru untuk hotel Anda.
           </p>
         </div>
         <span className="self-start md:self-auto bg-blue-500/10 text-blue-300 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-blue-500/30">
@@ -41,38 +33,6 @@ const MarketLeaderDashboard = ({ data }: { data: MarketLeaderData }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <div className="bg-slate-900/80 p-4 rounded-xl shadow-sm border border-slate-700">
-          <h3 className="text-xs md:text-sm font-bold text-slate-300 uppercase mb-3">
-            Paritas Harga OTA
-          </h3>
-          {otaPrices.length === 0 ? (
-            <p className="text-[11px] text-slate-500">
-              Tidak ada data OTA. Pastikan pencarian kota sudah dilakukan dan data real-time
-              tersedia.
-            </p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {otaPrices.map((offer, idx) => (
-                <div
-                  key={`${offer.source}-${idx}`}
-                  className={`p-3 rounded-lg bg-slate-800/80 border border-slate-700 ${
-                    offer.highlighted ? 'border-blue-500/70 shadow-[0_0_15px_rgba(59,130,246,0.35)]' : ''
-                  }`}
-                >
-                  <p
-                    className={`text-[10px] font-semibold uppercase tracking-wide ${
-                      offer.highlighted ? 'text-blue-300' : 'text-slate-400'
-                    }`}
-                  >
-                    {offer.source}
-                  </p>
-                  <p className="text-lg font-black text-slate-50 mt-1">{offer.price}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
         <div className="bg-slate-900/80 p-4 rounded-xl shadow-sm border border-slate-700">
           <h3 className="text-xs md:text-sm font-bold text-slate-300 uppercase mb-3">
             Benchmark Kompetitor (Kelas yang Sama)
@@ -105,7 +65,7 @@ const MarketLeaderDashboard = ({ data }: { data: MarketLeaderData }) => {
           )}
         </div>
 
-        <div className="bg-slate-900/80 p-4 rounded-xl shadow-sm border border-slate-700 md:col-span-2">
+        <div className="bg-slate-900/80 p-4 rounded-xl shadow-sm border border-slate-700">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
             <h3 className="text-xs md:text-sm font-bold text-slate-300 uppercase">
               Review Terbaru (Google)

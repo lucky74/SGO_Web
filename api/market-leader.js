@@ -146,71 +146,6 @@ export default async function handler(req, res) {
       }
     }
 
-    let otaRaw = Array.isArray(ownerProperty?.prices) ? ownerProperty.prices : [];
-    if (!otaRaw.length) {
-      const firstWithPrices = properties.find(
-        (p) => Array.isArray(p.prices) && p.prices.length > 0
-      );
-      otaRaw = firstWithPrices?.prices || [];
-    }
-
-    const preferredOtas = ['traveloka', 'tiket', 'agoda', 'booking.com', 'booking'];
-
-    const classifyOta = (source) => {
-      const src = String(source || '').toLowerCase();
-      if (preferredOtas.some((k) => src.includes(k))) return 'preferred';
-      if (src.includes('.id') || src.includes('co.id') || src.startsWith('id.')) return 'local';
-      return 'other';
-    };
-
-    const otaCandidates = otaRaw
-      .map((item) => {
-        const source = item.source || 'OTA';
-        const rn = item.rate_per_night || {};
-        const extracted = rn.extracted_lowest || rn.extracted_before_taxes_fees;
-        const base =
-          rn.lowest ||
-          rn.before_taxes_fees ||
-          (typeof extracted === 'number'
-            ? `IDR ${extracted.toLocaleString('id-ID', { maximumFractionDigits: 0 })}`
-            : undefined);
-        const price = base || '-';
-        const category = classifyOta(source);
-        return { source, price, category };
-      })
-      .filter((o) => o.price !== '-');
-
-    const bySource = new Map();
-    for (const o of otaCandidates) {
-      const key = o.source.toLowerCase();
-      if (!bySource.has(key)) {
-        bySource.set(key, o);
-      }
-    }
-    const deduped = Array.from(bySource.values());
-
-    const preferred = deduped.filter((o) => o.category === 'preferred');
-    const local = deduped.filter((o) => o.category === 'local');
-
-    const ordered = [
-      ...preferred.sort((a, b) => a.price.localeCompare(b.price)),
-      ...local.sort((a, b) => a.price.localeCompare(b.price))
-    ];
-
-    let otaWarning = null;
-
-    const ota_prices = ordered.map((o) => ({
-      source: o.source,
-      price: o.price,
-      highlighted:
-        preferredOtas.some((k) => o.source.toLowerCase().includes(k)) ||
-        classifyOta(o.source) === 'local'
-    }));
-
-    if (!ota_prices.length) {
-      otaWarning = `Data OTA Indonesia (Traveloka, tiket.com, Agoda, Booking.com) tidak ditemukan di Google Hotels untuk kota ${city} pada periode ini. Harga OTA disembunyikan agar tidak menyesatkan.`;
-    }
-
     let competitorsRaw = properties.filter((p) => p !== ownerProperty);
 
     if (ownerClass !== undefined && ownerClass !== null) {
@@ -241,9 +176,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       rating,
       latest_reviews,
-      ota_prices,
-      competitors,
-      error: otaWarning || undefined
+      competitors
     });
   } catch (error) {
     console.error('Market Leader SerpApi Error:', error?.response?.data || error.message);

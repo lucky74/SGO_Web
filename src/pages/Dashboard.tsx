@@ -63,7 +63,6 @@ const Dashboard: React.FC = () => {
       setLeaderData({
         rating: json.rating,
         latest_reviews: json.latest_reviews || [],
-        ota_prices: json.ota_prices || [],
         competitors: json.competitors || []
       });
     } catch (err) {
