@@ -71,46 +71,62 @@ export default async function handler(req, res) {
 
     const fallbackOwner = properties[0];
     const ownerProperty = ownerPropertyExplicit || fallbackOwner;
-    const ownerClass = ownerProperty?.hotel_class;
 
-    let otaRaw = ownerProperty?.offers || [];
-    if (!otaRaw || otaRaw.length === 0) {
-      const firstWithOffers = properties.find(
-        (p) => Array.isArray(p.offers) && p.offers.length > 0
+    const ownerClass =
+      ownerProperty?.extracted_hotel_class !== undefined
+        ? ownerProperty.extracted_hotel_class
+        : ownerProperty?.hotel_class;
+
+    let otaRaw = Array.isArray(ownerProperty?.prices) ? ownerProperty.prices : [];
+    if (!otaRaw.length) {
+      const firstWithPrices = properties.find(
+        (p) => Array.isArray(p.prices) && p.prices.length > 0
       );
-      otaRaw = firstWithOffers?.offers || [];
+      otaRaw = firstWithPrices?.prices || [];
     }
 
-    const ota_prices = otaRaw.map((offer) => {
-      const source = offer.provider || offer.display_name || offer.name || 'OTA';
-      const price = offer.rate_per_night_micros
-        ? `IDR ${(offer.rate_per_night_micros / 1_000_000).toLocaleString('id-ID', {
-            maximumFractionDigits: 0
-          })}`
-        : offer.price || '-';
+    const ota_prices = otaRaw.map((item) => {
+      const source = item.source || 'OTA';
+      const rn = item.rate_per_night || {};
+      const extracted = rn.extracted_lowest || rn.extracted_before_taxes_fees;
+      const base =
+        rn.lowest ||
+        rn.before_taxes_fees ||
+        (typeof extracted === 'number'
+          ? `IDR ${extracted.toLocaleString('id-ID', { maximumFractionDigits: 0 })}`
+          : undefined);
+      const price = base || '-';
       const highlighted =
         typeof source === 'string' &&
         (source.toLowerCase().includes('traveloka') || source.toLowerCase().includes('agoda'));
       return { source, price, highlighted };
     });
 
-    let competitorsRaw = properties.filter((p) => {
-      if (p === ownerProperty) return false;
-      if (!ownerClass) return true;
-      return p.hotel_class === ownerClass;
-    });
+    let competitorsRaw = properties.filter((p) => p !== ownerProperty);
 
-    if (!competitorsRaw.length) {
-      competitorsRaw = properties.filter((p) => p !== ownerProperty);
+    if (ownerClass !== undefined && ownerClass !== null) {
+      const sameClass = competitorsRaw.filter((p) => {
+        const c =
+          p.extracted_hotel_class !== undefined ? p.extracted_hotel_class : p.hotel_class;
+        return c === ownerClass;
+      });
+      if (sameClass.length) {
+        competitorsRaw = sameClass;
+      }
     }
 
     const competitors = competitorsRaw.slice(0, 3).map((p) => {
       const name = p.name || 'Competitor';
-      const priceMicros = p.rate_per_night_micros;
-      const priceFormatted = priceMicros
-        ? `IDR ${(priceMicros / 1_000_000).toLocaleString('id-ID', { maximumFractionDigits: 0 })}`
-        : p.display_price || p.price || '-';
-      return { name, price: priceFormatted };
+      const rp = p.rate_per_night || {};
+      const extracted = rp.extracted_lowest || rp.extracted_before_taxes_fees;
+      const base =
+        rp.lowest ||
+        rp.before_taxes_fees ||
+        (typeof extracted === 'number'
+          ? `IDR ${extracted.toLocaleString('id-ID', { maximumFractionDigits: 0 })}`
+          : undefined);
+      const price = base || '-';
+      return { name, price };
     });
 
     return res.status(200).json({
