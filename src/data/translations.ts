@@ -181,11 +181,11 @@ export const TRANS: { [key: string]: { [key: string]: string } } = {
         'EN': 'These minutes are generated directly from the SGO discussion room and are not stored on any server.'
     },
 
-184→    'menu_1': {"ID":"Dasbor Utama","EN":"Main Dashboard"},
-185→    'menu_2': {"ID":"Analisa Tren","EN":"Trend Analysis"},
-186→    'menu_5': {"ID":"Pemimpin Pasar","EN":"Market Leader"},
-187→    'menu_3': {"ID":"Paket Langganan","EN":"Subscription Plan"},
-188→    'menu_4': {"ID":"Kontrol Akun","EN":"Account Control"},
+    'menu_1': {'ID': 'Dasbor Utama', 'EN': 'Main Dashboard'},
+    'menu_2': {'ID': 'Analisa Tren', 'EN': 'Trend Analysis'},
+    'menu_5': {'ID': 'Pemimpin Pasar', 'EN': 'Market Leader'},
+    'menu_3': {'ID': 'Paket Langganan', 'EN': 'Subscription Plan'},
+    'menu_4': {'ID': 'Kontrol Akun', 'EN': 'Account Control'},
     'status_online': {"ID":"ONLINE","EN":"ONLINE"},
     'm1_desc': {"ID":"Pantau pergerakan harga dan okupansi kompetitor di sekitar properti Anda secara real-time.","EN":"Monitor competitor price and occupancy movements around your property in real-time."},
     'm1_input_label': {"ID":"Lokasi / Kota","EN":"Location / City"},
