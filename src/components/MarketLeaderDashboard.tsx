@@ -43,7 +43,7 @@ const MarketLeaderDashboard = ({ data }: { data: MarketLeaderData }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <div className="bg-slate-900/80 p-4 rounded-xl shadow-sm border border-slate-700">
           <h3 className="text-xs md:text-sm font-bold text-slate-300 uppercase mb-3">
-            Paritas Harga OTA (Bintang 4)
+            Paritas Harga OTA
           </h3>
           {otaPrices.length === 0 ? (
             <p className="text-[11px] text-slate-500">

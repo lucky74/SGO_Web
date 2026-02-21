@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import MarketIntelligence from '../components/MarketIntelligence';
 import TrendAnalysis from '../components/TrendAnalysis';
@@ -22,6 +22,7 @@ const Dashboard: React.FC = () => {
   const [leaderData, setLeaderData] = useState<MarketLeaderData | null>(null);
   const [leaderLoading, setLeaderLoading] = useState(false);
   const [leaderError, setLeaderError] = useState<string | null>(null);
+  const [leaderQuery, setLeaderQuery] = useState(user?.hotelName || '');
 
   const handleSearch = async () => {
     if (!city) return;
@@ -39,13 +40,15 @@ const Dashboard: React.FC = () => {
   };
 
   const fetchMarketLeader = async () => {
-    if (!city || !user?.hotelName) return;
+    if (!leaderQuery.trim()) {
+      setLeaderError('Masukkan nama hotel atau kelas terlebih dahulu.');
+      return;
+    }
     setLeaderLoading(true);
     setLeaderError(null);
     try {
       const params = new URLSearchParams({
-        city,
-        hotel: user.hotelName
+        q: leaderQuery.trim()
       });
       const res = await fetch(`/api/market-leader?${params.toString()}`);
       const json = (await res.json()) as MarketLeaderData & { error?: string };
@@ -64,12 +67,6 @@ const Dashboard: React.FC = () => {
     }
     setLeaderLoading(false);
   };
-
-  useEffect(() => {
-    if (activeMenu === 'menu_5' && city && user?.hotelName && !leaderLoading && !leaderData && !leaderError) {
-      fetchMarketLeader();
-    }
-  }, [activeMenu, city, user?.hotelName, leaderLoading, leaderData, leaderError]);
 
   const renderContent = () => {
     const renderReports = () => (
@@ -105,25 +102,33 @@ const Dashboard: React.FC = () => {
         return renderReports();
       case 'menu_5':
         return (
-          <div className='space-y-3'>
-            {(!city || !searched) && (
-              <p className='text-xs text-slate-400 mb-2'>
-                Masukkan kota di menu Intelijen Pasar lalu lakukan pencarian terlebih dahulu untuk
-                mengaktifkan analisa market leader.
-              </p>
+          <div className='space-y-4'>
+            <div className='bg-slate-900/60 rounded-2xl border border-slate-700/60 p-4 flex flex-col md:flex-row md:items-end gap-3'>
+              <div className='flex-1'>
+                <p className='text-xs text-slate-400 mb-1'>
+                  Masukkan nama hotel atau query kelas. Contoh: &quot;Hotel Nexa Bandung&quot; atau
+                  &quot;Hotel bintang 5 Bandung&quot;.
+                </p>
+                <input
+                  value={leaderQuery}
+                  onChange={(e) => setLeaderQuery(e.target.value)}
+                  className='w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  placeholder='contoh: Hotel Nexa Bandung'
+                />
+              </div>
+              <button
+                onClick={fetchMarketLeader}
+                className='px-4 py-2 rounded-md bg-blue-600 text-xs font-semibold text-white hover:bg-blue-500 disabled:opacity-50'
+                disabled={leaderLoading}
+              >
+                {leaderLoading ? 'Memuat...' : 'Cari Market Leader'}
+              </button>
+            </div>
+            {leaderError && (
+              <p className='text-xs text-red-400'>{leaderError}</p>
             )}
-            {city && searched && (
-              <>
-                {leaderLoading && (
-                  <p className='text-xs text-slate-400'>Memuat data market leader...</p>
-                )}
-                {leaderError && (
-                  <p className='text-xs text-red-400'>{leaderError}</p>
-                )}
-                {!leaderLoading && !leaderError && leaderData && (
-                  <MarketLeaderDashboard data={leaderData} />
-                )}
-              </>
+            {!leaderLoading && leaderData && (
+              <MarketLeaderDashboard data={leaderData} />
             )}
           </div>
         );

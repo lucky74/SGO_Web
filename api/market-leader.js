@@ -3,10 +3,10 @@ import axios from 'axios';
 const BASE_URL = 'https://serpapi.com/search.json';
 
 export default async function handler(req, res) {
-  const { city, hotel } = req.query;
+  const { q } = req.query;
 
-  if (!city || !hotel) {
-    return res.status(400).json({ error: 'City and hotel parameters are required' });
+  if (!q) {
+    return res.status(400).json({ error: 'Query parameter "q" is required' });
   }
 
   const apiKey = process.env.SGO_SERP_API_KEY;
@@ -16,12 +16,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const hotelQuery = hotel;
-
     const reviewPromise = axios.get(BASE_URL, {
       params: {
         engine: 'google_hotels_reviews',
-        q: hotelQuery,
+        q,
         api_key: apiKey,
         sort_by: 'newest',
         hl: 'id',
@@ -32,7 +30,7 @@ export default async function handler(req, res) {
     const pricePromise = axios.get(BASE_URL, {
       params: {
         engine: 'google_hotels',
-        q: `Hotels in ${city}`,
+        q,
         api_key: apiKey,
         gl: 'id',
         hl: 'id',
@@ -66,7 +64,7 @@ export default async function handler(req, res) {
       properties = priceRes.data?.properties || [];
     }
 
-    const normalizedHotel = hotel.toLowerCase();
+    const normalizedHotel = String(q).toLowerCase();
     const ownerPropertyExplicit = properties.find(
       (p) => typeof p.name === 'string' && p.name.toLowerCase().includes(normalizedHotel)
     );
