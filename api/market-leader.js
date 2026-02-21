@@ -18,26 +18,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const hotelQuery = hotel;
-
-    const reviewPromise = axios.get(BASE_URL, {
-      params: {
-        engine: 'google_hotels_reviews',
-        q: hotelQuery,
-        api_key: apiKey,
-        sort_by: 'newest',
-        hl: 'id',
-        gl: 'id'
-      }
-    });
-
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const nextDay = new Date();
     nextDay.setDate(nextDay.getDate() + 2);
     const formatDate = (date) => date.toISOString().split('T')[0];
 
-    const pricePromise = axios.get(BASE_URL, {
+    const priceRes = await axios.get(BASE_URL, {
       params: {
         engine: 'google_hotels',
         q: `Hotels in ${city}`,
@@ -50,31 +37,10 @@ export default async function handler(req, res) {
       }
     });
 
-    const [reviewResult, priceResult] = await Promise.allSettled([
-      reviewPromise,
-      pricePromise
-    ]);
-
     let rating;
     let latest_reviews = [];
 
-    if (reviewResult.status === 'fulfilled') {
-      const reviewRes = reviewResult.value;
-      const ratingOverview = reviewRes.data?.rating_overview;
-      rating = ratingOverview?.rating ? `${ratingOverview.rating} / 5.0` : undefined;
-
-      const reviewsRaw = reviewRes.data?.reviews || [];
-      latest_reviews = reviewsRaw.slice(0, 3).map((r) => ({
-        snippet: r.snippet || r.summary || '',
-        label: r.reviewer ? `- ${r.reviewer}` : '- Guest Review'
-      }));
-    }
-
-    let properties = [];
-    if (priceResult.status === 'fulfilled') {
-      const priceRes = priceResult.value;
-      properties = priceRes.data?.properties || [];
-    }
+    let properties = priceRes.data?.properties || [];
 
     const normalize = (text) =>
       String(text || '')
@@ -126,9 +92,8 @@ export default async function handler(req, res) {
 
       if (!sameClassProps.length) {
         return res.status(200).json({
-          rating,
-          latest_reviews,
-          ota_prices: [],
+          rating: undefined,
+          latest_reviews: [],
           competitors: [],
           error: `Tidak ditemukan hotel bintang ${targetClass} di ${city}`
         });
@@ -173,6 +138,39 @@ export default async function handler(req, res) {
       return { name, price };
     });
 
+    let reviewTargetName = null;
+    if (competitors.length > 0) {
+      reviewTargetName = competitors[0].name;
+    } else if (ownerProperty?.name) {
+      reviewTargetName = ownerProperty.name;
+    }
+
+    if (reviewTargetName) {
+      try {
+        const reviewRes = await axios.get(BASE_URL, {
+          params: {
+            engine: 'google_hotels_reviews',
+            q: reviewTargetName,
+            api_key: apiKey,
+            sort_by: 'newest',
+            hl: 'id',
+            gl: 'id'
+          }
+        });
+
+        const ratingOverview = reviewRes.data?.rating_overview;
+        rating = ratingOverview?.rating ? `${ratingOverview.rating} / 5.0` : undefined;
+
+        const reviewsRaw = reviewRes.data?.reviews || [];
+        latest_reviews = reviewsRaw.slice(0, 3).map((r) => ({
+          snippet: r.snippet || r.summary || '',
+          label: r.reviewer ? `- ${r.reviewer}` : '- Guest Review'
+        }));
+      } catch (e) {
+        // leave rating and latest_reviews empty if review fetch fails
+      }
+    }
+
     return res.status(200).json({
       rating,
       latest_reviews,
@@ -183,7 +181,6 @@ export default async function handler(req, res) {
     return res.status(200).json({
       rating: undefined,
       latest_reviews: [],
-      ota_prices: [],
       competitors: [],
       error: error.message || 'SerpApi error'
     });
