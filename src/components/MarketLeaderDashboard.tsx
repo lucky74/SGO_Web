@@ -1,5 +1,3 @@
-import React from 'react';
-
 type MarketOffer = {
   source: string;
   price: string;
