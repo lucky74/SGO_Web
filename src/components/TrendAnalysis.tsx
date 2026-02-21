@@ -137,16 +137,15 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ hotels, searched, loading
   const starGroups = ([5, 4, 3, 2, 1, 0].map(star => {
     const groupHotels = hotels.filter(h => (h.stars || 0) === star);
     
-    // If no hotels in this class, return null
     if (groupHotels.length === 0) return null;
 
-    const avgPrice = groupHotels.reduce((acc, h) => acc + (parseInt(String(h.price).replace(/[^0-9]/g, '')) || 0), 0) / groupHotels.length;
     const leader = groupHotels.reduce((prev, curr) => (curr.rating > prev.rating ? curr : prev), groupHotels[0]);
+    const leaderPrice = parseInt(String(leader.price).replace(/[^0-9]/g, '')) || 0;
 
     return {
       star,
       count: groupHotels.length,
-      avgPrice,
+      avgPrice: leaderPrice,
       leader
     };
   }) as (StarGroup | null)[]).filter((group): group is StarGroup => group !== null);
