@@ -191,13 +191,13 @@ export default async function handler(req, res) {
 
     const preferred = deduped.filter((o) => o.category === 'preferred');
     const local = deduped.filter((o) => o.category === 'local');
-    const others = deduped.filter((o) => o.category === 'other');
 
     const ordered = [
       ...preferred.sort((a, b) => a.price.localeCompare(b.price)),
-      ...local.sort((a, b) => a.price.localeCompare(b.price)),
-      ...others.sort((a, b) => a.price.localeCompare(b.price))
+      ...local.sort((a, b) => a.price.localeCompare(b.price))
     ];
+
+    let otaWarning = null;
 
     const ota_prices = ordered.map((o) => ({
       source: o.source,
@@ -206,6 +206,10 @@ export default async function handler(req, res) {
         preferredOtas.some((k) => o.source.toLowerCase().includes(k)) ||
         classifyOta(o.source) === 'local'
     }));
+
+    if (!ota_prices.length) {
+      otaWarning = `Data OTA Indonesia (Traveloka, tiket.com, Agoda, Booking.com) tidak ditemukan di Google Hotels untuk kota ${city} pada periode ini. Harga OTA disembunyikan agar tidak menyesatkan.`;
+    }
 
     let competitorsRaw = properties.filter((p) => p !== ownerProperty);
 
@@ -238,7 +242,8 @@ export default async function handler(req, res) {
       rating,
       latest_reviews,
       ota_prices,
-      competitors
+      competitors,
+      error: otaWarning || undefined
     });
   } catch (error) {
     console.error('Market Leader SerpApi Error:', error?.response?.data || error.message);
